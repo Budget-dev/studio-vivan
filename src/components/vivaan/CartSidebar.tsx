@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Gift } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Gift, ArrowRight } from 'lucide-react';
 import { CartItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,78 +32,64 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     } else if (coupon.toUpperCase() === 'STAY20') {
       setDiscount(Math.round(subtotal * 0.20));
       setAppliedCoupon('STAY20');
-    } else {
-      alert('Invalid coupon code. Try PURE15 or STAY20');
     }
-  };
-
-  const getIcon = (item: CartItem) => {
-    if (item.cat === 'combo') return <ComboIcon className="scale-75" />;
-    if (item.cat === 'oil') return <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={`cart-${item.id}`} />;
-    return <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix={`cart-${item.id}`} />;
   };
 
   return (
     <>
-      {isOpen && <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1000]" onClick={onClose}></div>}
-      <div className={`fixed right-0 top-0 bottom-0 w-full max-w-[460px] bg-white z-[1001] shadow-[-20px_0_60px_rgba(0,0,0,0.16)] transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.18,1)] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-[76px] bg-primary flex items-center justify-between px-6 shrink-0">
-          <div>
+      {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]" onClick={onClose}></div>}
+      <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1001] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.18,1)] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="h-[64px] md:h-[76px] bg-[#0D3520] flex items-center justify-between px-6 shrink-0 relative overflow-hidden">
+          <div className="absolute top-[-30px] right-20 w-[100px] h-[100px] bg-white/5 rounded-full blur-2xl"></div>
+          <div className="relative z-10">
             <div className="font-headline text-2xl font-extrabold text-white">My Cart</div>
-            <div className="text-[11px] text-white/40 font-bold mt-0.5 tracking-wider">{cart.length} items · Vivaan Farms</div>
+            <div className="text-[10px] text-white/40 font-bold tracking-wider">{cart.length} items</div>
           </div>
-          <button onClick={onClose} className="w-10 h-10 rounded-full border border-white/20 bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+          <button onClick={onClose} className="w-9 h-9 rounded-full border border-white/20 bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 bg-background">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="flex gap-2 mb-6">
             <Input 
-              placeholder="🎁 Coupon (PURE15 or STAY20)" 
-              className="bg-white border-border rounded-2xl h-12 text-sm font-medium"
+              placeholder="🎁 Coupon Code" 
+              className="bg-white border-[#DDD0B5] rounded-xl h-12 text-sm font-medium"
               value={coupon}
               onChange={(e) => setCoupon(e.target.value)}
             />
-            <Button onClick={applyCoupon} className="h-12 bg-primary hover:bg-secondary rounded-2xl px-6 font-bold">Apply</Button>
+            <Button onClick={applyCoupon} className="h-12 bg-[#0D3520] hover:bg-[#1B5E3B] rounded-xl px-6 font-bold text-white">Apply</Button>
           </div>
 
-          {appliedCoupon && (
-            <div className="bg-secondary/10 border border-secondary/20 rounded-2xl p-4 flex items-center gap-3 mb-6">
-              <span className="text-2xl">🎉</span>
-              <div>
-                <div className="text-xs font-black text-secondary">Applied {appliedCoupon} successfully!</div>
-                <div className="text-[10px] text-muted-foreground font-medium">Extra savings added to your order</div>
-              </div>
-            </div>
-          )}
-
           {cart.length === 0 ? (
-            <div className="text-center py-20">
-              <ShoppingBag className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Your Cart is Empty</h3>
-              <p className="text-sm text-muted-foreground max-w-[240px] mx-auto">Add some pure Vivaan Farms A2 Ghee to get started!</p>
+            <div className="text-center py-20 flex flex-col items-center">
+              <div className="w-20 h-20 bg-[#FBF3DC] rounded-full flex items-center justify-center text-3xl mb-4">🛒</div>
+              <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Cart is Empty</h3>
+              <p className="text-sm text-[#7A6848] max-w-[240px] leading-relaxed">Add some pure A2 Ghee from our Gujarat farm to get started!</p>
+              <Button onClick={onClose} className="mt-8 bg-primary text-white px-8 rounded-full">Explore Products →</Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {cart.map((item, i) => (
-                <div key={`${item.id}-${item.vol}`} className="bg-card border border-border rounded-2xl p-4 flex gap-4 relative group">
-                  <div className="w-[72px] h-[72px] bg-gradient-to-br from-[#FAF2E8] to-[#EEE4D0] rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-                    {getIcon(item)}
+            <div className="space-y-3">
+              {cart.map((item) => (
+                <div key={`${item.id}-${item.vol}`} className="bg-white border border-[#DDD0B5] rounded-2xl p-4 flex gap-4 relative group shadow-sm">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#F8F2E5] to-[#EDE4CF] rounded-xl flex items-center justify-center shrink-0">
+                    {item.cat === 'combo' ? <ComboIcon className="scale-[0.6]" /> : 
+                     item.cat === 'oil' ? <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" /> :
+                     <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-headline text-lg font-bold text-foreground truncate">{item.name}</h4>
-                    <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider mb-2">{item.vol}</p>
+                    <h4 className="font-headline text-base md:text-lg font-bold text-foreground truncate">{item.name}</h4>
+                    <p className="text-[10px] text-[#7A6848] font-bold uppercase tracking-wider mb-2">{item.vol}</p>
                     <div className="flex items-center justify-between">
-                      <div className="font-headline text-xl font-extrabold text-foreground">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
-                      <div className="flex items-center bg-muted/50 border border-border rounded-xl overflow-hidden h-9">
-                        <button onClick={() => onUpdateQty(item.id, item.vol, -1)} className="w-9 h-full hover:bg-border/50 flex items-center justify-center transition-all"><Minus className="w-3.5 h-3.5" /></button>
+                      <div className="font-bold text-lg">₹{(item.price * item.qty).toLocaleString('en-IN')}</div>
+                      <div className="flex items-center bg-[#F9F6EF] border border-[#DDD0B5] rounded-lg overflow-hidden h-8">
+                        <button onClick={() => onUpdateQty(item.id, item.vol, -1)} className="w-8 h-full flex items-center justify-center"><Minus className="w-3.5 h-3.5" /></button>
                         <span className="w-8 text-center text-xs font-black">{item.qty}</span>
-                        <button onClick={() => onUpdateQty(item.id, item.vol, 1)} className="w-9 h-full hover:bg-border/50 flex items-center justify-center transition-all"><Plus className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => onUpdateQty(item.id, item.vol, 1)} className="w-8 h-full flex items-center justify-center"><Plus className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
                   </div>
-                  <button onClick={() => onRemove(item.id, item.vol)} className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-red-50 text-destructive/30 hover:text-destructive transition-all">
+                  <button onClick={() => onRemove(item.id, item.vol)} className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-red-50 text-destructive/20 hover:text-destructive transition-all">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -112,44 +98,44 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           )}
         </div>
 
-        <div className="bg-white border-t border-border p-6 shrink-0">
-          <div className="space-y-3 mb-6">
-            <div className="flex justify-between text-sm font-medium text-muted-foreground">
+        <div className="bg-white border-t border-[#DDD0B5] p-5 md:p-6 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+          <div className="space-y-2.5 mb-5">
+            <div className="flex justify-between text-xs font-semibold text-[#7A6848]">
               <span>Subtotal</span>
-              <span className="text-foreground font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
+              <span className="text-foreground font-black">₹{subtotal.toLocaleString('en-IN')}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-sm font-medium text-secondary">
+              <div className="flex justify-between text-xs font-bold text-secondary">
                 <span>Discount ({appliedCoupon})</span>
-                <span className="font-bold">−₹{discount.toLocaleString('en-IN')}</span>
+                <span>−₹{discount.toLocaleString('en-IN')}</span>
               </div>
             )}
-            <div className="flex justify-between text-sm font-medium text-muted-foreground">
-              <span>Coins (−200 🪙)</span>
-              <span className="text-[#5A3C0A] font-bold">−₹200</span>
+            <div className="flex justify-between text-xs font-bold text-[#7A6848]">
+              <span>Purity Coins (−200 🪙)</span>
+              <span className="text-[#C49A2A]">−₹200</span>
             </div>
-            <div className="flex justify-between text-sm font-medium text-secondary">
+            <div className="flex justify-between text-xs font-bold text-secondary">
               <span>Delivery</span>
-              <span className="font-black">FREE 🚚</span>
+              <span className="uppercase">FREE 🚚</span>
             </div>
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t-2 border-border mb-6">
-            <span className="text-lg font-black text-foreground">Total Payable</span>
-            <span className="font-headline text-4xl font-extrabold text-foreground">₹{total.toLocaleString('en-IN')}</span>
+          <div className="flex justify-between items-center pt-4 border-t-2 border-[#F9F6EF] mb-5">
+            <span className="text-base font-black uppercase tracking-tight">Total Payable</span>
+            <span className="font-headline text-3xl md:text-4xl font-extrabold text-foreground">₹{total.toLocaleString('en-IN')}</span>
           </div>
 
           <Button 
             disabled={cart.length === 0}
             onClick={onCheckout}
-            className="w-full h-14 bg-gradient-to-br from-secondary to-primary rounded-2xl text-base font-black uppercase tracking-widest forest-sh transition-all hover:translate-y-[-2px] hover:shadow-forest-sh"
+            className="w-full h-14 bg-gradient-to-br from-[#1B5E3B] to-[#0D3520] rounded-xl text-sm font-black uppercase tracking-widest text-white shadow-xl flex items-center justify-center gap-2"
           >
-            Proceed to Checkout →
+            Checkout Securely <ArrowRight className="w-4 h-4" />
           </Button>
 
-          <div className="flex items-center justify-center gap-2 mt-4 text-[10px] text-muted-foreground font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            SSL Encrypted · Powered by Razorpay
+          <div className="flex items-center justify-center gap-2 mt-4 text-[9px] text-[#7A6848] font-bold uppercase tracking-wider">
+            <ShieldCheck className="w-3.5 h-3.5 text-secondary" />
+            SSL Encrypted · Razorpay
           </div>
         </div>
       </div>

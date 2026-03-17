@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { Hero } from '@/components/vivaan/Hero';
@@ -13,6 +13,7 @@ import { ProductModal } from '@/components/vivaan/ProductModal';
 import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { LiveNotification } from '@/components/vivaan/LiveNotification';
+import { BottomNav } from '@/components/vivaan/BottomNav';
 import { PRODUCTS, TESTIMONIALS, CERTS } from '@/lib/data';
 import { Category, Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
@@ -23,6 +24,7 @@ import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-produc
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
   const [aiCategories, setAiCategories] = useState<Category[] | null>(null);
+  const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -40,7 +42,6 @@ export default function VivaanFarms() {
     try {
       const res = await naturalLanguageProductSearch({ query });
       setAiCategories(res.categories as Category[]);
-      // Scroll to products
       const el = document.getElementById('products');
       el?.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
@@ -62,8 +63,21 @@ export default function VivaanFarms() {
     setFilter(cat);
   };
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'cart') {
+      setIsCartOpen(true);
+      setActiveTab('home'); // Reset so nav highlight works correctly when closing
+    } else if (tab === 'shop') {
+      const el = document.getElementById('products');
+      el?.scrollIntoView({ behavior: 'smooth' });
+      setActiveTab('home');
+    }
+    // Handle other tabs as needed for specific mobile pages
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0">
       <Ticker />
       <Header 
         onOpenCart={() => setIsCartOpen(true)} 
@@ -73,45 +87,67 @@ export default function VivaanFarms() {
       />
       
       <main>
+        {/* Promo Strip - High-end replacement for the blinking banner */}
+        <div className="bg-gradient-to-r from-[#1B3A20] via-[#0D3520] to-[#1B3A20] py-2.5 flex items-center justify-center font-bold text-white text-[11px] tracking-wide relative overflow-hidden promo-shine">
+          <span className="bg-[#C49A2A]/25 border border-[#C49A2A]/50 text-[#F5D060] px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase mr-2">PURE15</span>
+          15% OFF + FREE Delivery above ₹999
+        </div>
+
         <Hero />
         
-        <div className="bg-destructive animate-shim-ruby py-3 flex items-center justify-center gap-3 text-sm font-black text-white">
-          <div className="w-2 h-2 rounded-full bg-white blink"></div>
-          🔥 <strong>127 people</strong> bought Gir Cow Ghee in the last 24 hours · <strong>Limited Stock</strong> — Order Now!
+        {/* Urgency Bar - Refined style */}
+        <div className="bg-gradient-to-r from-[#C03030] via-[#A82020] to-[#C03030] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
+          <div className="w-1.5 h-1.5 rounded-full bg-white blink"></div>
+          🔥 <strong>127 people</strong> bought Gir Cow Ghee in the last 24 hours
         </div>
 
         <TrustBar />
 
-        <section className="py-20" id="products">
+        {/* Social Proof Strip */}
+        <div className="mx-4 md:mx-auto max-w-[1400px] mt-4 bg-white border border-[#DDD0B5] rounded-2xl p-3 flex items-center gap-3 shadow-sm md:hidden">
+           <div className="flex -space-x-2.5">
+              {['😊','👩','🧔','👴'].map((emoji, i) => (
+                <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-gradient-to-br from-[#FBF3DC] to-[#F1EAD8] flex items-center justify-center text-sm">
+                  {emoji}
+                </div>
+              ))}
+           </div>
+           <div className="text-[11px] leading-tight">
+              <strong>50,000+ families</strong> trust Vivaan Farms · ⭐ 4.9 on 12k+ reviews
+           </div>
+        </div>
+
+        <section className="py-12 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-            <div className="text-center mb-16 space-y-4">
-              <div className="text-[10px] font-black text-[#7A6A52] tracking-[3px] uppercase">Our Collection</div>
-              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">Handcrafted with<br />Ancient Bilona Method</h2>
-              <p className="text-base text-[#7A6A52] max-w-lg mx-auto leading-relaxed font-medium">
-                Every jar tells the story of our Gujarat farm, our Gir cows, and centuries of tradition.
+            <div className="text-center mb-10 md:mb-16 space-y-3">
+              <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">BROWSE COLLECTION</div>
+              <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none">Ancient Bilona Method</h2>
+              <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
+                Handcrafted from our Gujarat farm to your doorstep.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2.5 justify-center mb-12">
+            {/* Category Row - App style for mobile */}
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
               {[
                 { key: 'all', lbl: 'All Products', icon: '🌿' },
-                { key: 'ghee', lbl: 'Ghee', icon: '🧈' },
-                { key: 'oil', lbl: 'Oils', icon: '🫙' },
+                { key: 'ghee', lbl: 'A2 Ghee', icon: '🧈' },
+                { key: 'oil', lbl: 'Desi Oils', icon: '🫙' },
                 { key: 'combo', lbl: 'Combos', icon: '🎁' },
-                { key: 'superfoods', lbl: 'Superfoods', icon: '🌾' },
+                { key: 'superfoods', lbl: 'Super', icon: '🌾' },
               ].map((c) => (
                 <button 
                   key={c.key}
                   onClick={() => handleCategoryFilter(c.key as Category)}
-                  className={`flex items-center gap-2.5 px-6 py-3 rounded-full border-2 transition-all font-bold text-sm ${filter === c.key && !aiCategories ? 'bg-[#EBF7F1] border-secondary text-primary shadow-xl scale-105' : 'bg-white border-border text-[#7A6A52] hover:border-secondary/50'}`}
+                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border-1.5 transition-all font-bold text-xs ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
                 >
-                  <span className="text-lg">{c.icon}</span>
+                  <span className="text-sm">{c.icon}</span>
                   {c.lbl}
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-6">
               {filteredProducts.map((p) => (
                 <ProductCard 
                   key={p.id} 
@@ -127,112 +163,76 @@ export default function VivaanFarms() {
           </div>
         </section>
 
-        <section className="py-20 bg-[#F0EBE0]">
+        {/* Stats Strip */}
+        <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-12">
+          <div className="grid grid-cols-3 gap-px bg-[#DDD0B5] border border-[#DDD0B5] rounded-2xl overflow-hidden">
+            <div className="bg-white py-4 text-center">
+              <div className="font-headline text-2xl font-extrabold text-primary">50K+</div>
+              <div className="text-[9px] font-bold text-[#7A6848] uppercase tracking-wider">Happy Families</div>
+            </div>
+            <div className="bg-white py-4 text-center">
+              <div className="font-headline text-2xl font-extrabold text-primary">70+</div>
+              <div className="text-[9px] font-bold text-[#7A6848] uppercase tracking-wider">Lab Tests</div>
+            </div>
+            <div className="bg-white py-4 text-center">
+              <div className="font-headline text-2xl font-extrabold text-primary">100%</div>
+              <div className="text-[9px] font-bold text-[#7A6848] uppercase tracking-wider">Farm Direct</div>
+            </div>
+          </div>
+        </div>
+
+        <FeaturedBanner onCta={() => handleCategoryFilter('combo')} />
+
+        <section className="py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-             <div className="text-center mb-16 space-y-4">
-              <div className="text-[10px] font-black text-[#7A6A52] tracking-[3px] uppercase">Why Choose Vivaan</div>
-              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">We Follow the<br />Ancient Way</h2>
-              <p className="text-base text-[#7A6A52] max-w-lg mx-auto leading-relaxed font-medium">
-                Because your family deserves nothing less than what our ancestors knew to be pure.
-              </p>
+            <div className="text-center mb-16 space-y-4">
+              <div className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">WHY VIVAAN FARMS</div>
+              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">The Purest Ghee<br />Families Deserve</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { t: 'Native Sourcing', d: 'Highest quality raw materials from indigenous Gir cows of Gujarat — no crossbreeds, ever.', ico: '🐄' },
-                { t: 'Bilona Process', d: 'Hand-churned curd, not centrifuged cream. The ancient technique that preserves all nutrition.', ico: '🧈' },
-                { t: 'Quality Checks', d: '70+ NABL lab tests per batch — every jar is certified pure before it reaches your doorstep.', ico: '🔬' },
-                { t: 'Better Rural Lives', d: '5,000+ farmer families empowered with every Vivaan product you buy. Your purchase matters.', ico: '🌾' },
+                { t: 'Indigenous Gir Cows', d: 'Never commercial dairy — only native A2 cows.', ico: '🐄' },
+                { t: 'Ancient Bilona', d: 'Hand-churned from curd, never centrifuged.', ico: '🧈' },
+                { t: 'NABL Certified', d: '70+ quality tests every single batch.', ico: '🔬' },
+                { t: 'Gujarat Farm Direct', d: 'Zero middlemen. Pure truth.', ico: '🏡' },
               ].map((item, i) => (
-                <div key={i} className="bg-white border border-border rounded-[32px] p-8 text-center group hover:translate-y-[-4px] transition-all hover:shadow-2xl relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-br from-[#EBF7F1] to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                   <div className="w-20 h-20 bg-[#D0EDDF]/50 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl border-2 border-secondary/10 relative z-10 group-hover:scale-110 transition-transform">
+                <div key={i} className="bg-white border border-[#DDD0B5] rounded-[24px] p-8 text-center group hover:translate-y-[-4px] transition-all hover:shadow-2xl">
+                   <div className="w-16 h-16 bg-[#EBF5EE] rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl group-hover:scale-110 transition-transform">
                     {item.ico}
                    </div>
-                   <h3 className="text-lg font-black text-primary mb-3 relative z-10">{item.t}</h3>
-                   <p className="text-[13px] text-[#7A6A52] leading-relaxed relative z-10">{item.d}</p>
+                   <h3 className="text-lg font-black text-primary mb-3">{item.t}</h3>
+                   <p className="text-[13px] text-[#7A6848] leading-relaxed">{item.d}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20">
-          <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center mb-16 space-y-4">
-              <div className="text-[10px] font-black text-[#7A6A52] tracking-[3px] uppercase">How It's Made</div>
-              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">The Bilona Journey</h2>
-              <p className="text-base text-[#7A6A52] max-w-lg mx-auto leading-relaxed font-medium">Four sacred steps between a Gir cow in Gujarat and the golden ghee in your kitchen.</p>
-          </div>
-          <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
-             <div className="hidden lg:block absolute top-10 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-[#D0EDDF] via-secondary to-[#D0EDDF] z-0"></div>
-             {[
-               { t: 'Collect A2 Milk', d: 'Fresh milk from indigenous Gir cows, collected twice daily at sunrise from our Gujarat farm.', n: 1 },
-               { t: 'Culture into Curd', d: 'Milk is set overnight into dahi using natural probiotic cultures — no shortcuts, ever.', n: 2 },
-               { t: 'Hand-Churn (Bilona)', d: 'Curd is hand-churned to separate butter — the ancient way that preserves A2 nutrients.', n: 3 },
-               { t: 'Slow-Cook Ghee', d: 'Butter is gently simmered over low heat to yield pure, fragrant, golden ghee.', n: 4 },
-             ].map((step) => (
-               <div key={step.n} className="text-center relative z-10 px-4">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-secondary to-primary flex items-center justify-center text-white text-3xl font-black mx-auto mb-6 shadow-xl ring-8 ring-secondary/5">
-                    {step.n}
-                  </div>
-                  <h4 className="text-lg font-black text-foreground mb-3">{step.t}</h4>
-                  <p className="text-sm text-[#7A6A52] leading-relaxed">{step.d}</p>
-               </div>
-             ))}
-          </div>
-        </section>
-
-        <FeaturedBanner onCta={() => handleCategoryFilter('combo')} />
-
-        <section className="py-20 bg-[#F0EBE0]">
+        <section className="py-20 bg-white">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
             <div className="text-center mb-16 space-y-4">
-              <div className="text-[10px] font-black text-[#7A6A52] tracking-[3px] uppercase">Customer Love</div>
               <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">What Our Families Say</h2>
-              <p className="text-base text-[#7A6A52] max-w-lg mx-auto leading-relaxed font-medium">Over 12,000 verified reviews from families who have made Vivaan their daily choice.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {TESTIMONIALS.map((t, i) => (
-                <div key={i} className="bg-white border border-border rounded-[28px] p-8 shadow-sm hover:translate-y-[-4px] transition-all hover:shadow-2xl">
+                <div key={i} className="bg-[#FDFAF4] border border-[#DDD0B5] rounded-[24px] p-8 relative">
+                   <div className="absolute top-6 right-8 text-4xl text-primary/10 font-serif">❝</div>
                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#FEF8E6] to-[#F0EBE0] rounded-full flex items-center justify-center text-2xl shadow-inner shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#FBF3DC] to-[#F1EAD8] rounded-full flex items-center justify-center text-2xl shrink-0">
                         {t.avatar}
                       </div>
                       <div className="flex-1">
                         <div className="text-sm font-black text-foreground">{t.name}</div>
-                        <div className="text-[10px] text-[#7A6A52] font-semibold mt-0.5">{t.loc} · {t.time}</div>
-                      </div>
-                      <div className="flex shrink-0">
-                        {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 text-[#E0A838] fill-current" />)}
+                        <div className="text-[10px] text-[#7A6848] font-semibold mt-0.5">{t.loc}</div>
                       </div>
                    </div>
-                   <p className="text-[13.5px] text-[#7A6A52] leading-loose italic mb-4">{t.body}</p>
-                   <div className="text-[10px] text-secondary font-black uppercase tracking-wider">🛒 {t.prod}</div>
+                   <p className="text-[13.5px] text-[#7A6848] leading-relaxed italic mb-4">"{t.body}"</p>
+                   <div className="text-[10px] text-primary font-black uppercase tracking-wider flex items-center gap-2">🛒 {t.prod}</div>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="py-20">
-          <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center mb-12">
-              <div className="text-[10px] font-black text-[#7A6A52] tracking-[3px] uppercase mb-4">Certifications</div>
-              <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">Trusted by Every Authority</h2>
-          </div>
-          <div className="flex flex-wrap justify-center gap-6">
-            {CERTS.map((c, i) => (
-              <div key={i} className="flex flex-col items-center gap-3 group cursor-pointer">
-                <div className="w-20 h-20 bg-gradient-to-br from-white to-[#F0EDE5] rounded-full flex items-center justify-center border-2 border-border shadow-md transition-all group-hover:translate-y-[-4px]">
-                   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all group-hover:scale-110">
-                    <circle cx="18" cy="18" r="16" fill="none" stroke={c.color} strokeWidth="1.6" opacity=".3"/>
-                    <circle cx="18" cy="18" r="12" fill="none" stroke={c.color} strokeWidth="1.4"/>
-                    <path d="M14 18l3 3 5.5-6" stroke={c.color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-                <span className="text-[10px] font-black text-[#7A6A52] tracking-wider text-center">{c.abbr}</span>
-              </div>
-            ))}
           </div>
         </section>
       </main>
@@ -270,6 +270,13 @@ export default function VivaanFarms() {
       />
 
       <LiveNotification />
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav 
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        cartCount={totalQty}
+      />
     </div>
   );
 }
