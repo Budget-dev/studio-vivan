@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-banner-1",
+      "description": "Premium A2 Ghee jar in a luxury kitchen setting",
+      "imageUrl": "https://picsum.photos/seed/vivaan1/1600/600",
+      "imageHint": "luxury ghee"
+    },
+    {
+      "id": "hero-banner-2",
+      "description": "Serene Gujarat farm with grazing Gir cows at sunrise",
+      "imageUrl": "https://picsum.photos/seed/vivaan2/1600/600",
+      "imageHint": "cow farm"
+    },
+    {
+      "id": "hero-banner-3",
+      "description": "Close up of traditional Bilona churning process",
+      "imageUrl": "https://picsum.photos/seed/vivaan3/1600/600",
+      "imageHint": "traditional churning"
+    }
+  ]
 }
