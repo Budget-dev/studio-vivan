@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { Facebook, Instagram, Youtube, ShieldCheck, CheckCircle, CreditCard } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -11,8 +12,14 @@ export const Footer: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 pb-16">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-full flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 22 22" fill="none"><path d="M11 2C7 4 4 8 4 13c0 4 3 7 7 7s7-3 7-7c0-5-3-9-7-11z" fill="white" opacity=".8"/></svg>
+            <div className="w-14 h-14 relative flex items-center justify-center grayscale brightness-200 contrast-100 opacity-90">
+              <Image 
+                src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
+                alt="Vivaan Farms Logo"
+                width={56}
+                height={56}
+                className="object-contain"
+              />
             </div>
             <div>
               <div className="font-headline text-3xl font-extrabold text-white tracking-[5px]">VIVAAN</div>

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShoppingCart, User, Heart, Search, ChevronDown, Menu } from 'lucide-react';
+import Image from 'next/image';
+import { ShoppingCart, Heart, Search, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,11 +34,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         <div className="absolute top-[-40px] right-20 w-[130px] h-[130px] rounded-full bg-[radial-gradient(circle,rgba(196,154,42,0.25)_0%,transparent_70%)] pointer-events-none hidden md:block"></div>
         
         <a href="/" className="flex items-center gap-2.5 md:gap-3 shrink-0">
-          <div className="w-9 h-9 md:w-12 md:h-12 bg-gradient-to-br from-[#F5D060] to-[#C49A2A] rounded-full flex items-center justify-center shadow-[0_3px_12px_rgba(196,154,42,0.4)] transition-transform duration-300 hover:rotate-[-8deg] hover:scale-110 shrink-0">
-            <svg width="20" height="20" md-width="24" md-height="24" viewBox="0 0 22 22" fill="none">
-              <path d="M11 2C7 4 4 8 4 13c0 4 3 7 7 7s7-3 7-7c0-5-3-9-7-11z" fill="white" fillOpacity=".95" />
-              <path d="M11 8c0 0-2 2-2 5s2 3 2 3 2 0 2-3-2-5-2-5z" fill="rgba(10,46,24,.6)" />
-            </svg>
+          <div className="w-10 h-10 md:w-14 md:h-14 relative flex items-center justify-center transition-transform duration-300 hover:rotate-[-8deg] hover:scale-110 shrink-0">
+            <Image 
+              src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
+              alt="Vivaan Farms Logo"
+              width={56}
+              height={56}
+              className="object-contain"
+              priority
+            />
           </div>
           <div>
             <div className="font-headline text-xl md:text-3xl font-extrabold text-white tracking-[3px] md:tracking-[5px] leading-none">VIVAAN</div>
