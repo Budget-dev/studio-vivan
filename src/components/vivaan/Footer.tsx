@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -11,13 +12,13 @@ export const Footer: React.FC = () => {
       
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 pb-16">
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-14 h-14 relative flex items-center justify-center grayscale brightness-200 contrast-100 opacity-90">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-20 h-20 relative flex items-center justify-center grayscale brightness-200 contrast-100 opacity-90">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms Logo"
-                width={56}
-                height={56}
+                width={80}
+                height={80}
                 className="object-contain"
               />
             </div>

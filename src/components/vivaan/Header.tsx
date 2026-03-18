@@ -31,22 +31,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
   return (
     <header className="bg-white/95 backdrop-blur-md sticky top-0 z-[900] border-b border-[#DDD0B5]/30">
-      <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[64px] md:h-[72px] flex items-center justify-between gap-4 md:gap-8 relative overflow-hidden">
-        {/* Logo Section - Clean, just the image */}
+      <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[80px] md:h-[100px] flex items-center justify-between gap-4 md:gap-8 relative overflow-hidden">
+        {/* Logo Section - Larger and Centered Focus */}
         <a href="/" className="flex items-center shrink-0">
-          <div className="w-12 h-12 md:w-16 md:h-16 relative flex items-center justify-center transition-transform duration-300 hover:scale-105 shrink-0">
+          <div className="w-16 h-16 md:w-24 md:h-24 relative flex items-center justify-center transition-transform duration-300 hover:scale-105 shrink-0">
             <Image 
               src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
               alt="Vivaan Farms Logo"
-              width={64}
-              height={64}
+              width={96}
+              height={96}
               className="object-contain"
               priority
             />
           </div>
         </a>
 
-        {/* Desktop Nav - Dark text for white background */}
+        {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1.5 ml-2.5">
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Home</button>
           
@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           <button className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Our Story</button>
         </nav>
 
-        {/* Desktop Search - Refined for light background */}
+        {/* Desktop Search */}
         <form onSubmit={handleSearch} className="hidden md:block flex-1 max-w-[420px] mx-auto relative">
           <Input 
             className="w-full h-11 bg-[#F9F6EF] border-[#DDD0B5] rounded-full pl-5 pr-12 text-sm text-[#100C06] placeholder:text-[#B0A080] focus-visible:bg-white focus-visible:border-primary/40 focus-visible:ring-0 transition-all"
@@ -81,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </form>
 
         <div className="flex items-center gap-2 md:gap-2.5">
-          <button className="w-9 h-9 md:w-11 md:h-11 bg-[#F9F6EF] border border-[#DDD0B5]/50 rounded-full flex items-center justify-center hover:bg-primary/5 transition-all group relative">
+          <button className="w-10 h-10 md:w-12 md:h-12 bg-[#F9F6EF] border border-[#DDD0B5]/50 rounded-full flex items-center justify-center hover:bg-primary/5 transition-all group relative">
             <Search className="md:hidden w-4 h-4 text-[#100C06]" />
             <Heart className="hidden md:block w-4 h-4 text-[#100C06] group-hover:fill-primary group-hover:text-primary transition-all" />
           </button>
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           <div className="relative group">
             <Button 
               onClick={onOpenCart}
-              className="bg-gradient-to-br from-[#F5D060] to-[#C49A2A] text-[#100C06] hover:translate-y-[-1px] transition-all rounded-full px-3.5 md:px-5 h-9 md:h-11 text-[10px] md:text-xs font-extrabold shadow-[0_3px_12px_rgba(196,154,42,0.4)] flex items-center gap-2 whitespace-nowrap"
+              className="bg-gradient-to-br from-[#F5D060] to-[#C49A2A] text-[#100C06] hover:translate-y-[-1px] transition-all rounded-full px-3.5 md:px-5 h-10 md:h-12 text-[10px] md:text-xs font-extrabold shadow-[0_3px_12px_rgba(196,154,42,0.4)] flex items-center gap-2 whitespace-nowrap"
             >
               <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4" />
               <span className="hidden sm:inline">Cart</span>
