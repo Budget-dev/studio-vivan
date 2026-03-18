@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -30,16 +29,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   };
 
   return (
-    <header className="bg-white/95 backdrop-blur-md sticky top-0 z-[900] border-b border-[#DDD0B5]/30">
-      <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[80px] md:h-[100px] flex items-center justify-between gap-4 md:gap-8 relative overflow-hidden">
-        {/* Logo Section - Larger and Centered Focus */}
+    <header className="bg-white sticky top-0 z-[900] border-b border-[#DDD0B5]/30">
+      <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[90px] md:h-[120px] flex items-center justify-between gap-4 md:gap-8 relative">
+        {/* Logo Section - Increased Size & Minimal Focus */}
         <a href="/" className="flex items-center shrink-0">
-          <div className="w-16 h-16 md:w-24 md:h-24 relative flex items-center justify-center transition-transform duration-300 hover:scale-105 shrink-0">
+          <div className="w-24 h-24 md:w-36 md:h-36 relative flex items-center justify-center transition-transform duration-300 hover:scale-105 shrink-0">
             <Image 
               src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
               alt="Vivaan Farms Logo"
-              width={96}
-              height={96}
+              width={144}
+              height={144}
               className="object-contain"
               priority
             />
