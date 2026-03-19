@@ -110,8 +110,8 @@ export default function VivaanFarms() {
               </p>
             </div>
 
-            {/* Category Row - More Compact on Mobile */}
-            <div className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
+            {/* Category Row - Responsive: Compact on Mobile, Spacious on Desktop */}
+            <div className="flex gap-1.5 md:gap-4 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
               {[
                 { key: 'all', lbl: 'All Goods', icon: '🌿' },
                 { key: 'ghee', lbl: 'A2 Ghee', icon: '🧈' },
@@ -122,9 +122,9 @@ export default function VivaanFarms() {
                 <button 
                   key={c.key}
                   onClick={() => handleCategoryFilter(c.key as Category)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 md:px-5 md:py-2.5 rounded-full border-1.5 transition-all font-bold text-[10px] md:text-xs ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
+                  className={`flex-shrink-0 flex items-center gap-1.5 md:gap-2.5 px-3.5 py-2 md:px-7 md:py-3.5 rounded-full border-1.5 transition-all font-bold text-[10px] md:text-sm ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
                 >
-                  <span className="text-xs md:text-sm">{c.icon}</span>
+                  <span className="text-xs md:text-lg">{c.icon}</span>
                   {c.lbl}
                 </button>
               ))}
