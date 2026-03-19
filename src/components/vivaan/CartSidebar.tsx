@@ -35,12 +35,20 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     }
   };
 
+  const getIcon = (item: CartItem) => {
+    if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
+    if (item.cat === 'oil') return <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
+    if (item.cat === 'pickles') return <div className="text-3xl">🌶️</div>;
+    if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
+    if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
+    return <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
+  };
+
   return (
     <>
       {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]" onClick={onClose}></div>}
       <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1001] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.18,1)] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="h-[64px] md:h-[76px] bg-[#0D3520] flex items-center justify-between px-6 shrink-0 relative overflow-hidden">
-          <div className="absolute top-[-30px] right-20 w-[100px] h-[100px] bg-white/5 rounded-full blur-2xl"></div>
           <div className="relative z-10">
             <div className="font-headline text-2xl font-extrabold text-white">My Cart</div>
             <div className="text-[10px] text-white/40 font-bold tracking-wider">{cart.length} items</div>
@@ -65,7 +73,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
             <div className="text-center py-20 flex flex-col items-center">
               <div className="w-20 h-20 bg-[#FBF3DC] rounded-full flex items-center justify-center text-3xl mb-4">🛒</div>
               <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Cart is Empty</h3>
-              <p className="text-sm text-[#7A6848] max-w-[240px] leading-relaxed">Add some pure A2 Ghee from our Gujarat farm to get started!</p>
+              <p className="text-sm text-[#7A6848] max-w-[240px] leading-relaxed">Add some pure farm goods from Vivaan Farms to get started!</p>
               <Button onClick={onClose} className="mt-8 bg-primary text-white px-8 rounded-full">Explore Products →</Button>
             </div>
           ) : (
@@ -73,9 +81,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
               {cart.map((item) => (
                 <div key={`${item.id}-${item.vol}`} className="bg-white border border-[#DDD0B5] rounded-2xl p-4 flex gap-4 relative group shadow-sm">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#F8F2E5] to-[#EDE4CF] rounded-xl flex items-center justify-center shrink-0">
-                    {item.cat === 'combo' ? <ComboIcon className="scale-[0.6]" /> : 
-                     item.cat === 'oil' ? <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" /> :
-                     <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />}
+                    {getIcon(item)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-headline text-base md:text-lg font-bold text-foreground truncate">{item.name}</h4>
@@ -132,11 +138,6 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           >
             Checkout Securely <ArrowRight className="w-4 h-4" />
           </Button>
-
-          <div className="flex items-center justify-center gap-2 mt-4 text-[9px] text-[#7A6848] font-bold uppercase tracking-wider">
-            <ShieldCheck className="w-3.5 h-3.5 text-secondary" />
-            SSL Encrypted · Razorpay
-          </div>
         </div>
       </div>
     </>

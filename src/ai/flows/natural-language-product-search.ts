@@ -19,7 +19,7 @@ export type NaturalLanguageProductSearchInput = z.infer<typeof NaturalLanguagePr
 
 // Output schema for the natural language product search flow
 const NaturalLanguageProductSearchOutputSchema = z.object({
-  categories: z.array(z.enum(['all', 'ghee', 'oil', 'combo', 'superfoods'])).describe('A list of product categories that match the query.'),
+  categories: z.array(z.enum(['all', 'ghee', 'oil', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'])).describe('A list of product categories that match the query.'),
 });
 export type NaturalLanguageProductSearchOutput = z.infer<typeof NaturalLanguageProductSearchOutputSchema>;
 
@@ -38,8 +38,11 @@ const naturalLanguageProductSearchPrompt = ai.definePrompt({
   prompt: `You are a helpful assistant for Vivaan Farms.
 The user is searching for products with the following query: "{{{query}}}".
 
-Your task is to identify the most relevant product categories from the following list: 'all', 'ghee', 'oil', 'combo', 'superfoods'.
+Your task is to identify the most relevant product categories from the following list: 'all', 'ghee', 'oil', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'.
 - If the query specifically mentions or strongly implies one or more categories, return those.
+- If the query mentions "achaar" or "pickles", return 'pickles'.
+- If the query mentions "mithai" or "sweets", return 'sweets'.
+- If the query mentions "honey", return 'honey'.
 - If the query is very general or broad (e.g., "all products", "any item"), return 'all'.
 - If the query implies multiple categories (e.g., "healthy breakfast items"), return all relevant categories.
 
@@ -50,26 +53,20 @@ Your response MUST be a JSON object conforming to the following schema:
 Do NOT include any other text or explanation, only the JSON object.
 
 Examples:
+- User query: "mango achaar"
+- Expected JSON output: { "categories": ["pickles"] }
+
+- User query: "sweets for guests"
+- Expected JSON output: { "categories": ["sweets"] }
+
+- User query: "honey for weight loss"
+- Expected JSON output: { "categories": ["honey"] }
+
 - User query: "ghee for daily cooking"
 - Expected JSON output: { "categories": ["ghee"] }
 
 - User query: "cold pressed oils for health"
 - Expected JSON output: { "categories": ["oil"] }
-
-- User query: "combo packs with a good deal"
-- Expected JSON output: { "categories": ["combo"] }
-
-- User query: "healthy breakfast items"
-- Expected JSON output: { "categories": ["ghee", "superfoods"] }
-
-- User query: "Show me all available products"
-- Expected JSON output: { "categories": ["all"] }
-
-- User query: "What kind of ghee do you have?"
-- Expected JSON output: { "categories": ["ghee"] }
-
-- User query: "I am looking for some superfoods"
-- Expected JSON output: { "categories": ["superfoods"] }
 
 Respond with the JSON object for the query: "{{{query}}}"
 `,

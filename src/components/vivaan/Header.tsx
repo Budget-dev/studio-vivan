@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -59,9 +58,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuTrigger>
             <DropdownMenuContent className="rounded-2xl p-3 min-w-[200px] bg-white border-[#DDD0B5]">
               <DropdownMenuItem onClick={() => onFilter('ghee')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🧈 A2 Gir Cow Ghee</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('ghee')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🐃 Buffalo Ghee</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onFilter('pickles')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🌶️ Handmade Pickles</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onFilter('sweets')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🎁 Artisanal Sweets</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onFilter('honey')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🍯 Forest Honey</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFilter('oil')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🫙 Cold Press Oils</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('combo')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🎁 Combo Packs</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         <form onSubmit={handleSearch} className="hidden md:block flex-1 max-w-[420px] mx-auto relative">
           <Input 
             className="w-full h-11 bg-[#F9F6EF] border-[#DDD0B5] rounded-full pl-5 pr-12 text-sm text-[#100C06] placeholder:text-[#B0A080] focus-visible:bg-white focus-visible:border-primary/40 focus-visible:ring-0 transition-all"
-            placeholder="Search ghee, oils, combos..."
+            placeholder="Search ghee, pickles, sweets, honey..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />

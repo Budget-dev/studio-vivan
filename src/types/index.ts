@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export type Category = 'all' | 'ghee' | 'oil' | 'combo' | 'superfoods';
+export type Category = 'all' | 'ghee' | 'oil' | 'combo' | 'pickles' | 'sweets' | 'honey' | 'superfoods';
 
 export interface ProductVariant {
   s: string; // size

@@ -19,6 +19,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
   const getIcon = () => {
     if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110" />;
     if (product.cat === 'oil') return <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
+    if (product.cat === 'pickles') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🌶️</div>;
+    if (product.cat === 'sweets') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🎁</div>;
+    if (product.cat === 'honey') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🍯</div>;
     return <JarIcon c1={product.pi % 2 === 0 ? '#F8E878' : '#FBE898'} c2={product.pi % 2 === 0 ? '#D4A030' : '#D0A030'} sub="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
   };
 
