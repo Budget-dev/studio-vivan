@@ -102,7 +102,7 @@ export default function VivaanFarms() {
 
         <section className="py-12 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-            <div className="text-center mb-10 md:mb-16 space-y-3">
+            <div className="text-center mb-8 md:mb-16 space-y-3">
               <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">BROWSE COLLECTION</div>
               <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none">Traditional Farm Purity</h2>
               <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
@@ -110,8 +110,8 @@ export default function VivaanFarms() {
               </p>
             </div>
 
-            {/* Category Row */}
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
+            {/* Category Row - More Compact on Mobile */}
+            <div className="flex gap-1.5 md:gap-2 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
               {[
                 { key: 'all', lbl: 'All Goods', icon: '🌿' },
                 { key: 'ghee', lbl: 'A2 Ghee', icon: '🧈' },
@@ -122,9 +122,9 @@ export default function VivaanFarms() {
                 <button 
                   key={c.key}
                   onClick={() => handleCategoryFilter(c.key as Category)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full border-1.5 transition-all font-bold text-xs ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 md:px-5 md:py-2.5 rounded-full border-1.5 transition-all font-bold text-[10px] md:text-xs ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
                 >
-                  <span className="text-sm">{c.icon}</span>
+                  <span className="text-xs md:text-sm">{c.icon}</span>
                   {c.lbl}
                 </button>
               ))}
