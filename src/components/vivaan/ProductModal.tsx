@@ -119,7 +119,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
                   <button 
                     key={v.s}
                     onClick={() => setSelectedSize(v.s)}
-                    className={`flex-1 min-w-[80px] py-3 px-4 rounded-2xl border-2 transition-all text-center ${selectedSize === v.s ? 'border-primary bg-primary/5 ring-2 ring-primary/5' : 'border-border bg-background hover:border-muted-foreground/30'}`}
+                    className={`flex-1 min-w-[80px] py-3 px-4 rounded-full border-2 transition-all text-center ${selectedSize === v.s ? 'border-primary bg-primary/5 ring-2 ring-primary/5' : 'border-border bg-background hover:border-muted-foreground/30'}`}
                   >
                     <div className="text-sm font-black text-foreground">{v.s}</div>
                     <div className="text-[10px] text-muted-foreground font-bold mt-0.5">₹{v.p.toLocaleString('en-IN')}</div>
@@ -143,19 +143,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
           </div>
 
           <div className="flex gap-3 mb-8">
-            <div className="flex items-center bg-background border-2 border-border rounded-2xl h-14 overflow-hidden">
+            <div className="flex items-center bg-background border-2 border-border rounded-full h-14 overflow-hidden">
                <button onClick={() => setQty(q => Math.max(1, q-1))} className="w-12 h-full hover:bg-muted/50 flex items-center justify-center transition-all"><Minus className="w-5 h-5" /></button>
                <span className="w-10 text-center text-lg font-black">{qty}</span>
                <button onClick={() => setQty(q => Math.min(99, q+1))} className="w-12 h-full hover:bg-muted/50 flex items-center justify-center transition-all"><Plus className="w-5 h-5" /></button>
             </div>
             <Button 
               onClick={() => { onAddToCart({ ...product, price, vol: selectedSize }, qty); onClose(); }}
-              className="flex-1 h-14 bg-foreground hover:bg-primary text-white font-black uppercase tracking-widest rounded-2xl transition-all"
+              className="flex-1 h-14 bg-foreground hover:bg-primary text-white font-black uppercase tracking-widest rounded-full transition-all"
             >
               Add to Cart
             </Button>
             <Button 
-              className="flex-[1.4] h-14 bg-primary text-white font-black uppercase tracking-widest rounded-2xl shadow-xl hover:translate-y-[-2px] transition-all"
+              className="flex-[1.4] h-14 bg-primary text-white font-black uppercase tracking-widest rounded-full shadow-xl hover:translate-y-[-2px] transition-all"
             >
               Buy Now ✦
             </Button>

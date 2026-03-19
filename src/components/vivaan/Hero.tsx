@@ -46,10 +46,10 @@ export const Hero: React.FC = () => {
                         {index === 2 && <>Traditional Wisdom, <span className="italic text-white/90 underline decoration-primary underline-offset-8">Modern Purity</span></>}
                       </h1>
                       <div className="flex gap-4">
-                        <Button className="h-11 px-7 rounded-none bg-primary text-white font-black uppercase tracking-wider hover:bg-secondary transition-all group border-none shadow-xl">
+                        <Button className="h-11 px-7 rounded-full bg-primary text-white font-black uppercase tracking-wider hover:bg-secondary transition-all group border-none shadow-xl">
                           Shop Now <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>
-                        <Button variant="outline" className="h-11 px-7 rounded-none bg-transparent border-white/30 text-white font-bold hover:bg-white/10 transition-all">
+                        <Button variant="outline" className="h-11 px-7 rounded-full bg-transparent border-white/30 text-white font-bold hover:bg-white/10 transition-all">
                           Our Story
                         </Button>
                       </div>

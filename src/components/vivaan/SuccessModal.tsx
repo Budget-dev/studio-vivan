@@ -89,7 +89,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
 
           <Button 
             onClick={onClose}
-            className="w-full h-14 bg-white text-primary rounded-2xl text-base font-black uppercase tracking-widest hover:bg-background transition-all"
+            className="w-full h-14 bg-white text-primary rounded-full text-base font-black uppercase tracking-widest hover:bg-background transition-all"
           >
             ← Continue Shopping
           </Button>

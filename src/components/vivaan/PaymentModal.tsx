@@ -68,7 +68,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tot
 
           {method === 'upi' && (
             <div className="mb-6 animate-in slide-in-from-top-2 duration-200">
-              <Input className="h-13 rounded-2xl border-2 border-border focus-visible:border-primary px-4 text-base" placeholder="Enter UPI ID (e.g. name@upi)" />
+              <Input className="h-13 rounded-full border-2 border-border focus-visible:border-primary px-5 text-base" placeholder="Enter UPI ID (e.g. name@upi)" />
             </div>
           )}
 
@@ -90,7 +90,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tot
           <Button 
             onClick={handlePay}
             disabled={loading}
-            className="w-full h-14 bg-primary text-white rounded-2xl text-base font-black uppercase tracking-wider shadow-xl transition-all hover:translate-y-[-2px]"
+            className="w-full h-14 bg-primary text-white rounded-full text-base font-black uppercase tracking-wider shadow-xl transition-all hover:translate-y-[-2px]"
           >
             {loading ? '⏳ Verifying Payment...' : `🔒 Pay ₹${total.toLocaleString('en-IN')} Securely`}
           </Button>

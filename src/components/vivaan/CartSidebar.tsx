@@ -61,11 +61,11 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           <div className="flex gap-2 mb-6">
             <Input 
               placeholder="🎁 Coupon Code" 
-              className="bg-white border-[#DDD0B5] rounded-xl h-12 text-sm font-medium"
+              className="bg-white border-[#DDD0B5] rounded-full h-12 text-sm font-medium pl-5"
               value={coupon}
               onChange={(e) => setCoupon(e.target.value)}
             />
-            <Button onClick={applyCoupon} className="h-12 bg-[#0D3520] hover:bg-[#1B5E3B] rounded-xl px-6 font-bold text-white">Apply</Button>
+            <Button onClick={applyCoupon} className="h-12 bg-[#0D3520] hover:bg-[#1B5E3B] rounded-full px-6 font-bold text-white">Apply</Button>
           </div>
 
           {cart.length === 0 ? (
@@ -133,7 +133,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           <Button 
             disabled={cart.length === 0}
             onClick={onCheckout}
-            className="w-full h-14 bg-gradient-to-br from-[#1B5E3B] to-[#0D3520] rounded-xl text-sm font-black uppercase tracking-widest text-white shadow-xl flex items-center justify-center gap-2"
+            className="w-full h-14 bg-gradient-to-br from-[#1B5E3B] to-[#0D3520] rounded-full text-sm font-black uppercase tracking-widest text-white shadow-xl flex items-center justify-center gap-2"
           >
             Checkout Securely <ArrowRight className="w-4 h-4" />
           </Button>

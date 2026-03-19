@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
 
         <Button 
           onClick={(e) => { e.stopPropagation(); onAdd(product.id); }}
-          className={`w-full rounded-xl h-9 md:h-11 text-[9px] md:text-xs font-black tracking-wider uppercase transition-all ${isInCart ? 'bg-primary/10 text-primary' : 'bg-primary text-white hover:bg-secondary'}`}
+          className={`w-full rounded-full h-9 md:h-11 text-[9px] md:text-xs font-black tracking-wider uppercase transition-all ${isInCart ? 'bg-primary/10 text-primary' : 'bg-primary text-white hover:bg-secondary'}`}
         >
           {isInCart ? '✓ Added' : 'Add to Cart'}
         </Button>
