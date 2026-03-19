@@ -1,7 +1,9 @@
+
 "use client";
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Facebook, Instagram, Youtube, ShieldCheck, CheckCircle, CreditCard } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -12,7 +14,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 pb-16">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-32 h-32 relative flex items-center justify-center grayscale brightness-200 contrast-100 opacity-90">
+            <Link href="/" className="w-32 h-32 relative flex items-center justify-center grayscale brightness-200 contrast-100 opacity-90 transition-transform hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms Logo"
@@ -20,7 +22,7 @@ export const Footer: React.FC = () => {
                 height={128}
                 className="object-contain"
               />
-            </div>
+            </Link>
           </div>
           <p className="text-sm leading-loose mb-8 max-w-sm">
             Bringing the purest A2 Gir Cow Ghee from the heart of Gujarat to 50,000+ families across India. Ancient methods, modern trust.
@@ -37,33 +39,33 @@ export const Footer: React.FC = () => {
         <div>
           <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Shop</h4>
           <ul className="space-y-4 text-[13.5px] font-medium">
-            <li><button className="hover:text-white transition-colors">A2 Gir Cow Ghee</button></li>
-            <li><button className="hover:text-white transition-colors">Buffalo Ghee</button></li>
-            <li><button className="hover:text-white transition-colors">Cold Press Oils</button></li>
-            <li><button className="hover:text-white transition-colors">Combo Packs</button></li>
-            <li><button className="hover:text-white transition-colors">Superfoods</button></li>
+            <li><Link href="/" className="hover:text-white transition-colors">A2 Gir Cow Ghee</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Buffalo Ghee</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Cold Press Oils</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Combo Packs</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Superfoods</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Company</h4>
           <ul className="space-y-4 text-[13.5px] font-medium">
-            <li><button className="hover:text-white transition-colors">Our Story</button></li>
-            <li><button className="hover:text-white transition-colors">Our Farm</button></li>
-            <li><button className="hover:text-white transition-colors">Blog</button></li>
-            <li><button className="hover:text-white transition-colors">Farmer Partners</button></li>
-            <li><button className="hover:text-white transition-colors">Contact Us</button></li>
+            <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
+            <li><Link href="/about" className="hover:text-white transition-colors">Our Farm</Link></li>
+            <li><Link href="/blog" className="hover:text-white transition-colors">Journal</Link></li>
+            <li><button className="hover:text-white transition-colors text-left">Farmer Partners</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Contact Us</button></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Policies</h4>
           <ul className="space-y-4 text-[13.5px] font-medium">
-            <li><button className="hover:text-white transition-colors">Privacy Policy</button></li>
-            <li><button className="hover:text-white transition-colors">Refund Policy</button></li>
-            <li><button className="hover:text-white transition-colors">Shipping Policy</button></li>
-            <li><button className="hover:text-white transition-colors">Terms of Service</button></li>
-            <li><button className="hover:text-white transition-colors">Track Order</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Privacy Policy</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Refund Policy</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Shipping Policy</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Terms of Service</button></li>
+            <li><button className="hover:text-white transition-colors text-left">Track Order</button></li>
           </ul>
         </div>
       </div>

@@ -1,7 +1,9 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ShoppingCart, Heart, Search, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,8 +33,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   return (
     <header className="bg-white sticky top-0 z-[900] border-b border-[#DDD0B5]/30">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[90px] md:h-[120px] flex items-center justify-between gap-4 md:gap-8 relative">
-        {/* Logo Section - Increased Size & Minimal Focus */}
-        <a href="/" className="flex items-center shrink-0">
+        {/* Logo Section */}
+        <Link href="/" className="flex items-center shrink-0">
           <div className="w-24 h-24 md:w-36 md:h-36 relative flex items-center justify-center transition-transform duration-300 hover:scale-105 shrink-0">
             <Image 
               src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
@@ -43,11 +45,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               priority
             />
           </div>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1.5 ml-2.5">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Home</button>
+          <Link href="/" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Home</Link>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -63,7 +65,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Our Story</button>
+          <Link href="/about" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Our Story</Link>
+          <Link href="/blog" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Blog</Link>
         </nav>
 
         {/* Desktop Search */}
