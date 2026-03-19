@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { Hero } from '@/components/vivaan/Hero';
@@ -14,12 +15,12 @@ import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
-import { PRODUCTS, TESTIMONIALS, CERTS } from '@/lib/data';
+import { PRODUCTS } from '@/lib/data';
 import { Category, Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
-import { Star } from 'lucide-react';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
+import { LayoutGrid, Sparkles, Milk, Flame, Gift, Droplets } from 'lucide-react';
 
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
@@ -61,6 +62,8 @@ export default function VivaanFarms() {
   const handleCategoryFilter = (cat: Category) => {
     setAiCategories(null);
     setFilter(cat);
+    const el = document.getElementById('products');
+    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleTabChange = (tab: string) => {
@@ -74,6 +77,14 @@ export default function VivaanFarms() {
       setActiveTab('home');
     }
   };
+
+  const categoryItems = [
+    { key: 'all', lbl: 'All', icon: <LayoutGrid className="w-6 h-6 md:w-8 md:h-8" /> },
+    { key: 'ghee', lbl: 'A2 Ghee', icon: <Milk className="w-6 h-6 md:w-8 md:h-8" /> },
+    { key: 'pickles', lbl: 'Pickles', icon: <Flame className="w-6 h-6 md:w-8 md:h-8" /> },
+    { key: 'sweets', lbl: 'Sweets', icon: <Gift className="w-6 h-6 md:w-8 md:h-8" /> },
+    { key: 'honey', lbl: 'Honey', icon: <Droplets className="w-6 h-6 md:w-8 md:h-8" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0">
@@ -93,6 +104,37 @@ export default function VivaanFarms() {
 
         <Hero />
         
+        {/* Welcome Section with Icon Nav */}
+        <section className="py-12 md:py-20 bg-white">
+          <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
+            <h2 className="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-3">
+              Welcome To Vivaan Farms!
+            </h2>
+            <p className="font-headline text-xl md:text-2xl text-[#7A6848] italic mb-12 md:mb-16">
+              You're One Step Closer to Purity
+            </p>
+
+            <div className="flex justify-center overflow-x-auto scrollbar-hide pb-4">
+              <div className="flex gap-8 md:gap-16 items-start px-4">
+                {categoryItems.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => handleCategoryFilter(item.key as Category)}
+                    className="group flex flex-col items-center gap-3 transition-all min-w-[60px]"
+                  >
+                    <div className={`w-14 h-14 md:w-20 md:h-20 rounded-full flex items-center justify-center transition-all border-b-4 ${filter === item.key ? 'text-primary border-primary bg-primary/5 shadow-inner' : 'text-[#B0A080] border-transparent grayscale opacity-60 hover:grayscale-0 hover:opacity-100 hover:text-primary'}`}>
+                      {item.icon}
+                    </div>
+                    <span className={`text-[10px] md:text-sm font-black uppercase tracking-widest transition-colors ${filter === item.key ? 'text-primary' : 'text-[#7A6848]'}`}>
+                      {item.lbl}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="bg-gradient-to-r from-[#C03030] via-[#A82020] to-[#C03030] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
           <div className="w-1.5 h-1.5 rounded-full bg-white blink"></div>
           🔥 <strong>142 people</strong> bought farm-fresh goods in the last 24 hours
@@ -103,31 +145,13 @@ export default function VivaanFarms() {
         <section className="py-12 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
             <div className="text-center mb-8 md:mb-16 space-y-3">
-              <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">BROWSE COLLECTION</div>
-              <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none">Traditional Farm Purity</h2>
+              <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
+              <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none capitalize">
+                {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
+              </h2>
               <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
                 Handcrafted A2 Ghee, Sun-dried Pickles, and Forest Honey.
               </p>
-            </div>
-
-            {/* Category Row - Responsive: Compact on Mobile, Spacious on Desktop */}
-            <div className="flex gap-1.5 md:gap-4 overflow-x-auto scrollbar-hide pb-6 -mx-5 px-5 md:justify-center md:pb-12">
-              {[
-                { key: 'all', lbl: 'All Goods', icon: '🌿' },
-                { key: 'ghee', lbl: 'A2 Ghee', icon: '🧈' },
-                { key: 'pickles', lbl: 'Pickles', icon: '🌶️' },
-                { key: 'sweets', lbl: 'Sweets', icon: '🎁' },
-                { key: 'honey', lbl: 'Honey', icon: '🍯' },
-              ].map((c) => (
-                <button 
-                  key={c.key}
-                  onClick={() => handleCategoryFilter(c.key as Category)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 md:gap-2.5 px-3.5 py-2 md:px-7 md:py-3.5 rounded-full border-1.5 transition-all font-bold text-[10px] md:text-sm ${filter === c.key && !aiCategories ? 'bg-primary border-primary text-white shadow-lg' : 'bg-white border-[#DDD0B5] text-[#7A6848] hover:border-primary/30'}`}
-                >
-                  <span className="text-xs md:text-lg">{c.icon}</span>
-                  {c.lbl}
-                </button>
-              ))}
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-6">
