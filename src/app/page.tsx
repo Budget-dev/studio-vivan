@@ -107,7 +107,7 @@ export default function VivaanFarms() {
           </div>
         </section>
 
-        <div className="bg-gradient-to-r from-[#C03030] via-[#A82020] to-[#C03030] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
+        <div className="bg-gradient-to-r from-[#1B5E3B] via-[#0D3520] to-[#1B5E3B] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
           <div className="w-1.5 h-1.5 rounded-full bg-white blink"></div>
           🔥 <strong>142 people</strong> bought farm-fresh goods in the last 24 hours
         </div>
