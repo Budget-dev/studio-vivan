@@ -20,6 +20,7 @@ import { Category, Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
+import { cn } from '@/lib/utils';
 
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
@@ -77,6 +78,14 @@ export default function VivaanFarms() {
     }
   };
 
+  const CATEGORIES: { id: Category; label: string; ico: string }[] = [
+    { id: 'all', label: 'All Products', ico: '🧈' },
+    { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
+    { id: 'pickles', label: 'Pickles', ico: '🌶️' },
+    { id: 'sweets', label: 'Sweets', ico: '🎁' },
+    { id: 'honey', label: 'Honey', ico: '🍯' },
+  ];
+
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0">
       <Ticker />
@@ -89,7 +98,7 @@ export default function VivaanFarms() {
       
       <main>
         <div className="bg-gradient-to-r from-[#1B3A20] via-[#0D3520] to-[#1B3A20] py-2.5 flex items-center justify-center font-bold text-white text-[11px] tracking-wide relative overflow-hidden promo-shine">
-          <span className="bg-[#C49A2A]/25 border border-[#C49A2A]/50 text-[#F5D060] px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase mr-2">PURE15</span>
+          <span className="bg-white/10 border border-white/20 text-white px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase mr-2">PURE15</span>
           15% OFF + FREE Delivery above ₹999
         </div>
 
@@ -116,6 +125,27 @@ export default function VivaanFarms() {
 
         <section className="py-12 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
+            {/* Category Filter Chips */}
+            <div className="flex justify-center mb-12 overflow-x-auto no-scrollbar px-2">
+              <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => handleCategoryFilter(cat.id)}
+                    className={cn(
+                      "flex items-center gap-1.5 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
+                      filter === cat.id 
+                        ? "bg-primary text-white shadow-lg scale-105" 
+                        : "text-[#7A6848] hover:bg-primary/5"
+                    )}
+                  >
+                    <span className="text-sm md:text-base">{cat.ico}</span>
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="text-center mb-8 md:mb-16 space-y-3">
               <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
               <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none capitalize">
@@ -142,13 +172,13 @@ export default function VivaanFarms() {
           </div>
         </section>
 
-        <FeaturedBanner onCta={() => handleCategoryFilter('combo')} />
+        <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
 
         <section className="py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center space-y-4">
             <div className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">THE VIVAAN PROMISE</div>
-            <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none">Purity You Can Taste</h2>
-            <p className="text-[#7A6848] max-w-2xl mx-auto">From the Gir cows of Gujarat to sun-dried spices, we bring the true essence of Indian heritage to your table.</p>
+            <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none text-primary">Purity You Can Taste</h2>
+            <p className="text-[#7A6848] max-w-2xl mx-auto font-medium">From the Gir cows of Gujarat to sun-dried spices, we bring the true essence of Indian heritage to your table.</p>
           </div>
         </section>
       </main>
