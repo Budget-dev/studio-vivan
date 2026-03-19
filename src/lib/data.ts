@@ -110,24 +110,6 @@ export const PRODUCTS: Product[] = [
     description: 'Hand-stuffed red chillies with a blend of secret ancestral spices and mustard oil.'
   },
   {
-    id: 5,
-    name: 'Cold Pressed Coconut Oil',
-    vol: '1L Glass Bottle',
-    price: 699,
-    mrp: 850,
-    off: '18%',
-    rat: 4.6,
-    revs: '340',
-    coins: 34,
-    sold: '560',
-    cat: 'oil',
-    stock: 18,
-    badges: ['🆕 NEW', 'WOOD-PRESSED'],
-    pi: 4,
-    vars: [{s:'500ml',p:399},{s:'1L',p:699,on:true}],
-    description: 'Cold pressed from the finest coastal coconuts. Unrefined and nutrient-rich, ideal for both cooking and personal care.'
-  },
-  {
     id: 11,
     name: 'Besan Ladoo (Desi Ghee)',
     vol: '500g Box',

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -40,8 +39,8 @@ export const Footer: React.FC = () => {
           <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Shop</h4>
           <ul className="space-y-4 text-[13.5px] font-medium">
             <li><Link href="/" className="hover:text-white transition-colors">A2 Gir Cow Ghee</Link></li>
-            <li><Link href="/" className="hover:text-white transition-colors">Buffalo Ghee</Link></li>
-            <li><Link href="/" className="hover:text-white transition-colors">Cold Press Oils</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Handmade Pickles</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Artisanal Sweets</Link></li>
             <li><Link href="/" className="hover:text-white transition-colors">Combo Packs</Link></li>
             <li><Link href="/" className="hover:text-white transition-colors">Superfoods</Link></li>
           </ul>

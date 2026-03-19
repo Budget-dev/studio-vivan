@@ -61,7 +61,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               <DropdownMenuItem onClick={() => onFilter('pickles')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🌶️ Handmade Pickles</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFilter('sweets')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🎁 Artisanal Sweets</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFilter('honey')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🍯 Forest Honey</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('oil')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🫙 Cold Press Oils</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

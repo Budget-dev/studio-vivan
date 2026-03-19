@@ -118,7 +118,6 @@ export default function VivaanFarms() {
                 { key: 'pickles', lbl: 'Pickles', icon: '🌶️' },
                 { key: 'sweets', lbl: 'Sweets', icon: '🎁' },
                 { key: 'honey', lbl: 'Honey', icon: '🍯' },
-                { key: 'oil', lbl: 'Oils', icon: '🫙' },
               ].map((c) => (
                 <button 
                   key={c.key}

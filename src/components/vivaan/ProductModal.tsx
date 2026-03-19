@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Star, Flame, Truck, RefreshCw, FlaskConical, Home, Plus, Minus } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
-import { ComboIcon, JarIcon, OilIcon } from './JarIcon';
+import { ComboIcon, JarIcon } from './JarIcon';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
 
 interface ProductModalProps {
@@ -66,7 +66,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
              <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_25%,rgba(255,255,255,0.5),transparent_60%)] pointer-events-none z-1"></div>
              <div className="transition-transform duration-500 group-hover:scale-105 group-hover:rotate-[-2deg]">
               {product.cat === 'combo' ? <ComboIcon className="scale-125" /> : 
-               product.cat === 'oil' ? <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix="modal" className="scale-150" /> :
                <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix="modal" className="scale-150" />}
              </div>
           </div>

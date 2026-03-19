@@ -19,7 +19,7 @@ export type NaturalLanguageProductSearchInput = z.infer<typeof NaturalLanguagePr
 
 // Output schema for the natural language product search flow
 const NaturalLanguageProductSearchOutputSchema = z.object({
-  categories: z.array(z.enum(['all', 'ghee', 'oil', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'])).describe('A list of product categories that match the query.'),
+  categories: z.array(z.enum(['all', 'ghee', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'])).describe('A list of product categories that match the query.'),
 });
 export type NaturalLanguageProductSearchOutput = z.infer<typeof NaturalLanguageProductSearchOutputSchema>;
 
@@ -38,7 +38,7 @@ const naturalLanguageProductSearchPrompt = ai.definePrompt({
   prompt: `You are a helpful assistant for Vivaan Farms.
 The user is searching for products with the following query: "{{{query}}}".
 
-Your task is to identify the most relevant product categories from the following list: 'all', 'ghee', 'oil', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'.
+Your task is to identify the most relevant product categories from the following list: 'all', 'ghee', 'combo', 'pickles', 'sweets', 'honey', 'superfoods'.
 - If the query specifically mentions or strongly implies one or more categories, return those.
 - If the query mentions "achaar" or "pickles", return 'pickles'.
 - If the query mentions "mithai" or "sweets", return 'sweets'.
@@ -64,9 +64,6 @@ Examples:
 
 - User query: "ghee for daily cooking"
 - Expected JSON output: { "categories": ["ghee"] }
-
-- User query: "cold pressed oils for health"
-- Expected JSON output: { "categories": ["oil"] }
 
 Respond with the JSON object for the query: "{{{query}}}"
 `,

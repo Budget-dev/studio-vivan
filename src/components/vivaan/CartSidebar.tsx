@@ -5,7 +5,7 @@ import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Gift, ArrowRight } fr
 import { CartItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { JarIcon, ComboIcon, OilIcon } from './JarIcon';
+import { JarIcon, ComboIcon } from './JarIcon';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -37,7 +37,6 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
   const getIcon = (item: CartItem) => {
     if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
-    if (item.cat === 'oil') return <OilIcon c1="#D8F0D0" c2="#68A850" lbl="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
     if (item.cat === 'pickles') return <div className="text-3xl">🌶️</div>;
     if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
     if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
