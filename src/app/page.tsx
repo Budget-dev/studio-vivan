@@ -20,7 +20,6 @@ import { Category, Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
-import { LayoutGrid, Sparkles, Milk, Flame, Gift, Droplets } from 'lucide-react';
 
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
@@ -78,14 +77,6 @@ export default function VivaanFarms() {
     }
   };
 
-  const categoryItems = [
-    { key: 'all', lbl: 'All', icon: <LayoutGrid className="w-6 h-6 md:w-8 md:h-8" /> },
-    { key: 'ghee', lbl: 'A2 Ghee', icon: <Milk className="w-6 h-6 md:w-8 md:h-8" /> },
-    { key: 'pickles', lbl: 'Pickles', icon: <Flame className="w-6 h-6 md:w-8 md:h-8" /> },
-    { key: 'sweets', lbl: 'Sweets', icon: <Gift className="w-6 h-6 md:w-8 md:h-8" /> },
-    { key: 'honey', lbl: 'Honey', icon: <Droplets className="w-6 h-6 md:w-8 md:h-8" /> },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0">
       <Ticker />
@@ -104,34 +95,15 @@ export default function VivaanFarms() {
 
         <Hero />
         
-        {/* Welcome Section with Icon Nav */}
-        <section className="py-12 md:py-20 bg-white">
+        {/* Welcome Section */}
+        <section className="py-12 md:py-24 bg-white">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
-            <h2 className="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-3">
+            <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary mb-4">
               Welcome To Vivaan Farms!
             </h2>
-            <p className="font-headline text-xl md:text-2xl text-[#7A6848] italic mb-12 md:mb-16">
+            <p className="font-headline text-xl md:text-3xl text-[#7A6848] italic">
               You're One Step Closer to Purity
             </p>
-
-            <div className="flex justify-center overflow-x-auto scrollbar-hide pb-4">
-              <div className="flex gap-8 md:gap-16 items-start px-4">
-                {categoryItems.map((item) => (
-                  <button
-                    key={item.key}
-                    onClick={() => handleCategoryFilter(item.key as Category)}
-                    className="group flex flex-col items-center gap-3 transition-all min-w-[60px]"
-                  >
-                    <div className={`w-14 h-14 md:w-20 md:h-20 rounded-full flex items-center justify-center transition-all border-b-4 ${filter === item.key ? 'text-primary border-primary bg-primary/5 shadow-inner' : 'text-[#B0A080] border-transparent grayscale opacity-60 hover:grayscale-0 hover:opacity-100 hover:text-primary'}`}>
-                      {item.icon}
-                    </div>
-                    <span className={`text-[10px] md:text-sm font-black uppercase tracking-widest transition-colors ${filter === item.key ? 'text-primary' : 'text-[#7A6848]'}`}>
-                      {item.lbl}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
 
