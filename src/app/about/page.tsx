@@ -1,29 +1,44 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Footer } from '@/components/vivaan/Footer';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
+import { CartSidebar } from '@/components/vivaan/CartSidebar';
+import { PaymentModal } from '@/components/vivaan/PaymentModal';
+import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { useCart } from '@/hooks/use-cart';
 import { CheckCircle2, Award, Heart, ShieldCheck } from 'lucide-react';
 
 export default function AboutPage() {
-  const { totalQty } = useCart();
+  const router = useRouter();
+  const { cart, updateQty, removeFromCart, totalQty, subtotal, clearCart } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === 'home' || tab === 'shop') {
+      router.push('/');
+    } else if (tab === 'cart') {
+      setIsCartOpen(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
       <Ticker />
       <Header 
-        onOpenCart={() => {}} 
+        onOpenCart={() => setIsCartOpen(true)} 
         cartCount={totalQty}
-        onFilter={() => {}}
-        onSearch={() => {}}
+        onFilter={() => router.push('/')}
+        onSearch={() => router.push('/')}
       />
 
       <main>
-        {/* Hero Section */}
         <section className="relative h-[400px] md:h-[500px] flex items-center overflow-hidden">
           <Image 
             src="https://picsum.photos/seed/farmabout/1600/800" 
@@ -43,7 +58,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Story Section */}
         <section className="py-20 md:py-32">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
@@ -82,7 +96,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Values Section */}
         <section className="py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center mb-16 space-y-4">
             <span className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">The Vivaan Pillars</span>
@@ -119,7 +132,30 @@ export default function AboutPage() {
       </main>
 
       <Footer />
-      <BottomNav activeTab="account" onTabChange={() => {}} cartCount={totalQty} />
+      <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={totalQty} />
+
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeFromCart}
+        onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
+      />
+
+      <PaymentModal 
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        total={Math.max(0, subtotal - 200)}
+        itemCount={totalQty}
+        onSuccess={() => { setIsPaymentOpen(false); setIsSuccessOpen(true); }}
+      />
+
+      <SuccessModal 
+        isOpen={isSuccessOpen}
+        onClose={() => { setIsSuccessOpen(false); clearCart(); }}
+        total={Math.max(0, subtotal - 200)}
+      />
     </div>
   );
 }

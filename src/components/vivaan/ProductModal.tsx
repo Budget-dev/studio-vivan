@@ -12,9 +12,10 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart: (p: Product, qty: number) => void;
+  onBuyNow?: (p: Product, qty: number) => void;
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, onAddToCart }) => {
+export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, onAddToCart, onBuyNow }) => {
   const [qty, setQty] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [aiData, setAiData] = useState<RecipeIdeasOutput | null>(null);
@@ -26,7 +27,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
       const defaultVar = product.vars.find(v => v.on) || product.vars[0];
       setSelectedSize(defaultVar.s);
       
-      // Fetch AI tips
       const fetchAi = async () => {
         setLoadingAi(true);
         try {
@@ -51,6 +51,12 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
 
   const currentVar = product.vars.find(v => v.s === selectedSize) || product.vars[0];
   const price = currentVar.p;
+
+  const handleBuyNow = () => {
+    if (onBuyNow) {
+      onBuyNow({ ...product, price, vol: selectedSize }, qty);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-8" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -155,6 +161,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
               Add to Cart
             </Button>
             <Button 
+              onClick={handleBuyNow}
               className="flex-[1.4] h-14 bg-primary text-white font-black uppercase tracking-widest rounded-full shadow-xl hover:translate-y-[-2px] transition-all"
             >
               Buy Now ✦
