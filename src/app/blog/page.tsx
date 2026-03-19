@@ -1,12 +1,15 @@
-
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Footer } from '@/components/vivaan/Footer';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
+import { CartSidebar } from '@/components/vivaan/CartSidebar';
+import { PaymentModal } from '@/components/vivaan/PaymentModal';
+import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { useCart } from '@/hooks/use-cart';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 
@@ -68,16 +71,28 @@ const BLOG_POSTS = [
 ];
 
 export default function BlogPage() {
-  const { totalQty } = useCart();
+  const router = useRouter();
+  const { cart, updateQty, removeFromCart, totalQty, subtotal, clearCart } = useCart();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === 'home' || tab === 'shop') {
+      router.push('/');
+    } else if (tab === 'cart') {
+      setIsCartOpen(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
       <Ticker />
       <Header 
-        onOpenCart={() => {}} 
+        onOpenCart={() => setIsCartOpen(true)} 
         cartCount={totalQty}
-        onFilter={() => {}}
-        onSearch={() => {}}
+        onFilter={() => router.push('/')}
+        onSearch={() => router.push('/')}
       />
 
       <main className="py-12 md:py-20">
@@ -124,7 +139,30 @@ export default function BlogPage() {
       </main>
 
       <Footer />
-      <BottomNav activeTab="account" onTabChange={() => {}} cartCount={totalQty} />
+      <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={totalQty} />
+
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeFromCart}
+        onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
+      />
+
+      <PaymentModal 
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        total={Math.max(0, subtotal - 200)}
+        itemCount={totalQty}
+        onSuccess={() => { setIsPaymentOpen(false); setIsSuccessOpen(true); }}
+      />
+
+      <SuccessModal 
+        isOpen={isSuccessOpen}
+        onClose={() => { setIsSuccessOpen(false); clearCart(); }}
+        total={Math.max(0, subtotal - 200)}
+      />
     </div>
   );
 }

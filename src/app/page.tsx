@@ -77,6 +77,12 @@ export default function VivaanFarms() {
     }
   };
 
+  const handleBuyNow = (p: Product, q: number) => {
+    addToCart(p, q);
+    setSelectedProduct(null);
+    setIsPaymentOpen(true);
+  };
+
   const CATEGORIES: { id: Category; label: string; ico: string }[] = [
     { id: 'all', label: 'All Products', ico: '🧈' },
     { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
@@ -103,7 +109,6 @@ export default function VivaanFarms() {
 
         <Hero />
         
-        {/* Welcome Section */}
         <section className="py-12 md:py-24 bg-white">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
             <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary mb-4">
@@ -124,7 +129,6 @@ export default function VivaanFarms() {
 
         <section className="py-12 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-            {/* Category Filter Chips */}
             <div className="flex justify-center mb-12 overflow-x-auto no-scrollbar px-2">
               <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm">
                 {CATEGORIES.map((cat) => (
@@ -198,6 +202,7 @@ export default function VivaanFarms() {
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
         onAddToCart={addToCart}
+        onBuyNow={handleBuyNow}
       />
 
       <PaymentModal 
