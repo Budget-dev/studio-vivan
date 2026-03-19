@@ -8,7 +8,7 @@ import { Facebook, Instagram, Youtube, ShieldCheck, CheckCircle, CreditCard } fr
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-primary pt-20 relative overflow-hidden text-white/50">
-      <div className="absolute top-[-60px] right-[-60px] w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,176,64,0.07),transparent_68%)] pointer-events-none"></div>
+      <div className="absolute top-[-60px] right-[-60px] w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.05),transparent_68%)] pointer-events-none"></div>
       
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 pb-16">
         <div className="lg:col-span-2">

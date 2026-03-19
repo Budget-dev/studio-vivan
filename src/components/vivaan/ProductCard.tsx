@@ -21,7 +21,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
     if (product.cat === 'pickles') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🌶️</div>;
     if (product.cat === 'sweets') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🎁</div>;
     if (product.cat === 'honey') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🍯</div>;
-    return <JarIcon c1={product.pi % 2 === 0 ? '#F8E878' : '#FBE898'} c2={product.pi % 2 === 0 ? '#D4A030' : '#D0A030'} sub="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
+    return <JarIcon c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} sub="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
   };
 
   return (
@@ -30,7 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
       className="bg-[#FDFAF4] rounded-2xl md:rounded-3xl overflow-hidden border border-[#DDD0B5] cursor-pointer transition-all duration-300 hover:shadow-xl group relative"
     >
       <div className={`h-[150px] md:h-[220px] flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#F8F1E4] to-[#EDE2CC]`}>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(196,154,42,0.14),transparent_60%)] pointer-events-none z-1"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(27,94,59,0.1),transparent_60%)] pointer-events-none z-1"></div>
         
         <div className="absolute top-2 left-2 md:top-3 md:left-3 z-10 flex flex-col gap-1">
           {product.badges.map((b, i) => (
@@ -42,7 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
 
         <button 
           onClick={(e) => { e.stopPropagation(); onWish(product.id); }}
-          className={`absolute top-2 right-2 md:top-3 md:right-3 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-none shadow-lg transition-all active:scale-75 backdrop-blur-md ${isInWishlist ? 'bg-red-50 text-[#C03030]' : 'bg-white/90 text-[#C49A2A]'}`}
+          className={`absolute top-2 right-2 md:top-3 md:right-3 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-none shadow-lg transition-all active:scale-75 backdrop-blur-md ${isInWishlist ? 'bg-red-50 text-[#C03030]' : 'bg-white/90 text-primary'}`}
         >
           <Heart className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isInWishlist ? 'fill-current' : ''}`} />
         </button>

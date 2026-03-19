@@ -16,8 +16,8 @@
     --secondary-foreground: 45 33% 98%;
     --muted: 45 20% 90%;
     --muted-foreground: 36 10% 40%;
-    --accent: 49 97% 76%;
-    --accent-foreground: 36 27% 5%;
+    --accent: 146 65% 11%;
+    --accent-foreground: 45 33% 98%;
     --destructive: 0 63% 42%;
     --destructive-foreground: 0 0% 100%;
     --border: 45 20% 82%;
@@ -26,8 +26,8 @@
     --radius: 1rem;
 
     --chart-1: 146 65% 11%;
-    --chart-2: 49 97% 76%;
-    --chart-3: 147 56% 23%;
+    --chart-2: 147 56% 23%;
+    --chart-3: 146 45% 30%;
     --chart-4: 36 27% 5%;
     --chart-5: 0 63% 42%;
   }
@@ -39,8 +39,8 @@
     --card-foreground: 45 33% 96%;
     --popover: 36 27% 5%;
     --popover-foreground: 45 33% 96%;
-    --primary: 49 97% 76%;
-    --primary-foreground: 36 27% 5%;
+    --primary: 146 65% 11%;
+    --primary-foreground: 45 33% 98%;
     --secondary: 147 56% 23%;
     --secondary-foreground: 45 33% 96%;
     --muted: 36 20% 15%;
@@ -51,7 +51,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 36 20% 20%;
     --input: 36 20% 20%;
-    --ring: 49 97% 76%;
+    --ring: 146 65% 11%;
   }
 }
 
@@ -76,8 +76,8 @@
   to { transform: translateX(-50%); }
 }
 
-.gold-sh {
-  box-shadow: 0 8px 28px rgba(160, 120, 32, 0.35);
+.brand-sh {
+  box-shadow: 0 8px 28px rgba(27, 94, 59, 0.25);
 }
 
 .forest-sh {
@@ -98,16 +98,10 @@
   100% { background-position: 400%; }
 }
 
-.animate-shim-gold {
-  background: linear-gradient(90deg, #C08828, #E0A838, #F2C850, #FDE88A, #F2C850, #E0A838, #C08828);
+.animate-shim-green {
+  background: linear-gradient(90deg, #0D3520, #1B5E3B, #237348, #D4EDE0, #237348, #1B5E3B, #0D3520);
   background-size: 400%;
   animation: shimG 7s linear infinite;
-}
-
-.animate-shim-ruby {
-  background: linear-gradient(90deg, #B02828, #962020, #B02828);
-  background-size: 300%;
-  animation: shimG 5s linear infinite;
 }
 
 @keyframes slideUp {
@@ -128,6 +122,6 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(196, 154, 42, 0.12), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
   animation: promoShine 3s linear infinite;
 }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -35,7 +34,7 @@ export default function AboutPage() {
           />
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full relative z-10 text-white">
             <div className="max-w-2xl">
-              <span className="inline-block bg-[#C49A2A] text-white text-[10px] font-black tracking-[3px] uppercase px-4 py-1.5 rounded-full mb-6">Our Legacy</span>
+              <span className="inline-block bg-primary text-white text-[10px] font-black tracking-[3px] uppercase px-4 py-1.5 rounded-full mb-6">Our Legacy</span>
               <h1 className="font-headline text-5xl md:text-7xl font-extrabold leading-none mb-6">Traditional Wisdom,<br />Modern Purity.</h1>
               <p className="text-lg md:text-xl text-white/80 font-light leading-relaxed">
                 Born in the heart of Gujarat, Vivaan Farms is a tribute to the ancient Bilona method and the indigenous Gir cows that have nourished generations.
@@ -49,7 +48,7 @@ export default function AboutPage() {
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
-                <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-tight">The Bilona Method: A Lost Art Revived</h2>
+                <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-tight text-primary">The Bilona Method: A Lost Art Revived</h2>
                 <div className="w-20 h-1 bg-primary"></div>
               </div>
               <p className="text-[#7A6848] text-lg leading-relaxed font-medium">
@@ -60,10 +59,10 @@ export default function AboutPage() {
               </p>
               <div className="grid grid-cols-2 gap-6 pt-4">
                 {[
-                  { icon: <CheckCircle2 className="text-secondary" />, text: "No Middlemen" },
-                  { icon: <CheckCircle2 className="text-secondary" />, text: "100% Traceable" },
-                  { icon: <CheckCircle2 className="text-secondary" />, text: "NABL Certified" },
-                  { icon: <CheckCircle2 className="text-secondary" />, text: "Gujarat Farm Direct" },
+                  { icon: <CheckCircle2 className="text-primary" />, text: "No Middlemen" },
+                  { icon: <CheckCircle2 className="text-primary" />, text: "100% Traceable" },
+                  { icon: <CheckCircle2 className="text-primary" />, text: "NABL Certified" },
+                  { icon: <CheckCircle2 className="text-primary" />, text: "Gujarat Farm Direct" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     {item.icon}
@@ -87,7 +86,7 @@ export default function AboutPage() {
         <section className="py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center mb-16 space-y-4">
             <span className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">The Vivaan Pillars</span>
-            <h2 className="font-headline text-5xl md:text-6xl font-extrabold">Built on Truth</h2>
+            <h2 className="font-headline text-5xl md:text-6xl font-extrabold text-primary">Built on Truth</h2>
           </div>
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -111,7 +110,7 @@ export default function AboutPage() {
                 <div className="w-20 h-20 bg-[#EBF5EE] rounded-2xl flex items-center justify-center mx-auto">
                   {pillar.icon}
                 </div>
-                <h3 className="font-headline text-2xl font-black">{pillar.title}</h3>
+                <h3 className="font-headline text-2xl font-black text-primary">{pillar.title}</h3>
                 <p className="text-[#7A6848] text-sm leading-relaxed">{pillar.desc}</p>
               </div>
             ))}

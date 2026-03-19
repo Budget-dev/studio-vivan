@@ -14,7 +14,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
 
   useEffect(() => {
     if (isOpen) {
-      const colors = ['#D4A030', '#1A5C38', '#FFFFFF', '#E8B040', '#D0EDD8', '#F5CD60'];
+      const colors = ['#1B5E3B', '#0D3520', '#FFFFFF', '#237348', '#D0EDD8', '#EBF5EE'];
       const pieces = Array.from({ length: 40 }).map((_, i) => {
         const size = 5 + Math.random() * 10;
         const left = Math.random() * 100;
@@ -63,7 +63,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
           <div className="bg-white/10 border border-white/20 rounded-2xl p-4 flex items-center gap-4 mb-6 text-left">
             <div className="text-4xl">🪙</div>
             <div>
-              <div className="text-lg font-black text-[#FDE88A]">+545 Purity Coins Earned!</div>
+              <div className="text-lg font-black text-white">+545 Purity Coins Earned!</div>
               <div className="text-xs text-white/50 font-medium">Worth ₹54 · Valid 90 days</div>
             </div>
           </div>
@@ -75,7 +75,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
              </div>
              <div className="flex justify-between items-center text-xs">
                 <span className="text-white/40 font-semibold uppercase tracking-wider">Amount Paid</span>
-                <span className="text-[#FDE88A] font-black text-base">₹{total.toLocaleString('en-IN')}</span>
+                <span className="text-white font-black text-base">₹{total.toLocaleString('en-IN')}</span>
              </div>
              <div className="flex justify-between items-center text-xs">
                 <span className="text-white/40 font-semibold uppercase tracking-wider">Delivery</span>

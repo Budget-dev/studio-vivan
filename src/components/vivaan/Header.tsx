@@ -90,11 +90,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           <div className="relative group">
             <Button 
               onClick={onOpenCart}
-              className="bg-gradient-to-br from-[#F5D060] to-[#C49A2A] text-[#100C06] hover:translate-y-[-1px] transition-all rounded-full px-3.5 md:px-5 h-10 md:h-12 text-[10px] md:text-xs font-extrabold shadow-[0_3px_12px_rgba(196,154,42,0.4)] flex items-center gap-2 whitespace-nowrap"
+              className="bg-primary text-white hover:bg-secondary transition-all rounded-full px-3.5 md:px-5 h-10 md:h-12 text-[10px] md:text-xs font-extrabold shadow-xl flex items-center gap-2 whitespace-nowrap"
             >
               <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4" />
               <span className="hidden sm:inline">Cart</span>
-              <span className="bg-primary text-white rounded-full min-w-[16px] h-4 md:min-w-[20px] md:h-5 flex items-center justify-center text-[8px] md:text-[10px] font-black border-2 border-white">
+              <span className="bg-white text-primary rounded-full min-w-[16px] h-4 md:min-w-[20px] md:h-5 flex items-center justify-center text-[8px] md:text-[10px] font-black">
                 {cartCount}
               </span>
             </Button>

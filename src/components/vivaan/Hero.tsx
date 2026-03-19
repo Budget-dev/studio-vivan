@@ -37,16 +37,16 @@ export const Hero: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent flex items-center">
                   <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">
                     <div className="max-w-xl text-left">
-                      <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-[#FDE88A] px-3 py-1 rounded-full text-[9px] font-bold tracking-[2px] uppercase mb-4">
+                      <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-white px-3 py-1 rounded-full text-[9px] font-bold tracking-[2px] uppercase mb-4">
                         Ancient Bilona Method · Gujarat Farm Direct
                       </div>
                       <h1 className="font-headline text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                        {index === 0 && <>The Gold Standard of <span className="italic text-[#FDE88A]">A2 Ghee</span></>}
-                        {index === 1 && <>Directly From Our <span className="italic text-[#FDE88A]">Gujarat Farm</span></>}
-                        {index === 2 && <>Traditional Wisdom, <span className="italic text-[#FDE88A]">Modern Purity</span></>}
+                        {index === 0 && <>The Gold Standard of <span className="italic text-white/90 underline decoration-primary underline-offset-8">A2 Ghee</span></>}
+                        {index === 1 && <>Directly From Our <span className="italic text-white/90 underline decoration-primary underline-offset-8">Gujarat Farm</span></>}
+                        {index === 2 && <>Traditional Wisdom, <span className="italic text-white/90 underline decoration-primary underline-offset-8">Modern Purity</span></>}
                       </h1>
                       <div className="flex gap-4">
-                        <Button className="h-11 px-7 rounded-none bg-[#F2C850] text-primary font-black uppercase tracking-wider hover:bg-[#FDE88A] transition-all group border-none shadow-xl">
+                        <Button className="h-11 px-7 rounded-none bg-primary text-white font-black uppercase tracking-wider hover:bg-secondary transition-all group border-none shadow-xl">
                           Shop Now <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>
                         <Button variant="outline" className="h-11 px-7 rounded-none bg-transparent border-white/30 text-white font-bold hover:bg-white/10 transition-all">

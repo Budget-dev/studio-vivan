@@ -40,7 +40,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     if (item.cat === 'pickles') return <div className="text-3xl">🌶️</div>;
     if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
     if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
-    return <JarIcon c1="#F8E878" c2="#D4A030" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
+    return <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
   };
 
   return (
@@ -117,7 +117,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
             )}
             <div className="flex justify-between text-xs font-bold text-[#7A6848]">
               <span>Purity Coins (−200 🪙)</span>
-              <span className="text-[#C49A2A]">−₹200</span>
+              <span className="text-primary">−₹200</span>
             </div>
             <div className="flex justify-between text-xs font-bold text-secondary">
               <span>Delivery</span>

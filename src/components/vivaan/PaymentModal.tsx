@@ -31,7 +31,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tot
     <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/60 backdrop-blur-md p-5" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="bg-white rounded-[28px] max-w-[540px] w-full max-h-[calc(100vh-64px)] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="bg-gradient-to-br from-primary via-secondary to-[#2A7A50] p-8 relative overflow-hidden">
-          <div className="absolute top-[-30px] right-[-30px] w-[140px] h-[140px] rounded-full bg-[radial-gradient(circle,rgba(232,176,64,0.18),transparent_68%)] pointer-events-none"></div>
+          <div className="absolute top-[-30px] right-[-30px] w-[140px] h-[140px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1),transparent_68%)] pointer-events-none"></div>
           <div className="text-[10px] text-white/40 font-black uppercase tracking-[3px] mb-2">Amount to Pay</div>
           <div className="font-headline text-6xl font-extrabold text-white leading-none">₹{total.toLocaleString('en-IN')}</div>
           <div className="text-[13px] text-white/50 mt-3 font-medium">{itemCount} items from Vivaan Farms</div>
@@ -50,10 +50,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tot
               <div 
                 key={opt.id}
                 onClick={() => setMethod(opt.id as any)}
-                className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer ${method === opt.id ? 'border-secondary bg-secondary/5 ring-4 ring-secondary/10' : 'border-border bg-card hover:border-muted-foreground/30'}`}
+                className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer ${method === opt.id ? 'border-primary bg-primary/5 ring-4 ring-primary/10' : 'border-border bg-card hover:border-muted-foreground/30'}`}
               >
-                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${method === opt.id ? 'border-secondary' : 'border-border'}`}>
-                  {method === opt.id && <div className="w-3 h-3 rounded-full bg-secondary"></div>}
+                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${method === opt.id ? 'border-primary' : 'border-border'}`}>
+                  {method === opt.id && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                 </div>
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" style={{ backgroundColor: opt.bg }}>
                   {opt.icon}
@@ -68,29 +68,29 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, tot
 
           {method === 'upi' && (
             <div className="mb-6 animate-in slide-in-from-top-2 duration-200">
-              <Input className="h-13 rounded-2xl border-2 border-border focus-visible:border-secondary px-4 text-base" placeholder="Enter UPI ID (e.g. name@upi)" />
+              <Input className="h-13 rounded-2xl border-2 border-border focus-visible:border-primary px-4 text-base" placeholder="Enter UPI ID (e.g. name@upi)" />
             </div>
           )}
 
           <div className="grid grid-cols-3 gap-3 mb-8">
-            <div className="bg-[#FEF8E6] rounded-2xl p-3 border border-secondary/10 text-center">
-              <ShieldCheck className="w-5 h-5 mx-auto mb-1.5 text-[#C08828]" />
-              <div className="text-[9px] font-bold text-[#7A6A52] leading-tight">SSL Secured</div>
+            <div className="bg-[#EEF9F0] rounded-2xl p-3 border border-primary/10 text-center">
+              <ShieldCheck className="w-5 h-5 mx-auto mb-1.5 text-primary" />
+              <div className="text-[9px] font-bold text-primary leading-tight">SSL Secured</div>
             </div>
-            <div className="bg-[#FEF8E6] rounded-2xl p-3 border border-secondary/10 text-center">
-              <CheckCircle2 className="w-5 h-5 mx-auto mb-1.5 text-[#C08828]" />
-              <div className="text-[9px] font-bold text-[#7A6A52] leading-tight">RBI Approved</div>
+            <div className="bg-[#EEF9F0] rounded-2xl p-3 border border-primary/10 text-center">
+              <CheckCircle2 className="w-5 h-5 mx-auto mb-1.5 text-primary" />
+              <div className="text-[9px] font-bold text-primary leading-tight">RBI Approved</div>
             </div>
-            <div className="bg-[#FEF8E6] rounded-2xl p-3 border border-secondary/10 text-center">
-              <Banknote className="w-5 h-5 mx-auto mb-1.5 text-[#C08828]" />
-              <div className="text-[9px] font-bold text-[#7A6A52] leading-tight">Trusted Pay</div>
+            <div className="bg-[#EEF9F0] rounded-2xl p-3 border border-primary/10 text-center">
+              <Banknote className="w-5 h-5 mx-auto mb-1.5 text-primary" />
+              <div className="text-[9px] font-bold text-primary leading-tight">Trusted Pay</div>
             </div>
           </div>
 
           <Button 
             onClick={handlePay}
             disabled={loading}
-            className="w-full h-14 bg-gradient-to-r from-[#FDE88A] to-[#F2C850] text-primary rounded-2xl text-base font-black uppercase tracking-wider gold-sh transition-all hover:translate-y-[-2px] hover:shadow-xl"
+            className="w-full h-14 bg-primary text-white rounded-2xl text-base font-black uppercase tracking-wider shadow-xl transition-all hover:translate-y-[-2px]"
           >
             {loading ? '⏳ Verifying Payment...' : `🔒 Pay ₹${total.toLocaleString('en-IN')} Securely`}
           </Button>
