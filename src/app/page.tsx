@@ -7,6 +7,7 @@ import { Hero } from '@/components/vivaan/Hero';
 import { TrustBar } from '@/components/vivaan/TrustBar';
 import { ProductCard } from '@/components/vivaan/ProductCard';
 import { FeaturedBanner } from '@/components/vivaan/FeaturedBanner';
+import { VideoSection } from '@/components/vivaan/VideoSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { ProductModal } from '@/components/vivaan/ProductModal';
@@ -176,6 +177,8 @@ export default function VivaanFarms() {
         </section>
 
         <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
+
+        <VideoSection />
 
         <section className="py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center space-y-4">
