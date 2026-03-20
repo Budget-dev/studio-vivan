@@ -21,7 +21,7 @@ export const LiveNotification: React.FC = () => {
       }
     };
 
-    const interval = setInterval(triggerNotif, 25000); // Slightly slower for less "spammy" feel
+    const interval = setInterval(triggerNotif, 25000);
     const initial = setTimeout(triggerNotif, 8000);
 
     return () => {
@@ -31,7 +31,7 @@ export const LiveNotification: React.FC = () => {
   }, []);
 
   return (
-    <div className={`fixed bottom-[84px] md:bottom-24 left-4 md:left-6 z-[500] bg-white rounded-2xl border border-[#DDD0B5] p-3 flex items-center gap-3.5 shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.34,1.2,0.64,1)] ${show ? 'translate-x-0 opacity-100' : '-translate-x-[120%] opacity-0'}`}>
+    <div className={`fixed bottom-[84px] md:bottom-24 left-4 md:left-6 z-[500] bg-white rounded-2xl border border-[#DDD0B5] p-3 flex items-center gap-3.5 shadow-2xl transition-all duration-500 ease-out ${show ? 'translate-x-0 opacity-100' : '-translate-x-[120%] opacity-0'}`}>
       <div className="w-8 h-8 bg-[#FBF3DC] rounded-full flex items-center justify-center text-lg shrink-0">
         😊
       </div>
