@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Jost', 'sans-serif'],
-        headline: ['Cormorant Garamond', 'serif'],
+        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+        headline: ['"Cormorant Garamond"', 'serif'],
         code: ['monospace'],
       },
       colors: {

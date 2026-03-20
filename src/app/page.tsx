@@ -7,6 +7,9 @@ import { Hero } from '@/components/vivaan/Hero';
 import { TrustBar } from '@/components/vivaan/TrustBar';
 import { ProductCard } from '@/components/vivaan/ProductCard';
 import { FeaturedBanner } from '@/components/vivaan/FeaturedBanner';
+import { VideoSection } from '@/components/vivaan/VideoSection';
+import { WhyChoose } from '@/components/vivaan/WhyChoose';
+import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { ProductModal } from '@/components/vivaan/ProductModal';
@@ -102,34 +105,34 @@ export default function VivaanFarms() {
       />
       
       <main>
-        <div className="bg-gradient-to-r from-[#1B3A20] via-[#0D3520] to-[#1B3A20] py-2.5 flex items-center justify-center font-bold text-white text-[11px] tracking-wide relative overflow-hidden promo-shine">
+        <div className="bg-[#1B3A20] py-2.5 flex items-center justify-center font-bold text-white text-[11px] tracking-wide relative overflow-hidden">
           <span className="bg-white/10 border border-white/20 text-white px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase mr-2">PURE15</span>
           15% OFF + FREE Delivery above ₹999
         </div>
 
         <Hero />
         
-        <section className="py-12 md:py-24 bg-white">
+        <section className="py-8 md:py-24 bg-white">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
-            <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary mb-4">
+            <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-4">
               Welcome To Vivaan Farms!
             </h2>
-            <p className="font-headline text-xl md:text-3xl text-[#7A6848] italic">
+            <p className="font-headline text-lg md:text-3xl text-[#7A6848] italic">
               You're One Step Closer to Purity
             </p>
           </div>
         </section>
 
-        <div className="bg-gradient-to-r from-[#1B5E3B] via-[#0D3520] to-[#1B5E3B] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
-          <div className="w-1.5 h-1.5 rounded-full bg-white blink"></div>
+        <div className="bg-[#1B5E3B] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
+          <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
           🔥 <strong>142 people</strong> bought farm-fresh goods in the last 24 hours
         </div>
 
         <TrustBar />
 
-        <section className="py-12 md:py-20" id="products">
+        <section className="py-8 md:py-20" id="products">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-            <div className="flex justify-center mb-12 overflow-x-auto no-scrollbar px-2">
+            <div className="flex justify-center mb-8 md:mb-12 overflow-x-auto no-scrollbar px-2">
               <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm">
                 {CATEGORIES.map((cat) => (
                   <button
@@ -149,9 +152,9 @@ export default function VivaanFarms() {
               </div>
             </div>
 
-            <div className="text-center mb-8 md:mb-16 space-y-3">
+            <div className="text-center mb-6 md:mb-16 space-y-3">
               <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
-              <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none capitalize">
+              <h2 className="font-headline text-3xl md:text-6xl font-extrabold leading-none capitalize">
                 {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
               </h2>
               <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
@@ -159,7 +162,7 @@ export default function VivaanFarms() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
               {filteredProducts.map((p) => (
                 <ProductCard 
                   key={p.id} 
@@ -175,12 +178,18 @@ export default function VivaanFarms() {
           </div>
         </section>
 
+        <WhyChoose />
+
+        <NativeSection />
+
         <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
 
-        <section className="py-20 bg-[#F1EAD8]">
+        <VideoSection />
+
+        <section className="py-12 md:py-20 bg-[#F1EAD8]">
           <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center space-y-4">
             <div className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">THE VIVAAN PROMISE</div>
-            <h2 className="font-headline text-5xl md:text-6xl font-extrabold leading-none text-primary">Purity You Can Taste</h2>
+            <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none text-primary">Purity You Can Taste</h2>
             <p className="text-[#7A6848] max-w-2xl mx-auto font-medium">From the Gir cows of Gujarat to sun-dried spices, we bring the true essence of Indian heritage to your table.</p>
           </div>
         </section>

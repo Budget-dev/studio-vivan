@@ -46,7 +46,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
   return (
     <>
       {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]" onClick={onClose}></div>}
-      <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1001] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.18,1)] flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1001] shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="h-[64px] md:h-[76px] bg-[#0D3520] flex items-center justify-between px-6 shrink-0 relative overflow-hidden">
           <div className="relative z-10">
             <div className="font-headline text-2xl font-extrabold text-white">My Cart</div>
