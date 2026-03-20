@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   };
 
   return (
-    <header className="bg-white sticky top-0 z-[900] border-b border-[#DDD0B5]/30">
+    <header className="bg-white sticky top-0 z-[900] border-b border-primary/10">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 h-[90px] md:h-[120px] flex items-center justify-between gap-4 md:gap-8 relative">
         {/* Logo Section */}
         <Link href="/" className="flex items-center shrink-0">
@@ -48,15 +48,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1.5 ml-2.5">
-          <Link href="/" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Home</Link>
+          <Link href="/" className="px-4 py-2 rounded-full text-xs font-bold text-primary/70 hover:text-primary hover:bg-primary/5 transition-all">Home</Link>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all flex items-center gap-1">
+              <button className="px-4 py-2 rounded-full text-xs font-bold text-primary/70 hover:text-primary hover:bg-primary/5 transition-all flex items-center gap-1">
                 Shop <ChevronDown className="w-3 h-3" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="rounded-2xl p-3 min-w-[200px] bg-white border-[#DDD0B5]">
+            <DropdownMenuContent className="rounded-2xl p-3 min-w-[200px] bg-white border-primary/10">
               <DropdownMenuItem onClick={() => onFilter('ghee')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🧈 A2 Gir Cow Ghee</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFilter('pickles')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🌶️ Handmade Pickles</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onFilter('sweets')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🎁 Artisanal Sweets</DropdownMenuItem>
@@ -64,14 +64,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href="/about" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Our Story</Link>
-          <Link href="/blog" className="px-4 py-2 rounded-full text-xs font-bold text-[#7A6848] hover:text-primary hover:bg-primary/5 transition-all">Blog</Link>
+          <Link href="/about" className="px-4 py-2 rounded-full text-xs font-bold text-primary/70 hover:text-primary hover:bg-primary/5 transition-all">Our Story</Link>
+          <Link href="/blog" className="px-4 py-2 rounded-full text-xs font-bold text-primary/70 hover:text-primary hover:bg-primary/5 transition-all">Blog</Link>
         </nav>
 
         {/* Desktop Search */}
         <form onSubmit={handleSearch} className="hidden md:block flex-1 max-w-[420px] mx-auto relative">
           <Input 
-            className="w-full h-11 bg-[#F9F6EF] border-[#DDD0B5] rounded-full pl-5 pr-12 text-sm text-[#100C06] placeholder:text-[#B0A080] focus-visible:bg-white focus-visible:border-primary/40 focus-visible:ring-0 transition-all"
+            className="w-full h-11 bg-primary/[0.03] border-primary/10 rounded-full pl-5 pr-12 text-sm text-primary placeholder:text-primary/30 focus-visible:bg-white focus-visible:border-primary/40 focus-visible:ring-0 transition-all"
             placeholder="Search ghee, pickles, sweets, honey..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -82,9 +82,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </form>
 
         <div className="flex items-center gap-2 md:gap-2.5">
-          <button className="w-10 h-10 md:w-12 md:h-12 bg-[#F9F6EF] border border-[#DDD0B5]/50 rounded-full flex items-center justify-center hover:bg-primary/5 transition-all group relative">
-            <Search className="md:hidden w-4 h-4 text-[#100C06]" />
-            <Heart className="hidden md:block w-4 h-4 text-[#100C06] group-hover:fill-primary group-hover:text-primary transition-all" />
+          <button className="w-10 h-10 md:w-12 md:h-12 bg-primary/[0.03] border border-primary/10 rounded-full flex items-center justify-center hover:bg-primary/5 transition-all group relative">
+            <Search className="md:hidden w-4 h-4 text-primary" />
+            <Heart className="hidden md:block w-4 h-4 text-primary group-hover:fill-primary group-hover:text-primary transition-all" />
           </button>
           
           <div className="relative group">
