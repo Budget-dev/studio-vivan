@@ -61,9 +61,11 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    letter-spacing: -0.01em;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline;
+    letter-spacing: -0.02em;
   }
 }
 
@@ -124,4 +126,11 @@
   inset: 0;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
   animation: promoShine 3s linear infinite;
+}
+
+/* Custom transitions for ambiguous classes */
+.transition-custom {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.34, 1.2, 0.64, 1);
+  transition-duration: 400ms;
 }
