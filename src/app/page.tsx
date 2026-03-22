@@ -23,6 +23,8 @@ import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLayerGroup, faCow, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
 
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
@@ -86,12 +88,12 @@ export default function VivaanFarms() {
     setIsPaymentOpen(true);
   };
 
-  const CATEGORIES: { id: Category; label: string; ico: string }[] = [
-    { id: 'all', label: 'All Products', ico: '🧈' },
-    { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-    { id: 'pickles', label: 'Pickles', ico: '🌶️' },
-    { id: 'sweets', label: 'Sweets', ico: '🎁' },
-    { id: 'honey', label: 'Honey', ico: '🍯' },
+  const CATEGORIES: { id: Category; label: string; ico: any }[] = [
+    { id: 'all', label: 'All Products', ico: faLayerGroup },
+    { id: 'ghee', label: 'A2 Ghee', ico: faCow },
+    { id: 'pickles', label: 'Pickles', ico: faPepperHot },
+    { id: 'sweets', label: 'Sweets', ico: faCookieBite },
+    { id: 'honey', label: 'Honey', ico: faDroplet },
   ];
 
   return (
@@ -139,13 +141,13 @@ export default function VivaanFarms() {
                     key={cat.id}
                     onClick={() => handleCategoryFilter(cat.id)}
                     className={cn(
-                      "flex items-center gap-1.5 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
+                      "flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
                       filter === cat.id 
                         ? "bg-primary text-white shadow-lg scale-105" 
                         : "text-[#7A6848] hover:bg-primary/5"
                     )}
                   >
-                    <span className="text-sm md:text-base">{cat.ico}</span>
+                    <FontAwesomeIcon icon={cat.ico} className={cn("text-xs md:text-sm", filter === cat.id ? "text-white" : "text-primary")} />
                     {cat.label}
                   </button>
                 ))}

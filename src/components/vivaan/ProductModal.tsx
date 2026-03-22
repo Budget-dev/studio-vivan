@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, Star, Flame, Truck, RefreshCw, FlaskConical, Home, Plus, Minus } from 'lucide-react';
+import { X, Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { ComboIcon, JarIcon } from './JarIcon';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUtensils, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 
 interface ProductModalProps {
   product: Product | null;
@@ -61,8 +63,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-8" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="bg-white rounded-[32px] max-w-[980px] w-full max-h-[calc(100vh-64px)] overflow-hidden flex flex-col md:flex-row shadow-2xl animate-in zoom-in-95 duration-300 relative">
-        <button onClick={onClose} className="absolute top-5 right-5 z-[20] w-10 h-10 bg-black/5 rounded-full flex items-center justify-center hover:bg-black/10 transition-all">
-          <X className="w-5 h-5 text-foreground" />
+        <button onClose={onClose} className="absolute top-5 right-5 z-[20] w-10 h-10 bg-black/5 rounded-full flex items-center justify-center hover:bg-black/10 transition-all">
+          <X className="w-5 h-5 text-foreground" onClick={onClose} />
         </button>
 
         <div className="md:w-1/2 bg-gradient-to-br from-[#FAF4E6] to-[#EEE0BC] p-10 flex flex-col items-center justify-center relative min-h-[360px]">
@@ -183,7 +185,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
               <>
                 <section>
                   <h4 className="text-[11px] font-black text-foreground tracking-[2px] uppercase mb-4 flex items-center gap-2">
-                    <span className="text-lg">👩‍🍳</span> AI Recipe Ideas
+                    <FontAwesomeIcon icon={faUtensils} className="text-secondary" /> AI Recipe Ideas
                   </h4>
                   <div className="space-y-4">
                     {aiData.recipeIdeas.map((recipe, i) => (
@@ -196,7 +198,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
                 </section>
                 <section>
                    <h4 className="text-[11px] font-black text-foreground tracking-[2px] uppercase mb-4 flex items-center gap-2">
-                    <span className="text-lg">💡</span> Pro Usage Tips
+                    <FontAwesomeIcon icon={faLightbulb} className="text-secondary" /> Pro Usage Tips
                   </h4>
                   <ul className="space-y-2">
                     {aiData.usageTips.map((tip, i) => (

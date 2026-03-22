@@ -1,10 +1,12 @@
 "use client";
 
 import React from 'react';
-import { Star, Heart, ShoppingBag } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
 import { Button } from '@/components/ui/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
 
 interface ProductCardProps {
   product: Product;
@@ -18,9 +20,9 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist, isInCart, onOpen, onAdd, onWish }) => {
   const getIcon = () => {
     if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110" />;
-    if (product.cat === 'pickles') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🌶️</div>;
-    if (product.cat === 'sweets') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🎁</div>;
-    if (product.cat === 'honey') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🍯</div>;
+    if (product.cat === 'pickles') return <FontAwesomeIcon icon={faPepperHot} className="text-5xl md:text-7xl text-primary/80 group-hover:scale-110 transition-transform" />;
+    if (product.cat === 'sweets') return <FontAwesomeIcon icon={faCookieBite} className="text-5xl md:text-7xl text-primary/80 group-hover:scale-110 transition-transform" />;
+    if (product.cat === 'honey') return <FontAwesomeIcon icon={faDroplet} className="text-5xl md:text-7xl text-primary/80 group-hover:scale-110 transition-transform" />;
     return <JarIcon c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} sub="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
   };
 

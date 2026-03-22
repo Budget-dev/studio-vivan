@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle, faCoins } from '@fortawesome/free-solid-svg-icons';
 
 interface SuccessModalProps {
   isOpen: boolean;
@@ -52,8 +54,8 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
         </div>
         
         <div className="relative z-10">
-          <div className="w-28 h-28 bg-white/10 border-2 border-white/25 rounded-full flex items-center justify-center mx-auto mb-8 text-6xl animate-pulse">
-            ✅
+          <div className="w-28 h-28 bg-white/10 border-2 border-white/25 rounded-full flex items-center justify-center mx-auto mb-8 text-white text-6xl">
+            <FontAwesomeIcon icon={faCheckCircle} />
           </div>
           <h2 className="font-headline text-5xl font-extrabold text-white mb-4">Order Placed! 🌿</h2>
           <p className="text-white/65 text-sm leading-relaxed mb-8 max-w-[340px] mx-auto">
@@ -61,7 +63,9 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, tot
           </p>
           
           <div className="bg-white/10 border border-white/20 rounded-2xl p-4 flex items-center gap-4 mb-6 text-left">
-            <div className="text-4xl">🪙</div>
+            <div className="text-4xl text-white/80">
+              <FontAwesomeIcon icon={faCoins} />
+            </div>
             <div>
               <div className="text-lg font-black text-white">+545 Purity Coins Earned!</div>
               <div className="text-xs text-white/50 font-medium">Worth ₹54 · Valid 90 days</div>

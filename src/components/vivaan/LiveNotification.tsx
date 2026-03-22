@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { generateLivePurchaseNotification } from '@/ai/flows/dynamic-live-purchase-notifications';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 
 export const LiveNotification: React.FC = () => {
   const [show, setShow] = useState(false);
@@ -32,8 +34,8 @@ export const LiveNotification: React.FC = () => {
 
   return (
     <div className={`fixed bottom-[84px] md:bottom-24 left-4 md:left-6 z-[500] bg-white rounded-2xl border border-[#DDD0B5] p-3 flex items-center gap-3.5 shadow-2xl transition-all duration-500 ease-out ${show ? 'translate-x-0 opacity-100' : '-translate-x-[120%] opacity-0'}`}>
-      <div className="w-8 h-8 bg-[#FBF3DC] rounded-full flex items-center justify-center text-lg shrink-0">
-        😊
+      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+        <FontAwesomeIcon icon={faCircleCheck} className="text-primary text-sm" />
       </div>
       <div className="text-[11px] text-foreground font-semibold leading-tight max-w-[200px]">
         {message}

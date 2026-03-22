@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Gift, ArrowRight } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
 import { CartItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { JarIcon, ComboIcon } from './JarIcon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPepperHot, faCookieBite, faDroplet, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -37,9 +39,9 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
   const getIcon = (item: CartItem) => {
     if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
-    if (item.cat === 'pickles') return <div className="text-3xl">🌶️</div>;
-    if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
-    if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
+    if (item.cat === 'pickles') return <FontAwesomeIcon icon={faPepperHot} className="text-2xl text-primary" />;
+    if (item.cat === 'sweets') return <FontAwesomeIcon icon={faCookieBite} className="text-2xl text-primary" />;
+    if (item.cat === 'honey') return <FontAwesomeIcon icon={faDroplet} className="text-2xl text-primary" />;
     return <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
   };
 
@@ -60,7 +62,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="flex gap-2 mb-6">
             <Input 
-              placeholder="🎁 Coupon Code" 
+              placeholder="Coupon Code" 
               className="bg-white border-[#DDD0B5] rounded-full h-12 text-sm font-medium pl-5"
               value={coupon}
               onChange={(e) => setCoupon(e.target.value)}
@@ -70,7 +72,9 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
           {cart.length === 0 ? (
             <div className="text-center py-20 flex flex-col items-center">
-              <div className="w-20 h-20 bg-[#FBF3DC] rounded-full flex items-center justify-center text-3xl mb-4">🛒</div>
+              <div className="w-20 h-20 bg-[#FBF3DC] rounded-full flex items-center justify-center text-primary/30 mb-4">
+                <FontAwesomeIcon icon={faCartShopping} className="text-3xl" />
+              </div>
               <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Cart is Empty</h3>
               <p className="text-sm text-[#7A6848] max-w-[240px] leading-relaxed">Add some pure farm goods from Vivaan Farms to get started!</p>
               <Button onClick={onClose} className="mt-8 bg-primary text-white px-8 rounded-full">Explore Products →</Button>
