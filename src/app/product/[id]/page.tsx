@@ -127,183 +127,196 @@ export default function ProductDetailPage() {
         onSearch={() => router.push('/')}
       />
 
-      <main className="max-w-[1400px] mx-auto px-5 md:px-10 py-10 md:py-20">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-          <div className="lg:w-[45%]">
-            <div className="bg-white rounded-[40px] aspect-square flex items-center justify-center p-12 border border-[#DDD0B5] shadow-sm relative overflow-hidden group">
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(27,94,59,0.05),transparent_60%)]"></div>
-               <div className="relative z-10 transition-transform duration-700 group-hover:scale-105">
-                 {getProductIcon()}
-               </div>
-               <button 
-                onClick={() => toggleWishlist(product.id)}
-                className={cn(
-                  "absolute top-8 right-8 w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg backdrop-blur-md",
-                  isInWishlist(product.id) ? "bg-red-50 text-red-500" : "bg-white/80 text-primary hover:bg-white"
-                )}
-               >
-                 <Heart className={cn("w-6 h-6", isInWishlist(product.id) && "fill-current")} />
-               </button>
+      <main className="py-10 md:py-20">
+        {/* Top Section: Product Hero */}
+        <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-20">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+            <div className="lg:w-[45%]">
+              <div className="bg-white rounded-[40px] aspect-square flex items-center justify-center p-12 border border-[#DDD0B5] shadow-sm relative overflow-hidden group">
+                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(27,94,59,0.05),transparent_60%)]"></div>
+                 <div className="relative z-10 transition-transform duration-700 group-hover:scale-105">
+                   {getProductIcon()}
+                 </div>
+                 <button 
+                  onClick={() => toggleWishlist(product.id)}
+                  className={cn(
+                    "absolute top-8 right-8 w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg backdrop-blur-md",
+                    isInWishlist(product.id) ? "bg-red-50 text-red-500" : "bg-white/80 text-primary hover:bg-white"
+                  )}
+                 >
+                   <Heart className={cn("w-6 h-6", isInWishlist(product.id) && "fill-current")} />
+                 </button>
+              </div>
             </div>
-          </div>
 
-          <div className="lg:w-[55%] space-y-10">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="bg-primary text-white text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full">
-                  {product.cat}
-                </span>
-                <div className="flex items-center bg-yellow-400/10 px-2 py-0.5 rounded text-yellow-600">
-                  <Star className="w-3.5 h-3.5 fill-current mr-1" />
-                  <span className="text-xs font-black">{product.rat}</span>
+            <div className="lg:w-[55%] space-y-10">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="bg-primary text-white text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full">
+                    {product.cat}
+                  </span>
+                  <div className="flex items-center bg-yellow-400/10 px-2 py-0.5 rounded text-yellow-600">
+                    <Star className="w-3.5 h-3.5 fill-current mr-1" />
+                    <span className="text-xs font-black">{product.rat}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground font-medium">({product.revs} reviews)</span>
                 </div>
-                <span className="text-xs text-muted-foreground font-medium">({product.revs} reviews)</span>
+                <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-foreground leading-tight mb-4">
+                  {product.name}
+                </h1>
+                <p className="text-lg text-[#7A6848] leading-relaxed font-medium">
+                  {product.description}
+                </p>
               </div>
-              <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-foreground leading-tight mb-4">
-                {product.name}
-              </h1>
-              <p className="text-lg text-[#7A6848] leading-relaxed font-medium">
-                {product.description}
-              </p>
-            </div>
 
-            <div className="flex items-end gap-6">
-              <div className="font-headline text-6xl font-extrabold text-foreground">
-                ₹{price.toLocaleString('en-IN')}
+              <div className="flex items-end gap-6">
+                <div className="font-headline text-6xl font-extrabold text-foreground">
+                  ₹{price.toLocaleString('en-IN')}
+                </div>
+                {product.mrp && product.mrp > price && (
+                  <div className="text-2xl text-[#B0A080] line-through mb-2">₹{product.mrp.toLocaleString('en-IN')}</div>
+                )}
               </div>
-              {product.mrp && product.mrp > price && (
-                <div className="text-2xl text-[#B0A080] line-through mb-2">₹{product.mrp.toLocaleString('en-IN')}</div>
-              )}
-            </div>
 
-            <div className="space-y-4">
-              <h4 className="text-[11px] font-black text-foreground tracking-[2px] uppercase">Select Pack Size</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {product.vars.map((v) => (
-                  <button 
-                    key={v.s}
-                    onClick={() => setSelectedSize(v.s)}
-                    className={cn(
-                      "flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all",
-                      selectedSize === v.s 
-                        ? "border-primary bg-primary/[0.03] ring-4 ring-primary/5" 
-                        : "border-[#DDD0B5] bg-white hover:border-primary/40"
-                    )}
-                  >
-                    <div className={cn(
-                      "text-[10px] font-black uppercase tracking-widest mb-1",
-                      selectedSize === v.s ? "text-primary" : "text-[#7A6848]"
-                    )}>{v.s}</div>
-                    <div className="text-base font-black text-foreground">₹{v.p.toLocaleString('en-IN')}</div>
-                  </button>
+              <div className="space-y-4">
+                <h4 className="text-[11px] font-black text-foreground tracking-[2px] uppercase">Select Pack Size</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {product.vars.map((v) => (
+                    <button 
+                      key={v.s}
+                      onClick={() => setSelectedSize(v.s)}
+                      className={cn(
+                        "flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all",
+                        selectedSize === v.s 
+                          ? "border-primary bg-primary/[0.03] ring-4 ring-primary/5" 
+                          : "border-[#DDD0B5] bg-white hover:border-primary/40"
+                      )}
+                    >
+                      <div className={cn(
+                        "text-[10px] font-black uppercase tracking-widest mb-1",
+                        selectedSize === v.s ? "text-primary" : "text-[#7A6848]"
+                      )}>{v.s}</div>
+                      <div className="text-base font-black text-foreground">₹{v.p.toLocaleString('en-IN')}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center bg-white border-2 border-[#DDD0B5] rounded-full h-16 overflow-hidden px-2">
+                   <button onClick={() => setQty(q => Math.max(1, q-1))} className="w-12 h-12 rounded-full hover:bg-primary/5 flex items-center justify-center transition-all"><Minus className="w-5 h-5" /></button>
+                   <span className="w-12 text-center text-xl font-black">{qty}</span>
+                   <button onClick={() => setQty(q => Math.min(99, q+1))} className="w-12 h-12 rounded-full hover:bg-primary/5 flex items-center justify-center transition-all"><Plus className="w-5 h-5" /></button>
+                </div>
+                <Button 
+                  onClick={handleAddToCart}
+                  className="flex-1 h-16 bg-white border-2 border-primary text-primary hover:bg-primary/5 font-black uppercase tracking-widest rounded-full transition-all text-sm"
+                >
+                  Add to Cart
+                </Button>
+                <Button 
+                  onClick={handleBuyNow}
+                  className="flex-[1.5] h-16 bg-primary text-white font-black uppercase tracking-widest rounded-full shadow-2xl hover:translate-y-[-2px] transition-all text-sm"
+                >
+                  Buy Now ✦
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-[#DDD0B5]">
+                {[
+                  { i: <Truck className="w-5 h-5" />, l: 'Free Delivery' },
+                  { i: <RefreshCw className="w-5 h-5" />, l: '30-Day Return' },
+                  { i: <FlaskConical className="w-5 h-5" />, l: 'Lab Tested' },
+                  { i: <Home className="w-5 h-5" />, l: 'Farm Direct' },
+                ].map((item, i) => (
+                  <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-[#DDD0B5]/50">
+                    <div className="text-primary">{item.i}</div>
+                    <div className="text-[10px] font-black text-primary uppercase tracking-widest text-center">{item.l}</div>
+                  </div>
                 ))}
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex items-center bg-white border-2 border-[#DDD0B5] rounded-full h-16 overflow-hidden px-2">
-                 <button onClick={() => setQty(q => Math.max(1, q-1))} className="w-12 h-12 rounded-full hover:bg-primary/5 flex items-center justify-center transition-all"><Minus className="w-5 h-5" /></button>
-                 <span className="w-12 text-center text-xl font-black">{qty}</span>
-                 <button onClick={() => setQty(q => Math.min(99, q+1))} className="w-12 h-12 rounded-full hover:bg-primary/5 flex items-center justify-center transition-all"><Plus className="w-5 h-5" /></button>
+        {/* Cinematic Section: Immersive Scroll Content */}
+        <div className="mb-24">
+          <ScrollExpandMedia
+            mediaType="video"
+            mediaSrc={videoUrl}
+            bgImageSrc="https://picsum.photos/seed/vivaanbg/1920/1080"
+            title="Purity Unleashed"
+            scrollToExpand="Scroll to See Purity"
+            textBlend={false}
+          >
+            <div className="text-center py-20 bg-white">
+              <h3 className="font-headline text-5xl md:text-7xl font-black text-primary">Farm to Kitchen Journey</h3>
+              <p className="text-[#7A6848] max-w-xl mx-auto mt-6 text-lg font-medium px-5">Witness the sacred process of crafting our A2 Gir Ghee, from the grazing fields of Gujarat to your home.</p>
+            </div>
+          </ScrollExpandMedia>
+        </div>
+
+        {/* Visual Grid Section */}
+        <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-24">
+          <section className="space-y-12">
+            <div className="text-center space-y-3">
+              <h4 className="text-[11px] font-black text-primary tracking-[4px] uppercase flex items-center justify-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+                Experience the Purity
+              </h4>
+              <h2 className="font-headline text-5xl md:text-6xl font-black">Visual Purity Grid</h2>
+            </div>
+            <DynamicVideoGrid frames={videoFrames} showFrames={false} />
+          </section>
+        </div>
+
+        {/* AI Insights Section */}
+        <div className="max-w-[1000px] mx-auto px-5 md:px-10">
+          {loadingAi ? (
+            <div className="space-y-10 animate-pulse">
+              <div className="h-8 bg-[#DDD0B5]/40 rounded w-1/3 mx-auto"></div>
+              <div className="space-y-4">
+                <div className="h-32 bg-[#DDD0B5]/20 rounded-3xl"></div>
+                <div className="h-32 bg-[#DDD0B5]/20 rounded-3xl"></div>
               </div>
-              <Button 
-                onClick={handleAddToCart}
-                className="flex-1 h-16 bg-white border-2 border-primary text-primary hover:bg-primary/5 font-black uppercase tracking-widest rounded-full transition-all text-sm"
-              >
-                Add to Cart
-              </Button>
-              <Button 
-                onClick={handleBuyNow}
-                className="flex-[1.5] h-16 bg-primary text-white font-black uppercase tracking-widest rounded-full shadow-2xl hover:translate-y-[-2px] transition-all text-sm"
-              >
-                Buy Now ✦
-              </Button>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-[#DDD0B5]">
-              {[
-                { i: <Truck className="w-5 h-5" />, l: 'Free Delivery' },
-                { i: <RefreshCw className="w-5 h-5" />, l: '30-Day Return' },
-                { i: <FlaskConical className="w-5 h-5" />, l: 'Lab Tested' },
-                { i: <Home className="w-5 h-5" />, l: 'Farm Direct' },
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-[#DDD0B5]/50">
-                  <div className="text-primary">{item.i}</div>
-                  <div className="text-[10px] font-black text-primary uppercase tracking-widest text-center">{item.l}</div>
+          ) : aiData && (
+            <div className="space-y-20">
+              <section className="space-y-10">
+                <div className="flex items-center gap-4 justify-center">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faUtensils} className="text-primary text-xl" />
+                  </div>
+                  <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tight">AI Recipe Ideas</h2>
                 </div>
-              ))}
-            </div>
-
-            <div className="space-y-16 pt-10">
-              <ScrollExpandMedia
-                mediaType="video"
-                mediaSrc={videoUrl}
-                bgImageSrc="https://picsum.photos/seed/vivaanbg/1920/1080"
-                title="Purity Unleashed"
-                scrollToExpand="Scroll to See Purity"
-                textBlend={false}
-              >
-                <div className="text-center py-10">
-                  <h3 className="font-headline text-4xl md:text-6xl font-black text-primary">Farm to Kitchen Journey</h3>
-                  <p className="text-[#7A6848] max-w-xl mx-auto mt-4 font-medium">Witness the sacred process of crafting our A2 Gir Ghee, from the grazing fields of Gujarat to your home.</p>
+                <div className="grid gap-6">
+                  {aiData.recipeIdeas.map((recipe, i) => (
+                    <div key={i} className="bg-white p-8 rounded-[32px] border border-[#DDD0B5] shadow-sm hover:shadow-md transition-all">
+                      <div className="text-sm font-black text-primary mb-3 uppercase tracking-[2px]">{recipe.title}</div>
+                      <div className="text-base text-[#7A6848] leading-relaxed font-medium">{recipe.description}</div>
+                    </div>
+                  ))}
                 </div>
-              </ScrollExpandMedia>
-
-              <section className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h4 className="text-[11px] font-black text-primary tracking-[4px] uppercase flex items-center justify-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
-                    Experience the Purity
-                  </h4>
-                  <h2 className="font-headline text-4xl md:text-5xl font-black">Visual Purity Grid</h2>
-                </div>
-                <DynamicVideoGrid frames={videoFrames} showFrames={false} />
               </section>
 
-              {loadingAi ? (
-                <div className="space-y-6 pt-4 animate-pulse">
-                  <div className="h-4 bg-[#DDD0B5]/40 rounded w-3/4"></div>
-                  <div className="h-32 bg-[#DDD0B5]/20 rounded-3xl"></div>
+              <section className="space-y-10">
+                <div className="flex items-center gap-4 justify-center">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faLightbulb} className="text-primary text-xl" />
+                  </div>
+                  <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tight">Usage Tips</h2>
                 </div>
-              ) : aiData && (
-                <>
-                  <section className="space-y-6">
-                    <h4 className="text-[11px] font-black text-foreground tracking-[3px] uppercase flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FontAwesomeIcon icon={faUtensils} className="text-primary text-xs" />
-                      </div>
-                      AI Recipe Ideas
-                    </h4>
-                    <div className="grid gap-4">
-                      {aiData.recipeIdeas.map((recipe, i) => (
-                        <div key={i} className="bg-white p-6 rounded-[28px] border border-[#DDD0B5] shadow-sm hover:shadow-md transition-all">
-                          <div className="text-xs font-black text-primary mb-2 uppercase tracking-widest">{recipe.title}</div>
-                          <div className="text-[13px] text-[#7A6848] leading-relaxed font-medium">{recipe.description}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section className="space-y-6">
-                    <h4 className="text-[11px] font-black text-foreground tracking-[3px] uppercase flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <FontAwesomeIcon icon={faLightbulb} className="text-primary text-xs" />
-                      </div>
-                      Usage Tips
-                    </h4>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {aiData.usageTips.map((tip, i) => (
-                        <li key={i} className="flex gap-4 p-4 rounded-2xl bg-primary/5 text-[12px] text-primary font-bold border border-primary/10">
-                          <span className="text-primary/40 mt-0.5">•</span>
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                </>
-              )}
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {aiData.usageTips.map((tip, i) => (
+                    <li key={i} className="flex gap-4 p-6 rounded-[24px] bg-primary/5 text-sm text-primary font-bold border border-primary/10">
+                      <span className="text-primary/30 mt-0.5">•</span>
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </section>
             </div>
-          </div>
+          )}
         </div>
       </main>
 
@@ -335,3 +348,4 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+

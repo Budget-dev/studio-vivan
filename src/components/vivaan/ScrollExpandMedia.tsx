@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
   ReactNode,
-  TouchEvent,
 } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -49,14 +48,10 @@ const ScrollExpandMedia = ({
 
   useEffect(() => {
     const handleWheel = (e: any) => {
-      // Only capture if we are interacting with this specific section
       const rect = sectionRef.current?.getBoundingClientRect();
       if (!rect || rect.top > 100 || rect.bottom < 0) return;
 
-      if (mediaFullyExpanded && e.deltaY < 0 && window.scrollY <= rect.top + window.scrollY) {
-        // setMediaFullyExpanded(false);
-        // e.preventDefault();
-      } else if (!mediaFullyExpanded) {
+      if (!mediaFullyExpanded) {
         e.preventDefault();
         const scrollDelta = e.deltaY * 0.0009;
         const newProgress = Math.min(
@@ -86,10 +81,7 @@ const ScrollExpandMedia = ({
       const touchY = e.touches[0].clientY;
       const deltaY = touchStartY - touchY;
 
-      if (mediaFullyExpanded && deltaY < -20 && window.scrollY <= rect.top + window.scrollY) {
-        // setMediaFullyExpanded(false);
-        // e.preventDefault();
-      } else if (!mediaFullyExpanded) {
+      if (!mediaFullyExpanded) {
         e.preventDefault();
         const scrollFactor = deltaY < 0 ? 0.008 : 0.005;
         const scrollDelta = deltaY * scrollFactor;
