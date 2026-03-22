@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -13,7 +12,6 @@ import { WhyChoose } from '@/components/vivaan/WhyChoose';
 import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
-import { ProductModal } from '@/components/vivaan/ProductModal';
 import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { BottomNav } from '@/components/vivaan/BottomNav';
@@ -31,7 +29,6 @@ export default function VivaanFarms() {
   const [aiCategories, setAiCategories] = useState<Category[] | null>(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
@@ -80,12 +77,6 @@ export default function VivaanFarms() {
       el?.scrollIntoView({ behavior: 'smooth' });
       setActiveTab('home');
     }
-  };
-
-  const handleBuyNow = (p: Product, q: number) => {
-    addToCart(p, q);
-    setSelectedProduct(null);
-    setIsPaymentOpen(true);
   };
 
   const CATEGORIES: { id: Category; label: string; ico: any }[] = [
@@ -155,7 +146,7 @@ export default function VivaanFarms() {
             </div>
 
             <div className="text-center mb-6 md:mb-16 space-y-3">
-              <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
+              <div className="text-[9px] font-black text-[#7A6848] tracking-widest uppercase">TRADITIONAL COLLECTION</div>
               <h2 className="font-headline text-3xl md:text-6xl font-extrabold leading-none capitalize">
                 {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
               </h2>
@@ -171,7 +162,7 @@ export default function VivaanFarms() {
                   product={p} 
                   isInWishlist={isInWishlist(p.id)}
                   isInCart={cart.some(c => c.id === p.id)}
-                  onOpen={() => setSelectedProduct(p)}
+                  onOpen={() => {}}
                   onAdd={() => addToCart(p)}
                   onWish={() => toggleWishlist(p.id)}
                 />
@@ -206,14 +197,6 @@ export default function VivaanFarms() {
         onUpdateQty={updateQty}
         onRemove={removeFromCart}
         onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
-      />
-
-      <ProductModal 
-        isOpen={!!selectedProduct}
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAddToCart={addToCart}
-        onBuyNow={handleBuyNow}
       />
 
       <PaymentModal 

@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
@@ -18,6 +19,8 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist, isInCart, onOpen, onAdd, onWish }) => {
+  const router = useRouter();
+
   const getIcon = () => {
     if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110" />;
     if (product.cat === 'pickles') return <FontAwesomeIcon icon={faPepperHot} className="text-5xl md:text-7xl text-primary/80 group-hover:scale-110 transition-transform" />;
@@ -26,9 +29,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
     return <JarIcon c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} sub="" idSuffix={product.id.toString()} className="scale-75 md:scale-100" />;
   };
 
+  const handleCardClick = () => {
+    router.push(`/product/${product.id}`);
+  };
+
   return (
     <div 
-      onClick={() => onOpen(product.id)}
+      onClick={handleCardClick}
       className="bg-[#FDFAF4] rounded-2xl md:rounded-3xl overflow-hidden border border-[#DDD0B5] cursor-pointer transition-all duration-300 hover:shadow-xl group relative"
     >
       <div className={`h-[150px] md:h-[220px] flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#F8F1E4] to-[#EDE2CC]`}>
