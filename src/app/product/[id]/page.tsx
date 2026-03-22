@@ -12,13 +12,13 @@ import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { ComboIcon, JarIcon } from '@/components/vivaan/JarIcon';
 import { Button } from '@/components/ui/button';
 import { PRODUCTS } from '@/lib/data';
-import { Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
-import { Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus, Share2, Heart } from 'lucide-react';
+import { DynamicVideoGrid, type Frame } from '@/components/vivaan/DynamicVideoGrid';
+import { Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus, Heart } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUtensils, faLightbulb, faCertificate, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
+import { faUtensils, faLightbulb, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 
 export default function ProductDetailPage() {
@@ -26,7 +26,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const product = PRODUCTS.find(p => p.id === Number(id));
 
-  const { cart, addToCart, updateQty, removeFromCart, subtotal, totalQty, clearCart } = useCart();
+  const { cart, addToCart, updateQty, removeFromCart, totalQty, clearCart, subtotal } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [qty, setQty] = useState(1);
@@ -102,6 +102,20 @@ export default function ProductDetailPage() {
     return <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix="detail" className="w-full h-full drop-shadow-2xl" />;
   };
 
+  const videoUrl = "https://cdn.shopify.com/videos/c/vp/8a895a0c0d5b48edad21523773790e4d/8a895a0c0d5b48edad21523773790e4d.HD-720p-1.6Mbps-51250342.mp4";
+  
+  const videoFrames: Frame[] = Array.from({ length: 9 }).map((_, i) => ({
+    id: i,
+    video: videoUrl,
+    defaultPos: { x: (i % 3) * 4, y: Math.floor(i / 3) * 4, w: 4, h: 4 },
+    corner: "",
+    edgeHorizontal: "",
+    edgeVertical: "",
+    mediaSize: 1.1,
+    borderThickness: 0,
+    borderSize: 100
+  }));
+
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
       <Ticker />
@@ -114,7 +128,6 @@ export default function ProductDetailPage() {
 
       <main className="max-w-[1400px] mx-auto px-5 md:px-10 py-10 md:py-20">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-          {/* Left: Product Image */}
           <div className="lg:w-[45%]">
             <div className="bg-white rounded-[40px] aspect-square flex items-center justify-center p-12 border border-[#DDD0B5] shadow-sm relative overflow-hidden group">
                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(27,94,59,0.05),transparent_60%)]"></div>
@@ -133,7 +146,6 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          {/* Right: Product Details */}
           <div className="lg:w-[55%] space-y-10">
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -163,7 +175,6 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Variant Selector */}
             <div className="space-y-4">
               <h4 className="text-[11px] font-black text-foreground tracking-[2px] uppercase">Select Pack Size</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -188,7 +199,6 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex items-center bg-white border-2 border-[#DDD0B5] rounded-full h-16 overflow-hidden px-2">
                  <button onClick={() => setQty(q => Math.max(1, q-1))} className="w-12 h-12 rounded-full hover:bg-primary/5 flex items-center justify-center transition-all"><Minus className="w-5 h-5" /></button>
@@ -209,7 +219,6 @@ export default function ProductDetailPage() {
               </Button>
             </div>
 
-            {/* Trust Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-[#DDD0B5]">
               {[
                 { i: <Truck className="w-5 h-5" />, l: 'Free Delivery' },
@@ -224,8 +233,15 @@ export default function ProductDetailPage() {
               ))}
             </div>
 
-            {/* AI Insights */}
-            <div className="space-y-10 pt-10">
+            <div className="space-y-16 pt-10">
+              <section className="space-y-8">
+                <div className="text-center space-y-2">
+                  <h4 className="text-[11px] font-black text-primary tracking-[4px] uppercase">Experience the Purity</h4>
+                  <h2 className="font-headline text-4xl md:text-5xl font-black">Farm to Kitchen Journey</h2>
+                </div>
+                <DynamicVideoGrid frames={videoFrames} showFrames={false} />
+              </section>
+
               {loadingAi ? (
                 <div className="space-y-6 pt-4 animate-pulse">
                   <div className="h-4 bg-[#DDD0B5]/40 rounded w-3/4"></div>
