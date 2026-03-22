@@ -16,6 +16,7 @@ import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
 import { DynamicVideoGrid, type Frame } from '@/components/vivaan/DynamicVideoGrid';
+import ScrollExpandMedia from '@/components/vivaan/ScrollExpandMedia';
 import { Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus, Heart } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils, faLightbulb, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
@@ -234,10 +235,27 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="space-y-16 pt-10">
+              <ScrollExpandMedia
+                mediaType="video"
+                mediaSrc={videoUrl}
+                bgImageSrc="https://picsum.photos/seed/vivaanbg/1920/1080"
+                title="Purity Unleashed"
+                scrollToExpand="Scroll to See Purity"
+                textBlend={false}
+              >
+                <div className="text-center py-10">
+                  <h3 className="font-headline text-4xl md:text-6xl font-black text-primary">Farm to Kitchen Journey</h3>
+                  <p className="text-[#7A6848] max-w-xl mx-auto mt-4 font-medium">Witness the sacred process of crafting our A2 Gir Ghee, from the grazing fields of Gujarat to your home.</p>
+                </div>
+              </ScrollExpandMedia>
+
               <section className="space-y-8">
                 <div className="text-center space-y-2">
-                  <h4 className="text-[11px] font-black text-primary tracking-[4px] uppercase">Experience the Purity</h4>
-                  <h2 className="font-headline text-4xl md:text-5xl font-black">Farm to Kitchen Journey</h2>
+                  <h4 className="text-[11px] font-black text-primary tracking-[4px] uppercase flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-ping"></div>
+                    Experience the Purity
+                  </h4>
+                  <h2 className="font-headline text-4xl md:text-5xl font-black">Visual Purity Grid</h2>
                 </div>
                 <DynamicVideoGrid frames={videoFrames} showFrames={false} />
               </section>
