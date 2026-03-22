@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -15,7 +16,6 @@ import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { ProductModal } from '@/components/vivaan/ProductModal';
 import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
-import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { PRODUCTS } from '@/lib/data';
 import { Category, Product } from '@/types';
@@ -229,8 +229,6 @@ export default function VivaanFarms() {
         onClose={() => { setIsSuccessOpen(false); clearCart(); }}
         total={Math.max(0, subtotal - 200)}
       />
-
-      <LiveNotification />
 
       <BottomNav 
         activeTab={activeTab}
