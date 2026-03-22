@@ -74,12 +74,12 @@ export const Footer: React.FC = () => {
           {/* Brand section */}
           <div className="flex flex-col space-y-6">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 relative flex items-center justify-center grayscale brightness-200">
+              <div className="w-16 h-16 relative flex items-center justify-center bg-white rounded-2xl p-2 shadow-xl border border-white/20">
                 <Image 
                   src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                   alt="Vivaan Farms Logo"
-                  width={64}
-                  height={64}
+                  width={48}
+                  height={48}
                   className="object-contain"
                 />
               </div>

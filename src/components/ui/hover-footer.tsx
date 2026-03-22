@@ -99,11 +99,12 @@ export const TextHoverEffect = ({
         strokeWidth="0.3"
         className="font-headline font-black fill-transparent stroke-white/40 text-[60px] uppercase tracking-tighter"
         initial={{ strokeDasharray: 1000, strokeDashoffset: 1000 }}
-        animate={{ strokeDashoffset: 0 }}
+        whileInView={{ strokeDashoffset: 0 }}
         transition={{
           duration: duration ?? 4,
           ease: "easeInOut",
         }}
+        viewport={{ once: true }}
       >
         {text}
       </motion.text>
