@@ -81,23 +81,15 @@ export const TextHoverEffect = ({
           />
         </mask>
       </defs>
-      <text
-        x="50%"
-        y="50%"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        strokeWidth="0.3"
-        className="font-headline font-black fill-transparent stroke-white/10 text-[60px] uppercase tracking-tighter"
-      >
-        {text}
-      </text>
+      
+      {/* Background writing effect */}
       <motion.text
         x="50%"
         y="50%"
         textAnchor="middle"
         dominantBaseline="middle"
-        strokeWidth="0.3"
-        className="font-headline font-black fill-transparent stroke-white/40 text-[60px] uppercase tracking-tighter"
+        strokeWidth="0.5"
+        className="font-headline font-black fill-transparent stroke-white/10 text-[60px] uppercase tracking-tighter"
         initial={{ strokeDasharray: 1000, strokeDashoffset: 1000 }}
         whileInView={{ strokeDashoffset: 0 }}
         transition={{
@@ -108,6 +100,20 @@ export const TextHoverEffect = ({
       >
         {text}
       </motion.text>
+
+      {/* Main text stroke */}
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        strokeWidth="0.3"
+        className="font-headline font-black fill-transparent stroke-white/20 text-[60px] uppercase tracking-tighter"
+      >
+        {text}
+      </text>
+
+      {/* Hover Reveal Mask */}
       <text
         x="50%"
         y="50%"

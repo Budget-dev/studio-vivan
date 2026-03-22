@@ -72,20 +72,20 @@ export const Footer: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-6 md:px-14 py-16 md:py-24 z-10 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 pb-12">
           {/* Brand section */}
-          <div className="flex flex-col space-y-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 relative flex items-center justify-center bg-white rounded-2xl p-2 shadow-xl border border-white/20">
+          <div className="flex flex-col space-y-8">
+            <div className="flex items-center space-x-6">
+              <div className="w-20 h-20 relative flex items-center justify-center bg-white rounded-[24px] p-3 shadow-2xl border-4 border-white/10">
                 <Image 
                   src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                   alt="Vivaan Farms Logo"
-                  width={48}
-                  height={48}
-                  className="object-contain"
+                  width={64}
+                  height={64}
+                  className="object-contain brightness-0 invert"
                 />
               </div>
-              <span className="text-white text-3xl font-headline font-black tracking-tight">Vivaan</span>
+              <span className="text-white text-5xl md:text-6xl font-headline font-black tracking-tighter">Vivaan</span>
             </div>
-            <p className="text-sm text-white/60 leading-relaxed font-medium">
+            <p className="text-base text-white/60 leading-relaxed font-medium max-w-xs">
               Bringing the pure essence of Gujarat to your home. Traditional Bilona method A2 Ghee, handcrafted for health and heritage.
             </p>
             <div className="flex space-x-4">
@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:text-primary hover:border-secondary transition-all"
+                  className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-secondary hover:text-primary hover:border-secondary transition-all"
                 >
                   {icon}
                 </a>
@@ -169,7 +169,7 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      {/* Text hover effect */}
+      {/* Text hover effect with automatic writing animation */}
       <div className="hidden lg:flex h-[28rem] -mt-44 -mb-32 relative z-20 pointer-events-none">
         <TextHoverEffect text="Vivaan" />
       </div>

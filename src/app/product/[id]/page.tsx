@@ -17,6 +17,7 @@ import { useWishlist } from '@/hooks/use-wishlist';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
 import { DynamicVideoGrid, type Frame } from '@/components/vivaan/DynamicVideoGrid';
 import ScrollExpandMedia from '@/components/vivaan/ScrollExpandMedia';
+import HoneyLoader from '@/components/vivaan/HoneyLoader';
 import { Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus, Heart } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils, faLightbulb, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
@@ -34,6 +35,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [aiData, setAiData] = useState<RecipeIdeasOutput | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
+  const [isHoneyLoading, setIsHoneyLoading] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
@@ -43,6 +45,12 @@ export default function ProductDetailPage() {
       const defaultVar = product.vars.find(v => v.on) || product.vars[0];
       setSelectedSize(defaultVar.s);
       
+      // Honey specialized loader animation
+      if (product.cat === 'honey') {
+        setIsHoneyLoading(true);
+        setTimeout(() => setIsHoneyLoading(false), 1500);
+      }
+
       const fetchAi = async () => {
         setLoadingAi(true);
         try {
@@ -70,6 +78,15 @@ export default function ProductDetailPage() {
           <h2 className="text-2xl font-black">Product Not Found</h2>
           <Button onClick={() => router.push('/')} className="rounded-full">Go Back Home</Button>
         </div>
+      </div>
+    );
+  }
+
+  if (isHoneyLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9F6EF]">
+        <HoneyLoader />
+        <h2 className="font-headline text-3xl font-black text-primary mt-12 animate-pulse">Sourcing Liquid Gold...</h2>
       </div>
     );
   }
@@ -128,7 +145,6 @@ export default function ProductDetailPage() {
       />
 
       <main className="py-10 md:py-20">
-        {/* Top Section: Product Hero */}
         <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-20">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
             <div className="lg:w-[45%]">
@@ -239,7 +255,6 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Cinematic Section: Immersive Scroll Content */}
         <div className="mb-24">
           <ScrollExpandMedia
             mediaType="video"
@@ -256,7 +271,6 @@ export default function ProductDetailPage() {
           </ScrollExpandMedia>
         </div>
 
-        {/* Visual Grid Section */}
         <div className="max-w-[1400px] mx-auto px-5 md:px-10 mb-24">
           <section className="space-y-12">
             <div className="text-center space-y-3">
@@ -270,7 +284,6 @@ export default function ProductDetailPage() {
           </section>
         </div>
 
-        {/* AI Insights Section */}
         <div className="max-w-[1000px] mx-auto px-5 md:px-10">
           {loadingAi ? (
             <div className="space-y-10 animate-pulse">
@@ -348,4 +361,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-
