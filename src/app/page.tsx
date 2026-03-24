@@ -12,10 +12,8 @@ import { WhyChoose } from '@/components/vivaan/WhyChoose';
 import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
-import { ProductModal } from '@/components/vivaan/ProductModal';
 import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
-import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { PRODUCTS } from '@/lib/data';
 import { Category, Product } from '@/types';
@@ -23,13 +21,14 @@ import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLayerGroup, faCow, faPepperHot, faCookieBite, faDroplet } from '@fortawesome/free-solid-svg-icons';
 
 export default function VivaanFarms() {
   const [filter, setFilter] = useState<Category>('all');
   const [aiCategories, setAiCategories] = useState<Category[] | null>(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
@@ -80,18 +79,12 @@ export default function VivaanFarms() {
     }
   };
 
-  const handleBuyNow = (p: Product, q: number) => {
-    addToCart(p, q);
-    setSelectedProduct(null);
-    setIsPaymentOpen(true);
-  };
-
-  const CATEGORIES: { id: Category; label: string; ico: string }[] = [
-    { id: 'all', label: 'All Products', ico: '🧈' },
-    { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-    { id: 'pickles', label: 'Pickles', ico: '🌶️' },
-    { id: 'sweets', label: 'Sweets', ico: '🎁' },
-    { id: 'honey', label: 'Honey', ico: '🍯' },
+  const CATEGORIES: { id: Category; label: string; ico: any }[] = [
+    { id: 'all', label: 'All Products', ico: faLayerGroup },
+    { id: 'ghee', label: 'A2 Ghee', ico: faCow },
+    { id: 'pickles', label: 'Pickles', ico: faPepperHot },
+    { id: 'sweets', label: 'Sweets', ico: faCookieBite },
+    { id: 'honey', label: 'Honey', ico: faDroplet },
   ];
 
   return (
@@ -139,13 +132,13 @@ export default function VivaanFarms() {
                     key={cat.id}
                     onClick={() => handleCategoryFilter(cat.id)}
                     className={cn(
-                      "flex items-center gap-1.5 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
+                      "flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
                       filter === cat.id 
                         ? "bg-primary text-white shadow-lg scale-105" 
                         : "text-[#7A6848] hover:bg-primary/5"
                     )}
                   >
-                    <span className="text-sm md:text-base">{cat.ico}</span>
+                    <FontAwesomeIcon icon={cat.ico} className={cn("text-xs md:text-sm", filter === cat.id ? "text-white" : "text-primary")} />
                     {cat.label}
                   </button>
                 ))}
@@ -153,7 +146,7 @@ export default function VivaanFarms() {
             </div>
 
             <div className="text-center mb-6 md:mb-16 space-y-3">
-              <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
+              <div className="text-[9px] font-black text-[#7A6848] tracking-widest uppercase">TRADITIONAL COLLECTION</div>
               <h2 className="font-headline text-3xl md:text-6xl font-extrabold leading-none capitalize">
                 {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
               </h2>
@@ -169,7 +162,7 @@ export default function VivaanFarms() {
                   product={p} 
                   isInWishlist={isInWishlist(p.id)}
                   isInCart={cart.some(c => c.id === p.id)}
-                  onOpen={() => setSelectedProduct(p)}
+                  onOpen={() => {}}
                   onAdd={() => addToCart(p)}
                   onWish={() => toggleWishlist(p.id)}
                 />
@@ -206,14 +199,6 @@ export default function VivaanFarms() {
         onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
       />
 
-      <ProductModal 
-        isOpen={!!selectedProduct}
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAddToCart={addToCart}
-        onBuyNow={handleBuyNow}
-      />
-
       <PaymentModal 
         isOpen={isPaymentOpen}
         onClose={() => setIsPaymentOpen(false)}
@@ -227,8 +212,6 @@ export default function VivaanFarms() {
         onClose={() => { setIsSuccessOpen(false); clearCart(); }}
         total={Math.max(0, subtotal - 200)}
       />
-
-      <LiveNotification />
 
       <BottomNav 
         activeTab={activeTab}

@@ -1,16 +1,19 @@
+"use client";
+
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeaf, faCow, faTruck, faFlask, faStar, faCoins, faPepperHot, faCookieBite, faCertificate } from '@fortawesome/free-solid-svg-icons';
 
 const tickerItems = [
-  { ico: '🌿', txt: 'CODE PURE15 → 15% OFF' },
-  { ico: '🐄', txt: 'A2 Gir Bilona Ghee' },
-  { ico: '🚚', txt: 'Free Delivery ₹999+' },
-  { ico: '🧈', txt: 'Farm-Direct · Gujarat' },
-  { ico: '🔬', txt: '70+ NABL Lab Tests' },
-  { ico: '🪙', txt: 'Earn Purity Coins' },
-  { ico: '🌶️', txt: 'Handmade Pickles' },
-  { ico: '🎁', txt: 'Combo Packs · Save 19%' },
-  { ico: '🌾', txt: 'Bilona Method · Ancient' },
-  { ico: '⭐', txt: '4.9★ · 12,000+ Reviews' },
+  { ico: faLeaf, txt: 'CODE PURE15 → 15% OFF' },
+  { ico: faCow, txt: 'A2 Gir Bilona Ghee' },
+  { ico: faTruck, txt: 'Free Delivery ₹999+' },
+  { ico: faFlask, txt: '70+ NABL Lab Tests' },
+  { ico: faCoins, txt: 'Earn Purity Coins' },
+  { ico: faPepperHot, txt: 'Handmade Pickles' },
+  { ico: faCookieBite, txt: 'Artisanal Sweets' },
+  { ico: faCertificate, txt: 'Gujarat Farm Direct' },
+  { ico: faStar, txt: '4.9★ · 12,000+ Reviews' },
 ];
 
 export const Ticker: React.FC = () => {
@@ -21,7 +24,7 @@ export const Ticker: React.FC = () => {
           <React.Fragment key={idx}>
             {tickerItems.map((item, i) => (
               <div key={i} className="flex items-center gap-3.5 px-7">
-                <span>{item.ico}</span>
+                <FontAwesomeIcon icon={item.ico} className="text-white/60" />
                 <strong>{item.txt}</strong>
               </div>
             ))}
