@@ -19,7 +19,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
-  const { auth } = useAuth();
+  const auth = useAuth();
   const { user, isUserLoading } = useUser();
 
   // Redirect if already logged in as admin

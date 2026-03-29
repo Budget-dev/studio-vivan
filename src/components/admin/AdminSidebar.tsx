@@ -18,7 +18,7 @@ const MENU_ITEMS = [
 export const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { auth } = useAuth();
+  const auth = useAuth();
   const { user } = useUser();
 
   const handleLogout = async () => {
