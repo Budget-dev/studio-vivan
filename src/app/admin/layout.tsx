@@ -1,24 +1,23 @@
-
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { Toaster } from '@/components/ui/toaster';
+import { useUser } from '@/firebase';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const pathname = usePathname();
 
+  const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
+
   useEffect(() => {
-    const auth = localStorage.getItem('vivaan_admin_auth');
-    if (!auth && pathname !== '/admin/login') {
+    if (!isUserLoading && (!user || user.email !== ADMIN_EMAIL) && pathname !== '/admin/login') {
       router.push('/admin/login');
-    } else {
-      setIsAuthenticated(true);
     }
-  }, [router, pathname]);
+  }, [user, isUserLoading, router, pathname]);
 
   if (pathname === '/admin/login') {
     return (
@@ -29,8 +28,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (isAuthenticated === null) {
-    return <div className="min-h-screen bg-[#F9F6EF] flex items-center justify-center font-headline text-3xl font-extrabold text-primary animate-pulse">Loading Admin...</div>;
+  if (isUserLoading) {
+    return <div className="min-h-screen bg-[#F9F6EF] flex items-center justify-center font-headline text-3xl font-extrabold text-primary animate-pulse">Loading Dashboard...</div>;
+  }
+
+  // Final gate check for authorized email
+  if (!user || user.email !== ADMIN_EMAIL) {
+    return null; // The useEffect will handle redirect
   }
 
   return (

@@ -1,10 +1,11 @@
-
 "use client";
 
 import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useAuth, useUser } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 const MENU_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: 'fa-chart-pie', href: '/admin' },
@@ -17,10 +18,14 @@ const MENU_ITEMS = [
 export const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const { auth } = useAuth();
+  const { user } = useUser();
 
-  const handleLogout = () => {
-    localStorage.removeItem('vivaan_admin_auth');
-    router.push('/admin/login');
+  const handleLogout = async () => {
+    if (auth) {
+      await signOut(auth);
+      router.push('/admin/login');
+    }
   };
 
   return (
@@ -65,10 +70,12 @@ export const AdminSidebar: React.FC = () => {
       <div className="p-6 mt-auto">
         <div className="bg-white/5 rounded-3xl p-5 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center font-black text-xs">AD</div>
-            <div>
-              <div className="text-xs font-bold">Admin User</div>
-              <div className="text-[10px] text-white/30 font-medium">Main Administrator</div>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center font-black text-xs">
+              {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-bold truncate">Admin User</div>
+              <div className="text-[9px] text-white/30 font-medium truncate">{user?.email}</div>
             </div>
           </div>
           <button 
