@@ -1,8 +1,7 @@
-
 "use client";
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,12 +15,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { PRODUCTS } from '@/lib/data';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState(PRODUCTS);
+  const db = useFirestore();
+  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
+  const { data: products, isLoading } = useCollection(productsRef);
   const [isAddOpen, setIsAddOpen] = useState(false);
+
+  if (isLoading) {
+    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Loading Inventory...</div>;
+  }
 
   return (
     <div className="space-y-10">
@@ -91,9 +97,9 @@ export default function AdminProductsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: 'Low Stock Alerts', value: '4 Products', icon: 'fa-triangle-exclamation', color: 'text-destructive' },
-          { label: 'Active Listings', value: '24 SKUs', icon: 'fa-box', color: 'text-primary' },
-          { label: 'Total Stock Value', value: '₹18,24,000', icon: 'fa-money-bill-trend-up', color: 'text-primary' },
+          { label: 'Low Stock Alerts', value: products?.filter(p => (p.stockQuantity || 0) <= 10).length + ' Products', icon: 'fa-triangle-exclamation', color: 'text-destructive' },
+          { label: 'Active Listings', value: (products?.length || 0) + ' SKUs', icon: 'fa-box', color: 'text-primary' },
+          { label: 'Total Stock Value', value: '₹' + (products?.reduce((acc, p) => acc + ((p.basePrice || 0) * (p.stockQuantity || 0)), 0).toLocaleString('en-IN') || '0'), icon: 'fa-money-bill-trend-up', color: 'text-primary' },
         ].map((item, i) => (
           <Card key={i} className="border-none shadow-xl rounded-[32px] overflow-hidden">
             <CardContent className="p-8 flex items-center gap-6">
@@ -117,47 +123,51 @@ export default function AdminProductsPage() {
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Category</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock Status</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Price</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Total Sold</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Status</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right px-8">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((p) => (
+            {products && products.length > 0 ? products.map((p) => (
               <TableRow key={p.id} className="border-b-[#DDD0B5]/20 hover:bg-primary/[0.02] transition-colors group">
                 <TableCell className="py-6 px-8">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-[#F9F6EF] rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                      {p.cat === 'ghee' ? '🧈' : p.cat === 'pickles' ? '🌶️' : p.cat === 'sweets' ? '🎁' : '🍯'}
+                      {p.name?.toLowerCase().includes('ghee') ? '🧈' : p.name?.toLowerCase().includes('pickle') ? '🌶️' : p.name?.toLowerCase().includes('sweet') ? '🎁' : '🍯'}
                     </div>
                     <div>
                       <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
-                      <div className="text-[10px] text-[#7A6848] font-black uppercase tracking-wider mt-0.5">{p.vol} Unit</div>
+                      <div className="text-[10px] text-[#7A6848] font-black uppercase tracking-wider mt-0.5">{p.volumeValue} {p.volumeUnit}</div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-primary/10 text-primary">
-                    {p.cat}
+                    {p.categoryId || 'General'}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between max-w-[120px]">
-                      <span className="text-[10px] font-bold text-[#7A6848]">{p.stock} Units</span>
-                      <span className={cn("text-[9px] font-black", p.stock <= 10 ? 'text-destructive' : 'text-primary')}>
-                        {p.stock <= 10 ? 'LOW' : 'GOOD'}
+                      <span className="text-[10px] font-bold text-[#7A6848]">{p.stockQuantity || 0} Units</span>
+                      <span className={cn("text-[9px] font-black", (p.stockQuantity || 0) <= 10 ? 'text-destructive' : 'text-primary')}>
+                        {(p.stockQuantity || 0) <= 10 ? 'LOW' : 'GOOD'}
                       </span>
                     </div>
                     <div className="h-1.5 w-[120px] bg-gray-100 rounded-full overflow-hidden">
                       <div 
-                        className={cn("h-full rounded-full transition-all duration-1000", p.stock <= 10 ? 'bg-destructive' : 'bg-primary')} 
-                        style={{ width: `${Math.min(100, (p.stock / 20) * 100)}%` }}
+                        className={cn("h-full rounded-full transition-all duration-1000", (p.stockQuantity || 0) <= 10 ? 'bg-destructive' : 'bg-primary')} 
+                        style={{ width: `${Math.min(100, ((p.stockQuantity || 0) / 20) * 100)}%` }}
                       ></div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-sm font-black text-foreground">₹{p.price.toLocaleString('en-IN')}</TableCell>
-                <TableCell className="text-sm font-bold text-[#7A6848]">{p.sold}</TableCell>
+                <TableCell className="text-sm font-black text-foreground">₹{(p.basePrice || 0).toLocaleString('en-IN')}</TableCell>
+                <TableCell>
+                  <span className={cn("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider", p.isLive ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-400")}>
+                    {p.isLive ? 'Live' : 'Draft'}
+                  </span>
+                </TableCell>
                 <TableCell className="text-right px-8 space-x-2">
                   <button className="w-9 h-9 rounded-xl bg-[#F9F6EF] text-[#7A6848] hover:bg-primary/10 hover:text-primary transition-all">
                     <i className="fa-solid fa-pen-to-square text-xs"></i>
@@ -167,7 +177,13 @@ export default function AdminProductsPage() {
                   </button>
                 </TableCell>
               </TableRow>
-            ))}
+            )) : (
+              <TableRow>
+                <TableCell colSpan={6} className="py-20 text-center text-[#7A6848] font-medium italic">
+                  No products found. Start by adding your first pure farm product.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </Card>

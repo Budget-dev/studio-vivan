@@ -1,15 +1,20 @@
-
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 export default function AdminBannersPage() {
-  const [banners, setBanners] = useState(PlaceHolderImages.filter(img => img.id.startsWith('hero-banner')));
+  const db = useFirestore();
+  const bannersRef = useMemoFirebase(() => collection(db, 'banners'), [db]);
+  const { data: banners, isLoading } = useCollection(bannersRef);
+
+  if (isLoading) {
+    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Loading Banners...</div>;
+  }
 
   return (
     <div className="space-y-10">
@@ -24,12 +29,12 @@ export default function AdminBannersPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        {banners.map((banner, i) => (
+        {banners && banners.length > 0 ? banners.map((banner, i) => (
           <Card key={banner.id} className="border-none shadow-2xl rounded-[40px] overflow-hidden group">
             <div className="relative aspect-[21/9] overflow-hidden">
               <Image 
                 src={banner.imageUrl} 
-                alt={banner.description} 
+                alt={banner.title || "Banner"} 
                 fill 
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
               />
@@ -49,9 +54,9 @@ export default function AdminBannersPage() {
             <CardContent className="p-8">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Alt Description</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Banner Title</label>
                   <Input 
-                    value={banner.description} 
+                    value={banner.title || ""} 
                     className="h-12 rounded-xl bg-[#F9F6EF] border-transparent font-bold"
                     readOnly
                   />
@@ -59,27 +64,29 @@ export default function AdminBannersPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">Currently Live</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Mobile Optimized</span>
-                    <i className="fa-solid fa-check-circle text-primary"></i>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+                      {banner.isActive ? "Currently Live" : "Inactive"}
+                    </span>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
-        ))}
+        )) : (
+          <div className="col-span-full py-20 bg-white/50 rounded-[40px] border-2 border-dashed border-[#DDD0B5] text-center text-[#7A6848] font-medium">
+            No promotional banners found.
+          </div>
+        )}
       </div>
 
       <Card className="border-none shadow-xl rounded-[40px] p-10 bg-[#EBF5EE] text-center max-w-2xl mx-auto">
         <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
           <i className="fa-solid fa-wand-magic-sparkles text-3xl"></i>
         </div>
-        <h3 className="font-headline text-3xl font-extrabold text-primary mb-4">Want more banners?</h3>
+        <h3 className="font-headline text-3xl font-extrabold text-primary mb-4">Add your visuals</h3>
         <p className="text-[#7A6848] text-sm leading-relaxed mb-8 font-medium">Use high-resolution 1600x600 images for best results. Banners with Bilona churning or Gir cows perform 40% better on average.</p>
         <button className="h-14 px-10 bg-primary text-white rounded-full text-xs font-black uppercase tracking-[3px] shadow-xl hover:bg-secondary transition-all">
-          Launch Visual Designer
+          Upload Content
         </button>
       </Card>
     </div>
