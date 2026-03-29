@@ -7,6 +7,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, AreaChart, Area, Cell, PieChart, Pie
 } from 'recharts';
+import { cn } from '@/lib/utils';
 
 const SALES_DATA = [
   { name: 'Mon', sales: 4000 },
