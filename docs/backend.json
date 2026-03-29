@@ -1,0 +1,593 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a customer or user profile with their personal information and loyalty points within the Vivaan Farms application. Does not store authentication credentials.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The first name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The last name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The contact phone number of the user."
+        },
+        "purityCoins": {
+          "type": "number",
+          "description": "The number of loyalty points ('Purity Coins') accumulated by the user."
+        },
+        "wishlistProductIds": {
+          "type": "array",
+          "description": "An array of product IDs that the user has added to their wishlist. (Relationship: UserProfile N:N Product)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user profile was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "purityCoins",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Category": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Category",
+      "type": "object",
+      "description": "Represents a product category, used to organize and filter products in the Vivaan Farms application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Category entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the category (e.g., 'A2 Ghee', 'Pickles', 'Sweets', 'Honey')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the category."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to an image representing the category, typically used for icons or banners.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the category was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the category was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a single product available for sale in the Vivaan Farms application. Products can have multiple variants.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product (e.g., 'A2 Gir Cow Ghee')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Reference to the Category this product belongs to. (Relationship: Category 1:N Product)"
+        },
+        "basePrice": {
+          "type": "number",
+          "description": "The base price of the product, without considering variants or discounts."
+        },
+        "mrpPrice": {
+          "type": "number",
+          "description": "The Manufacturer's Suggested Retail Price (MRP) for the product."
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of URLs for product images.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "videoUrls": {
+          "type": "array",
+          "description": "An array of URLs for product videos (e.g., YouTube links or uploaded video files).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "badges": {
+          "type": "array",
+          "description": "An array of descriptive badges for the product (e.g., '🔥 BESTSELLER', '🎁 COMBO').",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rating": {
+          "type": "number",
+          "description": "The average customer rating for the product."
+        },
+        "reviewCount": {
+          "type": "number",
+          "description": "The total number of customer reviews for the product."
+        },
+        "isLive": {
+          "type": "boolean",
+          "description": "Indicates if the product is currently visible and available for sale on the storefront."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the product was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the product was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "categoryId",
+        "basePrice",
+        "mrpPrice",
+        "imageUrls",
+        "isLive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ProductVariant": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProductVariant",
+      "type": "object",
+      "description": "Represents a specific variant of a product, such as different sizes or volumes, each with its own price and stock.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ProductVariant entity."
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the parent Product. (Relationship: Product 1:N ProductVariant)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The descriptive name of the variant (e.g., '500ml Glass Jar', '1L Dolchi')."
+        },
+        "price": {
+          "type": "number",
+          "description": "The selling price for this specific product variant."
+        },
+        "mrpPrice": {
+          "type": "number",
+          "description": "The Manufacturer's Suggested Retail Price (MRP) for this specific product variant."
+        },
+        "stockQuantity": {
+          "type": "number",
+          "description": "The current stock quantity available for this variant."
+        },
+        "volumeValue": {
+          "type": "number",
+          "description": "The numerical value of the volume (e.g., 500, 1, 2.5)."
+        },
+        "volumeUnit": {
+          "type": "string",
+          "description": "The unit of volume for the variant (e.g., 'ml', 'L')."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates if this product variant is currently active and available for purchase."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the product variant was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the product variant was last updated."
+        }
+      },
+      "required": [
+        "id",
+        "productId",
+        "name",
+        "price",
+        "mrpPrice",
+        "stockQuantity",
+        "isActive",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer's purchase order in the Vivaan Farms application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Order entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile who placed the order. (Relationship: UserProfile 1:N Order)"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "The date and time when the order was placed.",
+          "format": "date-time"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total monetary amount of the order after all discounts and coins applied."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the order (e.g., 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')."
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The full shipping address for the order."
+        },
+        "couponCodeApplied": {
+          "type": "string",
+          "description": "The coupon code applied to the order, if any."
+        },
+        "discountAmount": {
+          "type": "number",
+          "description": "The total discount amount applied to the order."
+        },
+        "purityCoinsRedeemed": {
+          "type": "number",
+          "description": "The number of Purity Coins redeemed in this order."
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "The payment method used for the order (e.g., 'UPI', 'Card', 'Cash on Delivery')."
+        },
+        "paymentStatus": {
+          "type": "string",
+          "description": "The status of the payment for the order (e.g., 'Paid', 'Pending', 'Failed', 'Refunded')."
+        },
+        "deliveryDate": {
+          "type": "string",
+          "description": "The estimated or actual date of delivery.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the order was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the order was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "orderDate",
+        "totalAmount",
+        "status",
+        "shippingAddress",
+        "paymentMethod",
+        "paymentStatus",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents a single product item within an order, capturing its state at the time of purchase.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OrderItem entity."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to the parent Order. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the ordered Product. (Relationship: Product 1:N OrderItem)"
+        },
+        "productVariantId": {
+          "type": "string",
+          "description": "Reference to the specific ProductVariant ordered, if applicable. (Relationship: ProductVariant 1:N OrderItem)"
+        },
+        "productName": {
+          "type": "string",
+          "description": "The name of the product at the time of order."
+        },
+        "variantName": {
+          "type": "string",
+          "description": "The name of the product variant at the time of order (e.g., '1L Dolchi')."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of this product item ordered."
+        },
+        "unitPrice": {
+          "type": "number",
+          "description": "The price of a single unit of this product item at the time of order."
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price for this product item (quantity * unitPrice)."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the product image at the time of order, for historical reference.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the order item was created (part of the order creation process).",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the order item was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "quantity",
+        "unitPrice",
+        "totalPrice",
+        "productName",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Banner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Banner",
+      "type": "object",
+      "description": "Represents a promotional banner displayed on the Vivaan Farms storefront, managed via the admin panel.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Banner entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "A title for the banner (e.g., 'Hero Section Banner', 'Limited Offer')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A descriptive text for the banner, often displayed as a tagline or call to action."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the banner image, optimized for fast loading.",
+          "format": "uri"
+        },
+        "linkUrl": {
+          "type": "string",
+          "description": "The URL to which the banner links when clicked (e.g., a product page or category page).",
+          "format": "uri"
+        },
+        "position": {
+          "type": "number",
+          "description": "The numerical order or position in which the banner should be displayed."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Indicates if the banner is currently active and displayed on the storefront."
+        },
+        "placement": {
+          "type": "string",
+          "description": "Specifies where on the website the banner is intended to be displayed (e.g., 'Hero', 'FeaturedSection', 'Ad')."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the banner was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the banner was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "imageUrl",
+        "position",
+        "isActive",
+        "placement",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores customer profiles. Users can read/update their own profile. Admins have full CRUD access. Follows Path-Based Ownership. The '{userId}' wildcard refers to the unique ID of the user."
+        }
+      },
+      {
+        "path": "/categories/{categoryId}",
+        "definition": {
+          "entityName": "Category",
+          "schema": {
+            "$ref": "#/backend/entities/Category"
+          },
+          "description": "Manages product categories. Fully managed by admins (CRUD). Publicly readable for product browsing. The '{categoryId}' wildcard refers to the unique ID of the category.",
+          "params": [
+            {
+              "name": "categoryId",
+              "description": "The unique identifier for the category."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product details. Fully managed by admins (CRUD). Publicly readable for storefront display. Includes denormalized 'categoryId' for efficient querying. The '{productId}' wildcard refers to the unique ID of the product.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier for the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}/variants/{variantId}",
+        "definition": {
+          "entityName": "ProductVariant",
+          "schema": {
+            "$ref": "#/backend/entities/ProductVariant"
+          },
+          "description": "Stores product variant details for a specific product. Fully managed by admins (CRUD). Publicly readable. Nested under products for logical grouping. The '{productId}' refers to the parent product, and '{variantId}' to the specific variant.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier for the parent product."
+            },
+            {
+              "name": "variantId",
+              "description": "The unique identifier for the product variant."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores customer order details. Created by users, readable by the placing user, and fully managed by admins (CRUD, status updates). Includes 'userId' for Authorization Independence. The '{orderId}' wildcard refers to the unique ID of the order.",
+          "params": [
+            {
+              "name": "orderId",
+              "description": "The unique identifier for the order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/orders/{orderId}/items/{orderItemId}",
+        "definition": {
+          "entityName": "OrderItem",
+          "schema": {
+            "$ref": "#/backend/entities/OrderItem"
+          },
+          "description": "Stores individual items within an order. Nested under orders. Readable by the order owner and fully managed by admins. Includes denormalized 'orderOwnerId' (copy of parent Order's 'userId') for Authorization Independence, enabling atomic operations and simplifying rules. The '{orderId}' refers to the parent order, and '{orderItemId}' to the specific item.",
+          "params": [
+            {
+              "name": "orderId",
+              "description": "The unique identifier for the parent order."
+            },
+            {
+              "name": "orderItemId",
+              "description": "The unique identifier for the order item."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/banners/{bannerId}",
+        "definition": {
+          "entityName": "Banner",
+          "schema": {
+            "$ref": "#/backend/entities/Banner"
+          },
+          "description": "Manages promotional banners. Fully managed by admins (CRUD). Publicly readable for storefront display. The '{bannerId}' wildcard refers to the unique ID of the banner.",
+          "params": [
+            {
+              "name": "bannerId",
+              "description": "The unique identifier for the banner."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed following the core principles of Authorization Independence, Structural Segregation, and Access Modeling to ensure a secure, scalable, and debuggable e-commerce admin panel. All data is organized into clearly defined collections and subcollections, making security rules straightforward.\n\n**Authorization Independence & QAPs:**\n\n1.  **Admin Access (DBAC):** For admin authentication, a dedicated collection (e.g., `/admin_roles/{uid}`) would typically be used. The *existence* of a document in this collection, where the document ID matches `request.auth.uid`, grants administrative privileges. This design is crucial for Authorization Independence as it avoids `get()` calls to other data to determine a user's role. Instead, the rule simply checks `exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid))`. This approach enables admins to perform `list` operations across global collections (like products, categories, orders, banners) securely and efficiently, fulfilling the QAPs principle.\n\n2.  **Publicly Readable & Admin-Managed Data (`/categories`, `/products`, `/banners`):** These top-level collections house entities that are generally public-facing (e.g., product catalog, promotions) but are solely managed (CRUD operations) by administrators. Their security posture is homogeneous: public read, admin write. Authorization for read is `allow read;` (no authentication needed), and for write is `allow write: if is_admin();` (using the independent admin role check). This structural segregation simplifies rules and supports efficient `list` queries for the public storefront.\n\n3.  **User-Owned Data (`/users/{userId}`):** User profiles are stored in a top-level collection, following Path-Based Ownership. A user can read/update their own profile (`/users/{request.auth.uid}`). The `userId` in the path provides direct, independent authorization context, eliminating `get()` calls for user-specific access. Admins retain full CRUD access through the independent admin role.\n\n4.  **Order Management (`/orders/{orderId}` and `/orders/{orderId}/items/{orderItemId}`):**\n    *   **Orders:** The `Order` entity is stored in a top-level collection `/orders`. Each `Order` document contains a `userId` field, directly linking it to the customer who placed the order. This internal `userId` enables robust Authorization Independence for user-specific access (`request.auth.uid == resource.data.userId`) without requiring a `get()` to a parent `UserProfile`. Admins have full CRUD access.\n    *   **Order Items (Denormalization):** `OrderItem`s are stored in a subcollection under their respective `Order` (`/orders/{orderId}/items/{orderItemId}`). To ensure Authorization Independence and prevent `get()` calls to the parent `Order` when authorizing individual `OrderItem`s, the `userId` from the parent `Order` is denormalized and stored as `orderOwnerId` within each `OrderItem` document. This allows `OrderItem` rules to be self-contained (`request.auth.uid == resource.data.orderOwnerId`), enabling atomic updates and ensuring consistent authorization for users when accessing their specific order items, and for admins when managing all order items. This denormalization supports robust QAPs for listing individual order items."
+  }
+}
