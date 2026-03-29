@@ -8,10 +8,12 @@ import { useAuth, useUser } from '@/firebase';
 import { signOut } from 'firebase/auth';
 
 const MENU_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard', icon: 'fa-chart-pie', href: '/admin' },
-  { id: 'orders', label: 'Orders', icon: 'fa-box-open', href: '/admin/orders' },
-  { id: 'inventory', label: 'Products', icon: 'fa-warehouse', href: '/admin/products' },
-  { id: 'categories', label: 'Categories', icon: 'fa-tags', href: '/admin/categories' },
+  { id: 'dashboard', label: 'Dashboard', icon: 'fa-table-columns', href: '/admin' },
+  { id: 'ghee', label: 'A2 Ghee', icon: 'fa-cow', href: '/admin/products/ghee' },
+  { id: 'pickles', label: 'Pickles', icon: 'fa-pepper-hot', href: '/admin/products/pickles' },
+  { id: 'sweets', label: 'Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
+  { id: 'honey', label: 'Honey', icon: 'fa-jar', href: '/admin/products/honey' },
+  { id: 'orders', label: 'Orders', icon: 'fa-cart-shopping', href: '/admin/orders' },
   { id: 'banners', label: 'Banners', icon: 'fa-image', href: '/admin/banners' },
 ];
 
@@ -54,7 +56,7 @@ export const AdminSidebar: React.FC = () => {
                 className={cn(
                   "flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all group",
                   isActive 
-                    ? "bg-white/10 text-white shadow-lg" 
+                    ? "bg-[#1B5E3B] text-white shadow-lg shadow-black/20" 
                     : "text-white/40 hover:text-white hover:bg-white/5"
                 )}
               >
@@ -70,7 +72,7 @@ export const AdminSidebar: React.FC = () => {
       <div className="p-6 mt-auto">
         <div className="bg-white/5 rounded-3xl p-5 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center font-black text-xs">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1B5E3B] to-[#0D3520] flex items-center justify-center font-black text-xs">
               {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
             </div>
             <div className="flex-1 min-w-0">
