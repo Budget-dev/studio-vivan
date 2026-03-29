@@ -13,13 +13,11 @@
  * - /orders: Transactional data. Users can create and view their own orders; admins manage the lifecycle.
  *
  * KEY DECISIONS:
- * - Admin Authorization: Admin status is determined by the existence of a document in the `/admin_roles` collection.
+ * - Admin Authorization: Admin status is determined by the hardcoded master email OR 
+ *   the existence of a document in the `/admin_roles` collection.
  * - Ownership Integrity: Essential relational fields (like `userId` or `orderOwnerId`) are enforced during 
  *   creation and made immutable during updates to prevent data hijacking.
- * - Public Access: Product catalogs and promotional banners are globally readable to support SEO and 
- *   unauthenticated browsing.
- * - Denormalization for Security: The `orderOwnerId` is denormalized onto `OrderItem` documents to allow 
- *   independent authorization checks without costly parent-document lookups.
+ * - Public Access: Product catalogs and promotional banners are globally readable.
  */
 
 rules_version = '2';
@@ -40,20 +38,20 @@ service cloud.firestore {
 
     /** 
      * Determines if the user has administrative privileges.
-     * Admins are defined by having a document in the 'admin_roles' collection.
+     * Master admin is identified by email. 
+     * Secondary admins can be added via the 'admin_roles' collection.
      */
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid));
+      return isSignedIn() && (
+        request.auth.token.email == 'vivanfarmsnatural@gmail.com' || 
+        exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid))
+      );
     }
 
     // --- COLLECTION RULES ---
 
     /**
-     * @description Rules for the admin roles registry. Access is strictly controlled.
-     * @path /admin_roles/{uid}
-     * @allow (get) Any signed-in user checking their own role.
-     * @deny (list, write) Prevents listing admins or self-promotion.
-     * @principle System-level role management.
+     * @description Rules for the admin roles registry.
      */
     match /admin_roles/{uid} {
       allow get: if isSignedIn() && (request.auth.uid == uid || isAdmin());
@@ -62,11 +60,6 @@ service cloud.firestore {
 
     /**
      * @description User profiles containing personal info and loyalty points.
-     * @path /users/{userId}
-     * @allow (create) User creating their own initial profile.
-     * @allow (get, list, update) The owner or an administrator.
-     * @deny (delete) Users cannot delete their own profiles; restricted to admins.
-     * @principle Path-based ownership with administrative override.
      */
     match /users/{userId} {
       allow get, list: if isOwner(userId) || isAdmin();
@@ -77,10 +70,6 @@ service cloud.firestore {
 
     /**
      * @description Product categories used for storefront organization.
-     * @path /categories/{categoryId}
-     * @allow (get, list) Anyone (public access).
-     * @allow (create, update, delete) Admins only.
-     * @principle Public read, admin-only write.
      */
     match /categories/{categoryId} {
       allow get, list: if true;
@@ -89,21 +78,13 @@ service cloud.firestore {
 
     /**
      * @description Products available for sale.
-     * @path /products/{productId}
-     * @allow (get, list) Anyone (public access).
-     * @allow (create, update, delete) Admins only.
-     * @principle Public read, admin-only write.
      */
     match /products/{productId} {
       allow get, list: if true;
       allow create, update, delete: if isAdmin();
 
       /**
-       * @description Variants of a specific product (sizes, jars, etc.).
-       * @path /products/{productId}/variants/{variantId}
-       * @allow (get, list) Anyone (public access).
-       * @allow (create, update, delete) Admins only.
-       * @principle Inherited public read/admin write from parent product logic.
+       * @description Variants of a specific product.
        */
       match /variants/{variantId} {
         allow get, list: if true;
@@ -113,43 +94,27 @@ service cloud.firestore {
 
     /**
      * @description Customer purchase orders.
-     * @path /orders/{orderId}
-     * @allow (create) Authenticated users creating an order for themselves.
-     * @allow (get) The order owner or an administrator.
-     * @allow (list) Admins can list all; users can list their own via filtered queries.
-     * @allow (update, delete) Admins managing order status/lifecycle.
-     * @principle Data-field ownership validation for relational integrity.
      */
     match /orders/{orderId} {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow get: if isAdmin() || (resource != null && resource.data.userId == request.auth.uid);
-      allow list: if isSignedIn(); // Firestore filters results based on UID automatically if queried correctly.
+      allow list: if isSignedIn();
       allow update: if isAdmin();
       allow delete: if isAdmin();
 
       /**
        * @description Individual line items within an order.
-       * @path /orders/{orderId}/items/{orderItemId}
-       * @allow (create) Authenticated user creating items for their own order.
-       * @allow (get) The order owner or an administrator.
-       * @allow (list) Admins or the owner.
-       * @allow (update, delete) Admins only.
-       * @principle Denormalized 'orderOwnerId' ensures secure, independent access checks.
        */
       match /items/{orderItemId} {
         allow create: if isSignedIn() && request.resource.data.orderOwnerId == request.auth.uid;
-        allow get: if isAdmin() || (resource != null && resource.data.orderOwnerId == request.auth.uid);
+        allow get: if isAdmin() || (resource != null && request.auth.uid == resource.data.orderOwnerId);
         allow list: if isSignedIn();
         allow update, delete: if isAdmin();
       }
     }
 
     /**
-     * @description Promotional banners for the homepage and sections.
-     * @path /banners/{bannerId}
-     * @allow (get, list) Anyone (public access).
-     * @allow (create, update, delete) Admins only.
-     * @principle Public promotional content managed by store administrators.
+     * @description Promotional banners.
      */
     match /banners/{bannerId} {
       allow get, list: if true;
