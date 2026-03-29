@@ -17,7 +17,7 @@ import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
-import { Category, Product } from '@/types';
+import { Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
@@ -120,7 +120,6 @@ export default function VivaanFarms() {
   const CATEGORIES = [
     { id: 'all', label: 'All Products', ico: '🧈' },
     { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-    { id: 'pickles', label: 'Pickles', ico: '🌶️' },
     { id: 'sweets', label: 'Sweets', ico: '🎁' },
     { id: 'honey', label: 'Honey', ico: '🍯' },
   ];
@@ -189,7 +188,7 @@ export default function VivaanFarms() {
                 {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
               </h2>
               <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
-                Handcrafted A2 Ghee, Sun-dried Pickles, and Forest Honey.
+                Handcrafted A2 Ghee, Artisanal Sweets, and Forest Honey.
               </p>
             </div>
 

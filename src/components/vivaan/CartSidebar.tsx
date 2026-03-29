@@ -37,7 +37,6 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
   const getIcon = (item: CartItem) => {
     if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
-    if (item.cat === 'pickles') return <div className="text-3xl">🌶️</div>;
     if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
     if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
     return <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;

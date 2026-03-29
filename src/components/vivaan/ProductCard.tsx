@@ -5,6 +5,7 @@ import { Star, Heart, ShoppingBag } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -18,7 +19,6 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist, isInCart, onOpen, onAdd, onWish }) => {
   const getIcon = () => {
     if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110" />;
-    if (product.cat === 'pickles') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🌶️</div>;
     if (product.cat === 'sweets') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🎁</div>;
     if (product.cat === 'honey') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🍯</div>;
     return <JarIcon c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} sub="" idSuffix={product.id} className="scale-75 md:scale-100" />;
@@ -46,9 +46,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
 
         <button 
           onClick={(e) => { e.stopPropagation(); onWish(product.id); }}
-          className={`absolute top-3 right-3 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border-none shadow-xl transition-all active:scale-75 backdrop-blur-md ${isInWishlist ? 'bg-red-50 text-[#C03030]' : 'bg-white/90 text-primary hover:bg-white'}`}
+          className={cn(
+            "absolute top-3 right-3 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border-none shadow-xl transition-all active:scale-75 backdrop-blur-md",
+            isInWishlist ? 'bg-red-50 text-[#C03030]' : 'bg-white/90 text-primary hover:bg-white'
+          )}
         >
-          <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isInWishlist ? 'fill-current' : ''}`} />
+          <Heart className={cn("w-4 h-4 md:w-5 md:h-5", isInWishlist && 'fill-current')} />
         </button>
 
         {/* Floating Top Rated Banner */}

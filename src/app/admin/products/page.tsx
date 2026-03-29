@@ -4,13 +4,13 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Box } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function AdminProductsPage() {
   const router = useRouter();
   
   const sections = [
     { id: 'ghee', label: 'A2 Ghee', desc: 'Traditional Bilona Ghee', icon: 'fa-cow', href: '/admin/products/ghee' },
-    { id: 'pickles', label: 'Pickles', desc: 'Sun-dried Traditional Pickles', icon: 'fa-pepper-hot', href: '/admin/products/pickles' },
     { id: 'sweets', label: 'Sweets', desc: 'Artisanal Farm Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
     { id: 'honey', label: 'Honey', desc: 'Wild Forest Organic Honey', icon: 'fa-jar', href: '/admin/products/honey' },
   ];

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo } from 'react';
@@ -63,10 +62,6 @@ export default function AdminDashboard() {
     const salesMap: Record<string, number> = {};
     categories.forEach(cat => { salesMap[cat.name] = 0; });
 
-    // In a real app, we'd look at OrderItems. Since we are in MVP, 
-    // let's assume we map orders roughly or iterate items if they existed.
-    // For now, let's distribute based on a simple mock if the collections are empty
-    // but try to use real category names.
     categories.forEach(cat => {
       salesMap[cat.name] = Math.floor(Math.random() * 50) + 10; // Placeholder until items are robust
     });
@@ -203,7 +198,7 @@ export default function AdminDashboard() {
               <div key={i} className="flex items-center justify-between group cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-[#F9F6EF] rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                    {prod.name.includes('Ghee') ? '🧈' : prod.name.includes('Pickle') ? '🌶️' : prod.name.includes('Katli') ? '🎁' : '🍯'}
+                    {prod.name.includes('Ghee') ? '🧈' : prod.name.includes('Katli') ? '🎁' : '🍯'}
                   </div>
                   <div>
                     <div className="text-sm font-bold text-[#100C06]">{prod.name}</div>

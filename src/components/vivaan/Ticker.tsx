@@ -7,7 +7,6 @@ const tickerItems = [
   { ico: '🧈', txt: 'Farm-Direct · Gujarat' },
   { ico: '🔬', txt: '70+ NABL Lab Tests' },
   { ico: '🪙', txt: 'Earn Purity Coins' },
-  { ico: '🌶️', txt: 'Handmade Pickles' },
   { ico: '🎁', txt: 'Combo Packs · Save 19%' },
   { ico: '🌾', txt: 'Bilona Method · Ancient' },
   { ico: '⭐', txt: '4.9★ · 12,000+ Reviews' },

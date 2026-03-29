@@ -10,7 +10,6 @@ import { signOut } from 'firebase/auth';
 const MENU_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: 'fa-table-columns', href: '/admin' },
   { id: 'ghee', label: 'A2 Ghee', icon: 'fa-cow', href: '/admin/products/ghee' },
-  { id: 'pickles', label: 'Pickles', icon: 'fa-pepper-hot', href: '/admin/products/pickles' },
   { id: 'sweets', label: 'Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
   { id: 'honey', label: 'Honey', icon: 'fa-jar', href: '/admin/products/honey' },
   { id: 'orders', label: 'Orders', icon: 'fa-cart-shopping', href: '/admin/orders' },
