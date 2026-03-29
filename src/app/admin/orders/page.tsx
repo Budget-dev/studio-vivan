@@ -1,0 +1,199 @@
+
+"use client";
+
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { 
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
+
+const ORDERS = [
+  { id: '#VF-8842', customer: 'Priya Sharma', type: 'Shipping', status: 'Delivered', product: 'A2 Ghee 1L', total: '₹2,400', date: 'Jun 19', avatar: 'PS' },
+  { id: '#VF-8841', customer: 'Rajan Kulkarni', type: 'Pickups', status: 'Pending', product: 'Kaju Katli 500g', total: '₹950', date: 'Jun 19', avatar: 'RK' },
+  { id: '#VF-8840', customer: 'Meena Joshi', type: 'Shipping', status: 'Shipped', product: 'Forest Honey', total: '₹850', date: 'Jun 18', avatar: 'MJ' },
+  { id: '#VF-8839', customer: 'Arjun Singh', type: 'Shipping', status: 'Cancelled', product: 'Desi Combo', total: '₹1,850', date: 'Jun 18', avatar: 'AS' },
+  { id: '#VF-8838', customer: 'Sita Devi', type: 'Shipping', status: 'Delivered', product: 'A2 Ghee 2.5L', total: '₹5,684', date: 'Jun 17', avatar: 'SD' },
+  { id: '#VF-8837', customer: 'Sameer Khan', type: 'Pickups', status: 'Shipped', product: 'Mango Pickle', total: '₹450', date: 'Jun 17', avatar: 'SK' },
+];
+
+export default function AdminOrdersPage() {
+  const [filter, setFilter] = useState('All');
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'Delivered': return 'bg-primary/10 text-primary';
+      case 'Pending': return 'bg-yellow-100 text-yellow-700';
+      case 'Shipped': return 'bg-blue-100 text-blue-700';
+      case 'Cancelled': return 'bg-destructive/10 text-destructive';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  return (
+    <div className="space-y-10">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div>
+          <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-[#100C06]">Order Management</h1>
+          <p className="text-[#7A6848] text-sm mt-2 font-medium">Real-time monitoring of all Vivaan Farms transactions.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1 max-w-[300px]">
+            <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-[#7A6848] text-sm"></i>
+            <Input 
+              placeholder="Search by ID or customer..." 
+              className="h-12 pl-11 rounded-2xl bg-white border-[#DDD0B5] focus-visible:ring-primary focus-visible:border-primary transition-all shadow-sm"
+            />
+          </div>
+          <button className="h-12 w-12 flex items-center justify-center bg-white border border-[#DDD0B5] rounded-2xl text-sm shadow-sm hover:bg-[#F9F6EF] transition-all">
+            <i className="fa-solid fa-sliders"></i>
+          </button>
+        </div>
+      </div>
+
+      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+        {['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setFilter(tab)}
+            className={cn(
+              "h-11 px-6 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap",
+              filter === tab ? "bg-primary text-white shadow-lg scale-105" : "bg-white text-[#7A6848] border border-[#DDD0B5]/50 shadow-sm"
+            )}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div className="xl:col-span-3">
+          <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden">
+            <Table>
+              <TableHeader className="bg-[#F9F6EF]">
+                <TableRow className="border-b-[#DDD0B5]/30">
+                  <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Order ID</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Customer</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Type</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Status</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Total</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Date</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ORDERS.filter(o => filter === 'All' || o.status === filter).map((order) => (
+                  <TableRow key={order.id} className="border-b-[#DDD0B5]/20 hover:bg-primary/[0.02] transition-colors cursor-pointer group">
+                    <TableCell className="py-6 px-8 text-sm font-black text-primary">{order.id}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-[10px] font-black text-secondary">{order.avatar}</div>
+                        <span className="text-sm font-bold text-foreground">{order.customer}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-xs font-medium text-[#7A6848]">{order.type}</TableCell>
+                    <TableCell>
+                      <span className={cn("px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider", getStatusStyle(order.status))}>
+                        {order.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm font-bold text-foreground">{order.product}</TableCell>
+                    <TableCell className="text-sm font-black text-foreground">{order.total}</TableCell>
+                    <TableCell className="text-sm font-medium text-[#7A6848]">{order.date}</TableCell>
+                    <TableCell className="text-right pr-8">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="w-8 h-8 rounded-xl bg-[#F9F6EF] flex items-center justify-center text-[#7A6848] hover:bg-primary/10 hover:text-primary transition-all">
+                            <i className="fa-solid fa-ellipsis-v text-xs"></i>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-2xl p-2 border-none shadow-2xl min-w-[160px]">
+                          <DropdownMenuItem className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
+                            <i className="fa-solid fa-eye mr-2 text-primary"></i> View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
+                            <i className="fa-solid fa-truck mr-2 text-primary"></i> Update Status
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-destructive/5 text-destructive">
+                            <i className="fa-solid fa-trash mr-2"></i> Delete Order
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
+
+        <div className="space-y-8">
+          <Card className="border-none shadow-xl rounded-[40px] p-8">
+            <CardHeader className="p-0 mb-8">
+              <CardTitle className="font-headline text-2xl font-extrabold">Order Summary</CardTitle>
+            </CardHeader>
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(27,94,59,0.5)]"></div>
+                  <span className="text-sm font-bold">Paid</span>
+                </div>
+                <span className="text-sm font-black text-[#7A6848]">89%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-destructive shadow-[0_0_8px_rgba(192,48,48,0.5)]"></div>
+                  <span className="text-sm font-bold">Cancelled</span>
+                </div>
+                <span className="text-sm font-black text-[#7A6848]">8%</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                  <span className="text-sm font-bold">Refunded</span>
+                </div>
+                <span className="text-sm font-black text-[#7A6848]">3%</span>
+              </div>
+            </div>
+            <div className="mt-10 p-6 bg-[#F9F6EF] rounded-3xl text-center">
+              <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-2">Average Order</div>
+              <div className="font-headline text-3xl font-extrabold text-primary">₹2,246</div>
+            </div>
+          </Card>
+
+          <Card className="border-none shadow-xl rounded-[40px] p-8 bg-[#0F0F11] text-white">
+            <CardHeader className="p-0 mb-8">
+              <CardTitle className="font-headline text-2xl font-extrabold">Quick Actions</CardTitle>
+            </CardHeader>
+            <div className="grid grid-cols-2 gap-4">
+              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
+                <i className="fa-solid fa-file-invoice text-xl text-primary"></i>
+                <span className="text-[10px] font-black uppercase tracking-widest">Invoices</span>
+              </button>
+              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
+                <i className="fa-solid fa-truck-ramp-box text-xl text-primary"></i>
+                <span className="text-[10px] font-black uppercase tracking-widest">Labels</span>
+              </button>
+              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
+                <i className="fa-solid fa-user-tag text-xl text-primary"></i>
+                <span className="text-[10px] font-black uppercase tracking-widest">Support</span>
+              </button>
+              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
+                <i className="fa-solid fa-cog text-xl text-primary"></i>
+                <span className="text-[10px] font-black uppercase tracking-widest">Settings</span>
+              </button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
