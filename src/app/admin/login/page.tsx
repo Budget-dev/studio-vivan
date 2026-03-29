@@ -9,35 +9,31 @@ import { useAuth, useUser, initiateEmailSignIn, initiateEmailSignUp } from '@/fi
 import { cn } from '@/lib/utils';
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
+  const DEFAULT_PASS = 'Venky8466#';
+
+  const [email, setEmail] = useState(ADMIN_EMAIL);
+  const [password, setPassword] = useState(DEFAULT_PASS);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<'login' | 'setup'>('login');
+  const [mode, setMode] = useState<'login' | 'setup'>('setup'); // Default to setup for initial creation
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
   const { auth } = useAuth();
   const { user, isUserLoading } = useUser();
 
-  const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-
   // Redirect if already logged in as admin
   useEffect(() => {
     if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
       router.push('/admin');
     }
-  }, [user, router]);
+  }, [user, router, ADMIN_EMAIL]);
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    const targetEmail = email.trim().toLowerCase();
-
-    if (targetEmail !== ADMIN_EMAIL.toLowerCase()) {
-      setError("Unauthorized access. Only the master admin email can access this panel.");
-      return;
-    }
+    const targetEmail = ADMIN_EMAIL.toLowerCase(); // Strictly hardcoded
 
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
@@ -54,19 +50,25 @@ export default function AdminLoginPage() {
       initiateEmailSignIn(auth, targetEmail, password);
     }
     
-    // Reset loading after a timeout in case of silent failure
-    // Success will be handled by the useUser hook redirecting above
+    // Reset loading after a timeout
     setTimeout(() => {
       setIsLoading(false);
-      // If we are still here, something might have gone wrong (e.g. wrong password)
+      // If we are still here, something might have gone wrong
       if (!user) {
-        setError(mode === 'setup' ? "Could not initialize account. It may already exist." : "Invalid credentials. If this is your first time, use 'First Time Setup' below.");
+        setError(mode === 'setup' 
+          ? "Could not initialize. Check if the user already exists (try 'Sign In') or if Email/Password is enabled in Firebase Console." 
+          : "Invalid credentials. If this is your first time, use 'First Time Setup'.");
       }
-    }, 4000);
+    }, 5000);
   };
 
   if (isUserLoading) {
-    return <div className="min-h-screen bg-[#F9F6EF] flex items-center justify-center font-headline text-3xl font-extrabold text-primary animate-pulse">Verifying Identity...</div>;
+    return (
+      <div className="min-h-screen bg-[#F9F6EF] flex flex-col items-center justify-center gap-6">
+        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="font-headline text-3xl font-extrabold text-primary animate-pulse">Verifying Identity...</div>
+      </div>
+    );
   }
 
   return (
@@ -108,16 +110,14 @@ export default function AdminLoginPage() {
               <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Master Email</label>
               <Input 
                 type="email" 
-                placeholder="vivanfarmsnatural@gmail.com"
-                className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent focus:border-primary transition-all font-bold text-base px-6"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                readOnly
+                className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-6 opacity-70 cursor-not-allowed"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">
-                {mode === 'setup' ? 'Create Password' : 'Password'}
+                {mode === 'setup' ? 'Desired Password' : 'Password'}
               </label>
               <Input 
                 type="password" 
@@ -138,7 +138,7 @@ export default function AdminLoginPage() {
             {mode === 'setup' && !error && (
               <div className="p-4 rounded-2xl bg-primary/5 text-primary text-[10px] font-bold text-center leading-relaxed">
                 <i className="fa-solid fa-wand-magic-sparkles mr-2"></i> 
-                Enter the email and a new password to initialize your master account.
+                Click below to create the master account with the pre-filled credentials.
               </div>
             )}
 
@@ -160,7 +160,8 @@ export default function AdminLoginPage() {
 
           <div className="mt-8 pt-8 border-t border-[#DDD0B5]/30 text-center">
             <p className="text-[10px] text-[#7A6848] font-medium leading-relaxed">
-              If you have lost access to your master account,<br />please contact the Vivaan Farm developer team.
+              <strong>Master Email:</strong> {ADMIN_EMAIL}<br />
+              <strong>Master Pass:</strong> {DEFAULT_PASS}
             </p>
           </div>
         </CardContent>
