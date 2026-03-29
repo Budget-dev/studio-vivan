@@ -11,10 +11,27 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 export const Hero: React.FC = () => {
-  const banners = PlaceHolderImages.filter(img => img.id.startsWith('hero-banner'));
+  const db = useFirestore();
+  const bannersRef = useMemoFirebase(() => query(collection(db, 'banners'), where('isActive', '==', true), where('placement', '==', 'Hero')), [db]);
+  const { data: banners, isLoading } = useCollection(bannersRef);
+
+  if (isLoading) {
+    return <div className="w-full h-[220px] md:h-[350px] bg-primary/5 animate-pulse flex items-center justify-center">Loading Banners...</div>;
+  }
+
+  // Fallback banners if none are in the DB yet
+  const displayBanners = (banners && banners.length > 0) ? banners : [
+    {
+      id: 'default-1',
+      title: 'Experience Pure Purity',
+      description: 'Traditional Bilona A2 Ghee directly from our Gujarat Farm.',
+      imageUrl: 'https://picsum.photos/seed/vivaan1/1600/600',
+    }
+  ];
 
   return (
     <section className="relative w-full border-b border-border/10">
@@ -23,15 +40,14 @@ export const Hero: React.FC = () => {
         className="w-full h-[220px] md:h-[350px] overflow-hidden"
       >
         <CarouselContent className="h-full ml-0">
-          {banners.map((banner, index) => (
+          {displayBanners.map((banner, index) => (
             <CarouselItem key={banner.id} className="relative h-full pl-0">
               <div className="relative w-full h-[220px] md:h-[350px]">
                 <Image
                   src={banner.imageUrl}
-                  alt={banner.description}
+                  alt={banner.title}
                   fill
                   className="object-cover brightness-[0.85]"
-                  data-ai-hint={banner.imageHint}
                   priority={index === 0}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent flex items-center">
@@ -41,9 +57,7 @@ export const Hero: React.FC = () => {
                         Authentic Bilona Method · Gujarat Farm Direct
                       </div>
                       <h1 className="font-headline text-2xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 md:mb-6">
-                        {index === 0 && <>The Gold Standard of <span className="italic text-white/90 underline decoration-primary underline-offset-8">A2 Ghee</span></>}
-                        {index === 1 && <>Directly From Our <span className="italic text-white/90 underline decoration-primary underline-offset-8">Gujarat Farm</span></>}
-                        {index === 2 && <>Traditional Wisdom, <span className="italic text-white/90 underline decoration-primary underline-offset-8">Modern Purity</span></>}
+                        {banner.title}
                       </h1>
                       <div className="flex gap-2.5 md:gap-4">
                         <Button className="h-9 md:h-11 px-5 md:px-8 rounded-full bg-primary text-white font-black uppercase tracking-widest hover:bg-secondary transition-all group border-none shadow-xl text-[9px] md:text-xs">

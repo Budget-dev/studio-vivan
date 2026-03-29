@@ -11,8 +11,8 @@ interface CartSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   cart: CartItem[];
-  onUpdateQty: (id: number, vol: string, delta: number) => void;
-  onRemove: (id: number, vol: string) => void;
+  onUpdateQty: (id: string, vol: string, delta: number) => void;
+  onRemove: (id: string, vol: string) => void;
   onCheckout: () => void;
 }
 

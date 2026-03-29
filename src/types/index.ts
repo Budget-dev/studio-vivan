@@ -9,7 +9,7 @@ export interface ProductVariant {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   vol: string;
   price: number;
@@ -19,12 +19,13 @@ export interface Product {
   revs: string;
   coins: number;
   sold: string;
-  cat: Category;
+  cat: string;
   stock: number;
   badges: string[];
   pi: number; // placeholder index for colors
   vars: ProductVariant[];
   description?: string;
+  imageUrls?: string[];
 }
 
 export interface CartItem extends Product {

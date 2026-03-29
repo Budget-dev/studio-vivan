@@ -17,16 +17,23 @@ import { PaymentModal } from '@/components/vivaan/PaymentModal';
 import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
-import { PRODUCTS } from '@/lib/data';
 import { Category, Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 export default function VivaanFarms() {
-  const [filter, setFilter] = useState<Category>('all');
-  const [aiCategories, setAiCategories] = useState<Category[] | null>(null);
+  const db = useFirestore();
+  
+  // Fetch real products from Firestore
+  const productsQuery = useMemoFirebase(() => query(collection(db, 'products'), where('isLive', '==', true)), [db]);
+  const { data: dbProducts, isLoading: productsLoading } = useCollection(productsQuery);
+
+  const [filter, setFilter] = useState<string>('all');
+  const [aiCategories, setAiCategories] = useState<string[] | null>(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -36,15 +43,39 @@ export default function VivaanFarms() {
   const { cart, addToCart, updateQty, removeFromCart, subtotal, totalQty, clearCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  const handleSearch = async (query: string) => {
-    if (!query.trim()) {
+  // Map Firestore data to UI structure
+  const products = useMemo(() => {
+    if (!dbProducts) return [];
+    return dbProducts.map((p, i) => ({
+      id: p.id,
+      name: p.name,
+      vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
+      price: p.basePrice || 0,
+      mrp: p.mrpPrice || p.basePrice,
+      off: p.mrpPrice ? `${Math.round(((p.mrpPrice - p.basePrice) / p.mrpPrice) * 100)}%` : 'BEST PRICE',
+      rat: p.rating || 4.9,
+      revs: p.reviewCount ? `${(p.reviewCount / 1000).toFixed(1)}k` : '0',
+      coins: Math.round((p.basePrice || 0) * 0.05),
+      sold: '1.2k', // Placeholder for sales metrics
+      cat: p.categoryId?.toLowerCase() || 'other',
+      stock: p.stockQuantity || 0,
+      badges: p.badges || [],
+      pi: i,
+      vars: p.variants || [{ s: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard', p: p.basePrice || 0, on: true }],
+      description: p.description,
+      imageUrls: p.imageUrls
+    } as Product));
+  }, [dbProducts]);
+
+  const handleSearch = async (queryStr: string) => {
+    if (!queryStr.trim()) {
       setAiCategories(null);
       setFilter('all');
       return;
     }
     try {
-      const res = await naturalLanguageProductSearch({ query });
-      setAiCategories(res.categories as Category[]);
+      const res = await naturalLanguageProductSearch({ query: queryStr });
+      setAiCategories(res.categories);
       const el = document.getElementById('products');
       el?.scrollIntoView({ behavior: 'smooth' });
     } catch (e) {
@@ -54,14 +85,14 @@ export default function VivaanFarms() {
 
   const filteredProducts = useMemo(() => {
     if (aiCategories) {
-      if (aiCategories.includes('all')) return PRODUCTS;
-      return PRODUCTS.filter(p => aiCategories.includes(p.cat));
+      if (aiCategories.includes('all')) return products;
+      return products.filter(p => aiCategories.includes(p.cat));
     }
-    if (filter === 'all') return PRODUCTS;
-    return PRODUCTS.filter(p => p.cat === filter);
-  }, [filter, aiCategories]);
+    if (filter === 'all') return products;
+    return products.filter(p => p.cat === filter);
+  }, [filter, aiCategories, products]);
 
-  const handleCategoryFilter = (cat: Category) => {
+  const handleCategoryFilter = (cat: string) => {
     setAiCategories(null);
     setFilter(cat);
     const el = document.getElementById('products');
@@ -86,7 +117,7 @@ export default function VivaanFarms() {
     setIsPaymentOpen(true);
   };
 
-  const CATEGORIES: { id: Category; label: string; ico: string }[] = [
+  const CATEGORIES = [
     { id: 'all', label: 'All Products', ico: '🧈' },
     { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
     { id: 'pickles', label: 'Pickles', ico: '🌶️' },
@@ -162,19 +193,31 @@ export default function VivaanFarms() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-              {filteredProducts.map((p) => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  isInWishlist={isInWishlist(p.id)}
-                  isInCart={cart.some(c => c.id === p.id)}
-                  onOpen={() => setSelectedProduct(p)}
-                  onAdd={() => addToCart(p)}
-                  onWish={() => toggleWishlist(p.id)}
-                />
-              ))}
-            </div>
+            {productsLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 animate-pulse">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="bg-gray-100 rounded-[32px] aspect-[3/4]"></div>
+                ))}
+              </div>
+            ) : filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                {filteredProducts.map((p) => (
+                  <ProductCard 
+                    key={p.id} 
+                    product={p} 
+                    isInWishlist={isInWishlist(p.id)}
+                    isInCart={cart.some(c => c.id === p.id)}
+                    onOpen={() => setSelectedProduct(p)}
+                    onAdd={() => addToCart(p)}
+                    onWish={() => toggleWishlist(p.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-20 text-center text-[#7A6848] font-medium italic bg-white/50 rounded-[40px] border-2 border-dashed border-[#DDD0B5]">
+                No products found in this category.
+              </div>
+            )}
           </div>
         </section>
 

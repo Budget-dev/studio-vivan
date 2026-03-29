@@ -6,6 +6,7 @@ import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { ComboIcon, JarIcon } from './JarIcon';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
+import HoneyLoader from './HoneyLoader';
 
 interface ProductModalProps {
   product: Product | null;
@@ -20,13 +21,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [aiData, setAiData] = useState<RecipeIdeasOutput | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
+  const [showHoneyLoader, setShowHoneyLoader] = useState(false);
 
   useEffect(() => {
-    if (product) {
+    if (product && isOpen) {
       setQty(1);
       const defaultVar = product.vars.find(v => v.on) || product.vars[0];
       setSelectedSize(defaultVar.s);
       
+      if (product.cat === 'honey') {
+        setShowHoneyLoader(true);
+        setTimeout(() => setShowHoneyLoader(false), 2500);
+      }
+
       const fetchAi = async () => {
         setLoadingAi(true);
         try {
@@ -45,7 +52,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
       };
       fetchAi();
     }
-  }, [product]);
+  }, [product, isOpen]);
 
   if (!product || !isOpen) return null;
 
@@ -57,6 +64,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
       onBuyNow({ ...product, price, vol: selectedSize }, qty);
     }
   };
+
+  if (showHoneyLoader) {
+    return (
+      <div className="fixed inset-0 z-[1300] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <HoneyLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-8" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -83,7 +98,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
             <span className="text-[11px] font-bold text-destructive">14 people viewing now</span>
           </div>
 
-          <h2 className="font-headline text-4xl font-extrabold text-foreground leading-[1.1] mb-2">{product.name}</h2>
+          <h2 className="font-headline text-4xl font-extrabold text-primary leading-[1.1] mb-2">{product.name}</h2>
           <p className="text-xs text-muted-foreground font-black tracking-widest uppercase mb-6">{selectedSize} · FARM DIRECT</p>
 
           <div className="flex items-center gap-3 bg-background border border-border rounded-2xl p-4 mb-6">

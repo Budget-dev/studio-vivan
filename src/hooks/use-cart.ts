@@ -39,7 +39,7 @@ export function useCart() {
     });
   };
 
-  const updateQty = (id: number, vol: string, delta: number) => {
+  const updateQty = (id: string, vol: string, delta: number) => {
     setCart(prev => 
       prev.map(item => 
         (item.id === id && item.vol === vol)
@@ -49,7 +49,7 @@ export function useCart() {
     );
   };
 
-  const removeFromCart = (id: number, vol: string) => {
+  const removeFromCart = (id: string, vol: string) => {
     setCart(prev => prev.filter(item => !(item.id === id && item.vol === vol)));
   };
 

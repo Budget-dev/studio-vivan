@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Product } from '@/types';
 
 export function useWishlist() {
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -25,13 +25,13 @@ export function useWishlist() {
     }
   }, [wishlist, isLoaded]);
 
-  const toggleWishlist = (id: number) => {
+  const toggleWishlist = (id: string) => {
     setWishlist(prev => 
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
 
-  const isInWishlist = (id: number) => wishlist.includes(id);
+  const isInWishlist = (id: string) => wishlist.includes(id);
 
   return { wishlist, toggleWishlist, isInWishlist };
 }

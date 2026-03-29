@@ -12,17 +12,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Category } from '@/types';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 interface HeaderProps {
   onOpenCart: () => void;
   cartCount: number;
-  onFilter: (cat: Category) => void;
+  onFilter: (cat: string) => void;
   onSearch: (query: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter, onSearch }) => {
   const [searchValue, setSearchValue] = useState('');
+  const db = useFirestore();
+  const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
+  const { data: categories } = useCollection(categoriesRef);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,10 +61,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="rounded-2xl p-3 min-w-[200px] bg-white border-primary/10">
-              <DropdownMenuItem onClick={() => onFilter('ghee')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🧈 A2 Gir Cow Ghee</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('pickles')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🌶️ Handmade Pickles</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('sweets')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🎁 Artisanal Sweets</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onFilter('honey')} className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer">🍯 Forest Honey</DropdownMenuItem>
+              {categories && categories.length > 0 ? categories.map((cat) => (
+                <DropdownMenuItem 
+                  key={cat.id} 
+                  onClick={() => onFilter(cat.name.toLowerCase())} 
+                  className="rounded-xl py-2.5 px-3.5 text-xs font-semibold hover:bg-primary/5 hover:text-primary cursor-pointer capitalize"
+                >
+                  {cat.name}
+                </DropdownMenuItem>
+              )) : (
+                <DropdownMenuItem className="text-[10px] text-muted-foreground italic">Add categories in admin</DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -92,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               onClick={onOpenCart}
               className="bg-primary text-white hover:bg-secondary transition-all rounded-full px-3.5 md:px-5 h-10 md:h-12 text-[10px] md:text-xs font-extrabold shadow-xl flex items-center gap-2 whitespace-nowrap"
             >
-              <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              <i className="fa-solid fa-shopping-cart text-[14px]"></i>
               <span className="hidden sm:inline">Cart</span>
               <span className="bg-white text-primary rounded-full min-w-[16px] h-4 md:min-w-[20px] md:h-5 flex items-center justify-center text-[8px] md:text-[10px] font-black">
                 {cartCount}
