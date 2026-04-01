@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -36,7 +35,7 @@ export const HoverFooter: React.FC = () => {
       links: [
         { label: "A2 Ghee", href: "/" },
         { label: "Honey", href: "/" },
-        { label: "Pickles", href: "/" },
+        { label: "Sweets", href: "/" },
         { label: "Contact Support", href: "#", pulse: true },
       ],
     },

@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         <form onSubmit={handleSearch} className="hidden md:block flex-1 max-w-[420px] mx-auto relative">
           <Input 
             className="w-full h-11 bg-primary/[0.03] border-primary/10 rounded-full pl-5 pr-12 text-sm text-primary placeholder:text-primary/30 focus-visible:bg-white focus-visible:border-primary/40 focus-visible:ring-0 transition-all"
-            placeholder="Search ghee, pickles, sweets, honey..."
+            placeholder="Search ghee, sweets, honey..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
