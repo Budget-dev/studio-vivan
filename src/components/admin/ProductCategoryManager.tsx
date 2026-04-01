@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -22,7 +21,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Search, Plus, ExternalLink, Pen, Trash2, Camera, X } from 'lucide-react';
+import { Search, Plus, ExternalLink, Pen, Trash2, Camera, X, Zap, Star } from 'lucide-react';
 
 interface ProductCategoryManagerProps {
   category: string;
@@ -51,8 +50,14 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   // Form State
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [mrpPrice, setMrpPrice] = useState('');
   const [stock, setStock] = useState('');
   const [desc, setDesc] = useState('');
+  const [rating, setRating] = useState('4.9');
+  const [reviews, setReviews] = useState('120');
+  const [soldLabel, setSoldLabel] = useState('1.5k+');
+  const [statusBadge, setStatusBadge] = useState('Selling Fast');
+  const [topBadge, setTopBadge] = useState('New Launch');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const filteredProducts = useMemo(() => {
@@ -83,22 +88,28 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     const newProduct = {
       name,
       basePrice: Number(price),
+      mrpPrice: Number(mrpPrice),
       stockQuantity: Number(stock),
       description: desc,
+      rating: Number(rating),
+      reviewCount: Number(reviews),
+      soldCountLabel: soldLabel,
+      statusBadge: statusBadge,
+      badges: topBadge ? [topBadge] : [],
       categoryId: category.toLowerCase(),
-      imageUrls: uploadedImages.length > 0 ? uploadedImages : ['https://picsum.photos/seed/vivaan/400/400'],
+      imageUrls: uploadedImages.length > 0 ? uploadedImages : [],
       isLive: true,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       volumeValue: category === 'ghee' ? 500 : 250,
       volumeUnit: category === 'ghee' ? 'ml' : 'g',
-      variants: [{ s: 'Standard', p: Number(price), on: true }]
+      vars: [{ s: 'Standard', p: Number(price), on: true }]
     };
 
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
     setIsAddOpen(false);
     // Reset form
-    setName(''); setPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
+    setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
   };
 
   const handleDelete = (id: string) => {
@@ -136,66 +147,94 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                 <i className="fa-solid fa-plus"></i> Add New {category}
               </button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl rounded-[40px] p-10 border-none shadow-2xl font-body overflow-y-auto max-h-[90vh]">
+            <DialogContent className="max-w-3xl rounded-[40px] p-10 border-none shadow-2xl font-body overflow-y-auto max-h-[90vh]">
               <DialogHeader className="mb-8">
                 <DialogTitle className="font-headline text-3xl font-extrabold text-primary">Register {category}</DialogTitle>
-                <p className="text-xs text-[#7A6848] font-medium">Add a new item to your {title} collection.</p>
+                <p className="text-xs text-[#7A6848] font-medium">Create a high-conversion product listing.</p>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Name</label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. A2 Gir Cow Ghee" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Price (₹)</label>
-                  <Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0.00" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock Quantity</label>
-                  <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0" />
-                </div>
-                
-                {/* Image Upload Section */}
-                <div className="space-y-4 col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images</label>
-                  <div className="flex flex-wrap gap-4">
-                    {uploadedImages.map((img, idx) => (
-                      <div key={idx} className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/20">
-                        <Image src={img} alt="Preview" fill className="object-cover" />
-                        <button 
-                          onClick={() => removeImage(idx)}
-                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                    <button 
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-24 h-24 rounded-2xl border-2 border-dashed border-[#DDD0B5] flex flex-col items-center justify-center gap-2 text-[#7A6848] hover:border-primary hover:text-primary transition-all bg-[#F9F6EF]"
-                    >
-                      <Camera className="w-6 h-6" />
-                      <span className="text-[8px] font-black uppercase tracking-widest">Upload</span>
-                    </button>
-                    <input 
-                      type="file" 
-                      ref={fileInputRef} 
-                      onChange={handleFileChange} 
-                      multiple 
-                      accept="image/*" 
-                      className="hidden" 
-                    />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left Column: Basic Info */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Name</label>
+                    <Input value={name} onChange={(e) => setName(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. A2 Gir Cow Ghee" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Sale Price (₹)</label>
+                      <Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0.00" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">MRP Price (₹)</label>
+                      <Input type="number" value={mrpPrice} onChange={(e) => setMrpPrice(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0.00" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock</label>
+                      <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Rating</label>
+                      <Input value={rating} onChange={(e) => setRating(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="4.9" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Description</label>
+                    <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[100px]" placeholder="Brief story about the product..." />
                   </div>
                 </div>
 
-                <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Description</label>
-                  <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[120px]" placeholder="Product details..." />
+                {/* Right Column: Visuals & Badges */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images</label>
+                    <div className="flex flex-wrap gap-3">
+                      {uploadedImages.map((img, idx) => (
+                        <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-primary/10">
+                          <Image src={img} alt="Preview" fill className="object-cover" />
+                          <button onClick={() => removeImage(idx)} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"><X className="w-3 h-3" /></button>
+                        </div>
+                      ))}
+                      <button onClick={() => fileInputRef.current?.click()} className="w-20 h-20 rounded-xl border-2 border-dashed border-[#DDD0B5] flex flex-col items-center justify-center gap-1 text-[#7A6848] hover:border-primary hover:text-primary transition-all bg-[#F9F6EF]">
+                        <Camera className="w-5 h-5" />
+                        <span className="text-[7px] font-black uppercase tracking-widest">Upload</span>
+                      </button>
+                      <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Status Badge</label>
+                      <Input value={statusBadge} onChange={(e) => setStatusBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. Selling Fast" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Top Badge</label>
+                      <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. New Launch" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Social Proof (🔥)</label>
+                      <Input value={soldLabel} onChange={(e) => setSoldLabel(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. 1.5k+" />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Review Count</label>
+                      <Input type="number" value={reviews} onChange={(e) => setReviews(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="278" />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-4 mt-8">
-                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
-                <Button onClick={handleAdd} className="flex-1 h-14 bg-primary hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl">Save Product</Button>
+
+              <div className="flex gap-4 mt-10">
+                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Cancel</Button>
+                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Save High-Converting Listing</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -215,18 +254,18 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             />
           </div>
           <div className="flex items-center gap-4 text-[#7A6848] font-bold text-xs">
-            <span className="uppercase tracking-widest">{products?.length || 0} Products Total</span>
+            <span className="uppercase tracking-widest">{products?.length || 0} Products in {category}</span>
           </div>
         </div>
         
         <Table>
           <TableHeader className="bg-[#FDFBFA]">
             <TableRow className="border-b-[#F9F6EF]">
-              <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Image</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Name</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Base Price</TableHead>
+              <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Visual</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Info</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Price (₹)</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Performance</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Status</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right px-8">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -243,43 +282,43 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                     />
                   </div>
                 </TableCell>
-                <TableCell className="text-sm font-bold text-[#100C06]">{p.name}</TableCell>
-                <TableCell className="text-sm font-black text-foreground">₹{p.basePrice?.toLocaleString('en-IN')}</TableCell>
+                <TableCell>
+                  <div className="space-y-1">
+                    <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
+                    <div className="flex gap-1">
+                      {p.badges?.map((b, i) => (
+                        <span key={i} className="px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[8px] font-black uppercase">{b}</span>
+                      ))}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-[#7A6848] line-through opacity-50">₹{p.mrpPrice}</span>
+                    <span className="text-sm font-black text-foreground">₹{p.basePrice?.toLocaleString('en-IN')}</span>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <span className={cn(
-                      "text-sm font-bold",
-                      (p.stockQuantity || 0) <= 5 ? "text-destructive" : "text-[#7A6848]"
-                    )}>{p.stockQuantity || 0}</span>
+                    <div className="flex items-center gap-0.5 text-xs font-bold"><Star className="w-3 h-3 text-primary fill-current" /> {p.rating}</div>
+                    <div className="text-[10px] text-[#7A6848] font-medium">{p.soldCountLabel} sold</div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <span className={cn(
-                    "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider",
-                    p.isLive ? "bg-[#EBF5EE] text-[#1B5E3B]" : "bg-gray-100 text-gray-400"
-                  )}>
-                    {p.isLive ? 'active' : 'draft'}
-                  </span>
+                    "text-sm font-bold",
+                    (p.stockQuantity || 0) <= 5 ? "text-destructive" : "text-[#7A6848]"
+                  )}>{p.stockQuantity || 0}</span>
                 </TableCell>
                 <TableCell className="text-right px-8 space-x-2">
-                  <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all">
-                    <Camera className="w-4 h-4 mx-auto" />
-                  </button>
-                  <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all">
-                    <Pen className="w-4 h-4 mx-auto" />
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(p.id)}
-                    className="w-9 h-9 rounded-xl text-destructive/40 hover:text-destructive hover:bg-destructive/5 transition-all"
-                  >
-                    <Trash2 className="w-4 h-4 mx-auto" />
-                  </button>
+                  <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all"><Pen className="w-4 h-4 mx-auto" /></button>
+                  <button onClick={() => handleDelete(p.id)} className="w-9 h-9 rounded-xl text-destructive/40 hover:text-destructive hover:bg-destructive/5 transition-all"><Trash2 className="w-4 h-4 mx-auto" /></button>
                 </TableCell>
               </TableRow>
             )) : (
               <TableRow>
                 <TableCell colSpan={6} className="py-20 text-center text-[#7A6848] font-medium italic">
-                  No {category} products found. Click "Add New" to begin.
+                  No {category} listings yet. Start with a high-quality photo!
                 </TableCell>
               </TableRow>
             )}

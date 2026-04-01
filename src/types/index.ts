@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export type Category = 'all' | 'ghee' | 'combo' | 'sweets' | 'honey' | 'superfoods';
+export type Category = 'all' | 'ghee' | 'sweets' | 'honey' | 'superfoods';
 
 export interface ProductVariant {
   s: string; // size
@@ -13,16 +13,17 @@ export interface Product {
   name: string;
   vol: string;
   price: number;
-  mrp?: number;
+  mrpPrice?: number;
   off?: string;
-  rat: number;
-  revs: string;
-  coins: number;
-  sold: string;
+  rating: number;
+  reviewCount: number;
+  purityCoins: number;
+  soldCountLabel: string; // e.g., "1.5k+"
+  statusBadge?: string; // e.g., "Selling Fast"
   cat: string;
   stock: number;
   badges: string[];
-  pi: number; // placeholder index for colors
+  pi: number; // placeholder index
   vars: ProductVariant[];
   description?: string;
   imageUrls?: string[];

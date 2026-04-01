@@ -28,7 +28,6 @@ import { collection, query, where } from 'firebase/firestore';
 export default function VivaanFarms() {
   const db = useFirestore();
   
-  // Fetch real products from Firestore
   const productsQuery = useMemoFirebase(() => query(collection(db, 'products'), where('isLive', '==', true)), [db]);
   const { data: dbProducts, isLoading: productsLoading } = useCollection(productsQuery);
 
@@ -43,27 +42,19 @@ export default function VivaanFarms() {
   const { cart, addToCart, updateQty, removeFromCart, subtotal, totalQty, clearCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  // Map Firestore data to UI structure
   const products = useMemo(() => {
     if (!dbProducts) return [];
     return dbProducts.map((p, i) => ({
-      id: p.id,
-      name: p.name,
-      vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
+      ...p,
       price: p.basePrice || 0,
-      mrp: p.mrpPrice || p.basePrice,
-      off: p.mrpPrice ? `${Math.round(((p.mrpPrice - p.basePrice) / p.mrpPrice) * 100)}%` : 'BEST PRICE',
-      rat: p.rating || 4.9,
-      revs: p.reviewCount ? `${(p.reviewCount / 1000).toFixed(1)}k` : '0',
-      coins: Math.round((p.basePrice || 0) * 0.05),
-      sold: '1.2k', // Placeholder for sales metrics
-      cat: p.categoryId?.toLowerCase() || 'other',
-      stock: p.stockQuantity || 0,
-      badges: p.badges || [],
+      vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
       pi: i,
-      vars: p.variants || [{ s: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard', p: p.basePrice || 0, on: true }],
-      description: p.description,
-      imageUrls: p.imageUrls
+      rating: p.rating || 4.9,
+      reviewCount: p.reviewCount || 0,
+      soldCountLabel: p.soldCountLabel || '',
+      statusBadge: p.statusBadge || '',
+      badges: p.badges || [],
+      vars: p.variants || [{ s: 'Standard', p: p.basePrice || 0, on: true }]
     } as Product));
   }, [dbProducts]);
 
@@ -118,7 +109,7 @@ export default function VivaanFarms() {
   };
 
   const CATEGORIES = [
-    { id: 'all', label: 'All Products', ico: '🧈' },
+    { id: 'all', label: 'All Products', ico: '🌿' },
     { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
     { id: 'sweets', label: 'Sweets', ico: '🎁' },
     { id: 'honey', label: 'Honey', ico: '🍯' },
@@ -142,22 +133,6 @@ export default function VivaanFarms() {
 
         <Hero />
         
-        <section className="py-8 md:py-24 bg-white">
-          <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
-            <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-4">
-              Welcome To Vivaan Farms!
-            </h2>
-            <p className="font-headline text-lg md:text-3xl text-[#7A6848] italic">
-              You're One Step Closer to Purity
-            </p>
-          </div>
-        </section>
-
-        <div className="bg-[#1B5E3B] py-2 flex items-center justify-center gap-2 text-[11px] font-bold text-white shadow-lg">
-          <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-          🔥 <strong>142 people</strong> bought farm-fresh goods in the last 24 hours
-        </div>
-
         <TrustBar />
 
         <section className="py-8 md:py-20" id="products">
@@ -187,9 +162,6 @@ export default function VivaanFarms() {
               <h2 className="font-headline text-3xl md:text-6xl font-extrabold leading-none capitalize">
                 {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
               </h2>
-              <p className="text-sm md:text-base text-[#7A6848] max-w-lg mx-auto leading-relaxed font-medium px-4">
-                Handcrafted A2 Ghee, Artisanal Sweets, and Forest Honey.
-              </p>
             </div>
 
             {productsLoading ? (
@@ -221,20 +193,9 @@ export default function VivaanFarms() {
         </section>
 
         <WhyChoose />
-
         <NativeSection />
-
         <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
-
         <VideoSection />
-
-        <section className="py-12 md:py-20 bg-[#F1EAD8]">
-          <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center space-y-4">
-            <div className="text-[10px] font-black text-[#7A6848] tracking-[3px] uppercase">THE VIVAAN PROMISE</div>
-            <h2 className="font-headline text-4xl md:text-6xl font-extrabold leading-none text-primary">Purity You Can Taste</h2>
-            <p className="text-[#7A6848] max-w-2xl mx-auto font-medium">From the Gir cows of Gujarat to sun-dried spices, we bring the true essence of Indian heritage to your table.</p>
-          </div>
-        </section>
       </main>
 
       <Footer />
