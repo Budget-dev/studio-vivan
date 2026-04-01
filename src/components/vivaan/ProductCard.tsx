@@ -51,108 +51,103 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
   return (
     <div 
       onClick={() => onOpen(product.id)}
-      className="bg-white rounded-[24px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full"
+      className="bg-white rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full"
     >
       {/* Top Section: Image & Overlays */}
-      <div className="relative aspect-[4/5] bg-[#F9FAFB] p-4 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-[4/5] bg-[#F9FAFB] p-4 flex items-center justify-center">
         {/* Discount Circle */}
         {discount > 0 && (
-          <div className="absolute top-3 left-3 z-20 w-10 h-10 md:w-12 md:h-12 bg-[#0D3520] rounded-full flex flex-col items-center justify-center text-white shadow-lg">
-            <span className="text-[10px] md:text-[12px] font-black leading-none">{discount}%</span>
+          <div className="absolute top-4 left-4 z-20 w-12 h-12 bg-primary rounded-full flex flex-col items-center justify-center text-white shadow-lg">
+            <span className="text-[11px] md:text-[13px] font-black leading-none">{discount}%</span>
             <span className="text-[7px] md:text-[8px] font-bold uppercase">OFF</span>
           </div>
         )}
 
-        {/* Top Right Badges - Adjusted to avoid ADD button overlap */}
-        <div className="absolute top-3 right-0 z-20 flex flex-col items-end gap-1.5">
+        {/* Top Right Badges */}
+        <div className="absolute top-4 right-0 z-20 flex flex-col items-end gap-1.5">
           {product.badges?.map((badge, i) => (
-            <div key={i} className="bg-[#D4A017] text-white px-3 py-1 rounded-l-lg text-[8px] md:text-[10px] font-black uppercase tracking-wider shadow-md">
+            <div key={i} className="bg-[#D4A017] text-white px-4 py-1.5 rounded-l-full text-[9px] md:text-[11px] font-black uppercase tracking-wider shadow-md">
               {badge}
             </div>
           ))}
         </div>
 
-        {/* Selling Fast Badge */}
-        {product.statusBadge && (
-          <div className="absolute bottom-4 left-3 z-20 bg-[#FDF2D0] border border-[#F5D110]/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
-            <Zap className="w-3 h-3 text-[#D4A017] fill-current" />
-            <span className="text-[9px] md:text-[11px] font-extrabold text-[#8B6E0F] uppercase tracking-tight">{product.statusBadge}</span>
-          </div>
-        )}
-
-        {/* Wishlist Button */}
+        {/* Wishlist Button - Moved to avoid badge overlap */}
         <button 
           onClick={(e) => { e.stopPropagation(); onWish(product.id); }}
           className={cn(
-            "absolute top-3 right-12 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-75",
-            isInWishlist ? 'text-red-500' : 'text-primary/20 hover:text-red-400'
+            "absolute top-4 right-24 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-75 bg-white/20 backdrop-blur-md",
+            isInWishlist ? 'text-red-500' : 'text-primary/40 hover:text-red-400'
           )}
         >
           <Heart className={cn("w-5 h-5", isInWishlist && 'fill-current')} />
         </button>
+
+        {/* Selling Fast Badge */}
+        {product.statusBadge && (
+          <div className="absolute bottom-6 left-4 z-20 bg-[#FDF2D0] border border-[#F5D110]/30 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+            <Zap className="w-3.5 h-3.5 text-[#D4A017] fill-current" />
+            <span className="text-[10px] md:text-[12px] font-black text-[#8B6E0F] uppercase tracking-tight">{product.statusBadge}</span>
+          </div>
+        )}
 
         {/* Main Product Visual */}
         <div className="relative z-10 w-full h-full flex items-center justify-center">
           {getIcon()}
         </div>
 
-        {/* Floating Add Button - Positioned exactly on the bottom seam */}
-        <div className="absolute right-4 bottom-0 translate-y-1/2 z-30">
+        {/* Floating Add Button - Positioned exactly on the bottom seam with higher Z */}
+        <div className="absolute right-4 bottom-0 translate-y-1/2 z-[40]">
           <button 
             onClick={(e) => { e.stopPropagation(); onAdd(product.id); }}
             className={cn(
-              "h-9 md:h-11 px-4 md:px-6 rounded-xl flex items-center gap-2 font-black text-[10px] md:text-xs uppercase tracking-widest shadow-2xl transition-all active:scale-95",
-              isInCart ? "bg-accent text-white" : "bg-[#1B5E3B] text-white hover:bg-[#0D3520]"
+              "h-11 md:h-13 px-6 md:px-8 rounded-2xl flex items-center gap-3 font-black text-[11px] md:text-sm uppercase tracking-widest shadow-2xl transition-all active:scale-95",
+              isInCart ? "bg-accent text-white" : "bg-primary text-white hover:bg-secondary"
             )}
           >
-            {isInCart ? 'ADDED' : 'ADD'} <ShoppingCart className="w-3.5 h-3.5 md:w-4 md:h-4" />
+            {isInCart ? 'ADDED' : 'ADD'} <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
-
-        {/* Reflection/Shadow effect */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-black/5 to-transparent pointer-events-none"></div>
       </div>
 
-      {/* Info Section - More compact spacing */}
-      <div className="p-4 md:p-5 flex flex-col flex-1">
-        <div className="mt-2 space-y-1 mb-2">
-          <h3 className="font-headline text-lg md:text-xl font-bold text-[#100C06] leading-tight line-clamp-2 min-h-[2em]">
+      {/* Info Section */}
+      <div className="p-5 md:p-6 bg-white flex flex-col flex-1 relative z-30">
+        <div className="mt-2 space-y-2 mb-4">
+          <h3 className="font-headline text-xl md:text-3xl font-bold text-[#100C06] leading-tight line-clamp-2">
             {product.name}
           </h3>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-0.5">
-              <Star className="w-3.5 h-3.5 text-[#F5D110] fill-current" />
-              <span className="text-xs font-bold text-[#100C06]">{product.rating || '4.9'}</span>
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 text-[#F5D110] fill-current" />
+              <span className="text-sm font-black text-[#100C06]">{product.rating || '4.9'}</span>
             </div>
-            <span className="text-[10px] md:text-[11px] text-[#7A6848] font-medium">({product.reviewCount || '0'} reviews)</span>
+            <span className="text-[11px] md:text-xs text-[#7A6848] font-semibold">({product.reviewCount || '0'} reviews)</span>
           </div>
         </div>
 
-        <div className="flex items-end justify-between mt-auto pt-1">
-          <div className="space-y-0">
-            <div className="flex items-center gap-2">
-              <span className="text-xs md:text-sm text-[#7A6848] line-through font-medium opacity-50">₹{product.mrpPrice?.toLocaleString('en-IN')}</span>
-              <span className="text-lg md:text-xl font-black text-[#100C06]">₹{product.price.toLocaleString('en-IN')}</span>
-            </div>
+        <div className="flex items-end justify-between mt-auto pt-2">
+          <div className="flex items-center gap-3">
+            <span className="text-sm md:text-base text-[#7A6848] line-through font-bold opacity-40">₹{product.mrpPrice?.toLocaleString('en-IN')}</span>
+            <span className="text-2xl md:text-3xl font-black text-[#100C06]">₹{product.price.toLocaleString('en-IN')}</span>
           </div>
           
           {product.soldCountLabel && (
-            <div className="bg-[#FFF8E7] px-2 py-0.5 rounded-lg flex items-center gap-1 border border-[#F5D110]/20 shrink-0">
-              <span className="text-xs">🔥</span>
-              <span className="text-[9px] md:text-[10px] font-black text-[#8B6E0F]">{product.soldCountLabel}</span>
+            <div className="bg-[#FFF8E7] px-3 py-1 rounded-full flex items-center gap-1.5 border border-[#F5D110]/20 shrink-0">
+              <span className="text-sm">🔥</span>
+              <span className="text-[10px] md:text-[12px] font-black text-[#8B6E0F]">{product.soldCountLabel}</span>
             </div>
           )}
         </div>
 
-        {/* Best Price Bar - Tightened */}
-        <div className="mt-3 bg-[#EBF5EE] border border-primary/10 rounded-xl p-2 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm">
-              <i className="fa-solid fa-tag text-[8px] text-primary"></i>
+        {/* Best Price Bar */}
+        <div className="mt-5 bg-[#EBF5EE] border border-primary/10 rounded-2xl p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
+              <i className="fa-solid fa-tag text-[10px] text-primary"></i>
             </div>
-            <span className="text-[8px] md:text-[9px] font-black text-primary uppercase tracking-tight">Best Price ₹{Math.round(product.price * 0.85).toLocaleString('en-IN')}</span>
+            <span className="text-[10px] md:text-[12px] font-black text-primary uppercase tracking-tight">Best Price ₹{Math.round(product.price * 0.85).toLocaleString('en-IN')}</span>
           </div>
-          <span className="text-[7px] md:text-[8px] font-bold text-primary/60 uppercase">with coupon</span>
+          <span className="text-[8px] md:text-[9px] font-black text-primary/50 uppercase tracking-widest">with coupon</span>
         </div>
       </div>
     </div>
