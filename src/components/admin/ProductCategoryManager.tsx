@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Search, Plus, ExternalLink, Pen, Trash2, LayoutGrid } from 'lucide-react';
+import { Search, Plus, ExternalLink, Pen, Trash2, Camera, X } from 'lucide-react';
 
 interface ProductCategoryManagerProps {
   category: string;
@@ -37,6 +38,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   icon
 }) => {
   const db = useFirestore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const productsQuery = useMemoFirebase(() => 
     query(collection(db, 'products'), where('categoryId', '==', category.toLowerCase())), 
     [db, category]
@@ -51,7 +53,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [desc, setDesc] = useState('');
-  const [image, setImage] = useState('');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const filteredProducts = useMemo(() => {
     if (!products) return [];
@@ -60,6 +62,23 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     );
   }, [products, searchTerm]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImages(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleAdd = () => {
     const newProduct = {
       name,
@@ -67,7 +86,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       stockQuantity: Number(stock),
       description: desc,
       categoryId: category.toLowerCase(),
-      imageUrls: [image || 'https://picsum.photos/seed/vivaan/400/400'],
+      imageUrls: uploadedImages.length > 0 ? uploadedImages : ['https://picsum.photos/seed/vivaan/400/400'],
       isLive: true,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -79,7 +98,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
     setIsAddOpen(false);
     // Reset form
-    setName(''); setPrice(''); setStock(''); setDesc(''); setImage('');
+    setName(''); setPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
   };
 
   const handleDelete = (id: string) => {
@@ -135,10 +154,40 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                   <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock Quantity</label>
                   <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0" />
                 </div>
-                <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Image URL</label>
-                  <Input value={image} onChange={(e) => setImage(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="https://..." />
+                
+                {/* Image Upload Section */}
+                <div className="space-y-4 col-span-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images</label>
+                  <div className="flex flex-wrap gap-4">
+                    {uploadedImages.map((img, idx) => (
+                      <div key={idx} className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/20">
+                        <Image src={img} alt="Preview" fill className="object-cover" />
+                        <button 
+                          onClick={() => removeImage(idx)}
+                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    <button 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-24 h-24 rounded-2xl border-2 border-dashed border-[#DDD0B5] flex flex-col items-center justify-center gap-2 text-[#7A6848] hover:border-primary hover:text-primary transition-all bg-[#F9F6EF]"
+                    >
+                      <Camera className="w-6 h-6" />
+                      <span className="text-[8px] font-black uppercase tracking-widest">Upload</span>
+                    </button>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handleFileChange} 
+                      multiple 
+                      accept="image/*" 
+                      className="hidden" 
+                    />
+                  </div>
                 </div>
+
                 <div className="space-y-2 col-span-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Description</label>
                   <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[120px]" placeholder="Product details..." />
@@ -214,7 +263,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                 </TableCell>
                 <TableCell className="text-right px-8 space-x-2">
                   <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all">
-                    <ExternalLink className="w-4 h-4 mx-auto" />
+                    <Camera className="w-4 h-4 mx-auto" />
                   </button>
                   <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all">
                     <Pen className="w-4 h-4 mx-auto" />

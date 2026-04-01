@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -14,7 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
+import { updateDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 export default function AdminOrdersPage() {
   const db = useFirestore();
@@ -28,8 +30,16 @@ export default function AdminOrdersPage() {
       case 'Pending': return 'bg-yellow-100 text-yellow-700';
       case 'Shipped': return 'bg-blue-100 text-blue-700';
       case 'Cancelled': return 'bg-destructive/10 text-destructive';
+      case 'RTO': return 'bg-orange-100 text-orange-700';
       default: return 'bg-gray-100 text-gray-700';
     }
+  };
+
+  const updateStatus = (orderId: string, newStatus: string) => {
+    updateDocumentNonBlocking(doc(db, 'orders', orderId), {
+      status: newStatus,
+      updatedAt: new Date().toISOString()
+    });
   };
 
   if (isLoading) {
@@ -53,14 +63,11 @@ export default function AdminOrdersPage() {
               className="h-12 pl-11 rounded-2xl bg-white border-[#DDD0B5] focus-visible:ring-primary focus-visible:border-primary transition-all shadow-sm"
             />
           </div>
-          <button className="h-12 w-12 flex items-center justify-center bg-white border border-[#DDD0B5] rounded-2xl text-sm shadow-sm hover:bg-[#F9F6EF] transition-all">
-            <i className="fa-solid fa-sliders"></i>
-          </button>
         </div>
       </div>
 
       <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-        {['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'].map((tab) => (
+        {['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled', 'RTO'].map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
@@ -116,12 +123,18 @@ export default function AdminOrdersPage() {
                             <i className="fa-solid fa-ellipsis-v text-xs"></i>
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="rounded-2xl p-2 border-none shadow-2xl min-w-[160px]">
-                          <DropdownMenuItem className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
-                            <i className="fa-solid fa-eye mr-2 text-primary"></i> View Details
+                        <DropdownMenuContent align="end" className="rounded-2xl p-2 border-none shadow-2xl min-w-[180px]">
+                          <DropdownMenuItem onClick={() => updateStatus(order.id, 'Shipped')} className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
+                            <i className="fa-solid fa-truck mr-2 text-primary"></i> Mark Shipped
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
-                            <i className="fa-solid fa-truck mr-2 text-primary"></i> Update Status
+                          <DropdownMenuItem onClick={() => updateStatus(order.id, 'Delivered')} className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-primary/5">
+                            <i className="fa-solid fa-check-double mr-2 text-primary"></i> Mark Delivered
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => updateStatus(order.id, 'RTO')} className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-orange-50 text-orange-600">
+                            <i className="fa-solid fa-rotate-left mr-2"></i> Mark RTO
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => updateStatus(order.id, 'Cancelled')} className="rounded-xl py-2.5 px-4 text-xs font-bold cursor-pointer hover:bg-red-50 text-red-600">
+                            <i className="fa-solid fa-ban mr-2"></i> Cancel Order
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -147,10 +160,17 @@ export default function AdminOrdersPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(27,94,59,0.5)]"></div>
+                  <div className="w-2 h-2 rounded-full bg-primary"></div>
                   <span className="text-sm font-bold">Total Orders</span>
                 </div>
                 <span className="text-sm font-black text-[#7A6848]">{orders?.length || 0}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  <span className="text-sm font-bold">RTO Orders</span>
+                </div>
+                <span className="text-sm font-black text-orange-600">{orders?.filter(o => o.status === 'RTO').length || 0}</span>
               </div>
             </div>
             <div className="mt-10 p-6 bg-[#F9F6EF] rounded-3xl text-center">
@@ -158,22 +178,6 @@ export default function AdminOrdersPage() {
               <div className="font-headline text-3xl font-extrabold text-primary">
                 ₹{orders?.reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString('en-IN') || '0'}
               </div>
-            </div>
-          </Card>
-
-          <Card className="border-none shadow-xl rounded-[40px] p-8 bg-[#0F0F11] text-white">
-            <CardHeader className="p-0 mb-8">
-              <CardTitle className="font-headline text-2xl font-extrabold">Quick Actions</CardTitle>
-            </CardHeader>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
-                <i className="fa-solid fa-file-invoice text-xl text-primary"></i>
-                <span className="text-[10px] font-black uppercase tracking-widest">Invoices</span>
-              </button>
-              <button className="flex flex-col items-center justify-center p-5 rounded-[24px] bg-white/5 hover:bg-white/10 border border-white/5 transition-all gap-3">
-                <i className="fa-solid fa-truck-ramp-box text-xl text-primary"></i>
-                <span className="text-[10px] font-black uppercase tracking-widest">Labels</span>
-              </button>
             </div>
           </Card>
         </div>
