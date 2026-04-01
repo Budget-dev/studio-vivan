@@ -1,9 +1,10 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Heart, Search, ChevronDown } from 'lucide-react';
+import { ShoppingCart, Search, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -95,7 +96,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         <div className="flex items-center gap-2 md:gap-2.5">
           <button className="w-10 h-10 md:w-12 md:h-12 bg-primary/[0.03] border border-primary/10 rounded-full flex items-center justify-center hover:bg-primary/5 transition-all group relative">
             <Search className="md:hidden w-4 h-4 text-primary" />
-            <Heart className="hidden md:block w-4 h-4 text-primary group-hover:fill-primary group-hover:text-primary transition-all" />
           </button>
           
           <div className="relative group">

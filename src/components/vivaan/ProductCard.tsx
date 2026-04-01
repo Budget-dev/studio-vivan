@@ -1,22 +1,21 @@
+
 "use client";
 
 import React from 'react';
 import Image from 'next/image';
-import { Star, Heart, ShoppingCart, Zap } from 'lucide-react';
+import { Star, ShoppingCart, Zap } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
-  isInWishlist: boolean;
   isInCart: boolean;
   onOpen: (id: string) => void;
   onAdd: (id: string) => void;
-  onWish: (id: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist, isInCart, onOpen, onAdd, onWish }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onOpen, onAdd }) => {
   const discount = product.mrpPrice && product.mrpPrice > product.price 
     ? Math.round(((product.mrpPrice - product.price) / product.mrpPrice) * 100)
     : 0;
@@ -72,17 +71,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
           ))}
         </div>
 
-        {/* Wishlist Button - Moved to avoid badge overlap */}
-        <button 
-          onClick={(e) => { e.stopPropagation(); onWish(product.id); }}
-          className={cn(
-            "absolute top-4 right-24 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-75 bg-white/20 backdrop-blur-md",
-            isInWishlist ? 'text-red-500' : 'text-primary/40 hover:text-red-400'
-          )}
-        >
-          <Heart className={cn("w-5 h-5", isInWishlist && 'fill-current')} />
-        </button>
-
         {/* Selling Fast Badge */}
         {product.statusBadge && (
           <div className="absolute bottom-6 left-4 z-20 bg-[#FDF2D0] border border-[#F5D110]/30 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
@@ -96,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
           {getIcon()}
         </div>
 
-        {/* Floating Add Button - Positioned exactly on the bottom seam with higher Z */}
+        {/* Floating Add Button */}
         <div className="absolute right-4 bottom-0 translate-y-1/2 z-[40]">
           <button 
             onClick={(e) => { e.stopPropagation(); onAdd(product.id); }}

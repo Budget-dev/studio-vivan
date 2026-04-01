@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -30,13 +31,6 @@
         "purityCoins": {
           "type": "number",
           "description": "The number of loyalty points ('Purity Coins') accumulated by the user."
-        },
-        "wishlistProductIds": {
-          "type": "array",
-          "description": "An array of product IDs that the user has added to their wishlist. (Relationship: UserProfile N:N Product)",
-          "items": {
-            "type": "string"
-          }
         },
         "createdAt": {
           "type": "string",
@@ -315,7 +309,7 @@
         },
         "updatedAt": {
           "type": "string",
-          "description": "Timestamp when the order was last updated.",
+          "description": "Timestamp when the user profile was last updated.",
           "format": "date-time"
         }
       },

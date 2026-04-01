@@ -1,7 +1,8 @@
+
 "use client";
 
 import React from 'react';
-import { Home, Grid, ShoppingBag, Heart, User } from 'lucide-react';
+import { Home, Grid, ShoppingBag, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BottomNavProps {
@@ -15,7 +16,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, ca
     { id: 'home', label: 'Home', icon: Home },
     { id: 'shop', label: 'Shop', icon: Grid },
     { id: 'cart', label: 'Cart', icon: ShoppingBag, badge: cartCount },
-    { id: 'wishlist', label: 'Wishlist', icon: Heart },
     { id: 'account', label: 'Account', icon: User },
   ];
 

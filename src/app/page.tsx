@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -19,7 +20,6 @@ import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
-import { useWishlist } from '@/hooks/use-wishlist';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -40,7 +40,6 @@ export default function VivaanFarms() {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
   const { cart, addToCart, updateQty, removeFromCart, subtotal, totalQty, clearCart } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const products = useMemo(() => {
     if (!dbProducts) return [];
@@ -176,11 +175,9 @@ export default function VivaanFarms() {
                   <ProductCard 
                     key={p.id} 
                     product={p} 
-                    isInWishlist={isInWishlist(p.id)}
                     isInCart={cart.some(c => c.id === p.id)}
                     onOpen={() => setSelectedProduct(p)}
                     onAdd={() => addToCart(p)}
-                    onWish={() => toggleWishlist(p.id)}
                   />
                 ))}
               </div>
