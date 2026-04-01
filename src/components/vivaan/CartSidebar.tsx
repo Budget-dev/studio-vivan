@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Gift, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
 import { CartItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +36,20 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     }
   };
 
-  const getIcon = (item: CartItem) => {
+  const renderItemImage = (item: CartItem) => {
+    if (item.imageUrls && item.imageUrls.length > 0) {
+      return (
+        <div className="relative w-full h-full">
+          <Image 
+            src={item.imageUrls[0]} 
+            alt={item.name} 
+            fill 
+            className="object-contain"
+          />
+        </div>
+      );
+    }
+    
     if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
     if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
     if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
@@ -79,7 +93,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
               {cart.map((item) => (
                 <div key={`${item.id}-${item.vol}`} className="bg-white border border-[#DDD0B5] rounded-2xl p-4 flex gap-4 relative group shadow-sm">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#F8F2E5] to-[#EDE4CF] rounded-xl flex items-center justify-center shrink-0">
-                    {getIcon(item)}
+                    {renderItemImage(item)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-headline text-base md:text-lg font-bold text-foreground truncate">{item.name}</h4>

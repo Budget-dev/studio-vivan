@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { X, Star, Flame, Truck, RefreshCw, FlaskConical, Home, Plus, Minus } from 'lucide-react';
+import Image from 'next/image';
+import { X, Star, Truck, RefreshCw, FlaskConical, Home, Plus, Minus } from 'lucide-react';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { ComboIcon, JarIcon } from './JarIcon';
@@ -83,11 +84,29 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
         <div className="md:w-1/2 bg-gradient-to-br from-[#FAF4E6] to-[#EEE0BC] p-10 flex flex-col items-center justify-center relative min-h-[360px]">
           <div className="absolute top-[-30px] right-[-30px] w-[180px] h-[180px] rounded-full bg-[radial-gradient(circle,rgba(27,94,59,0.1),transparent_70%)] pointer-events-none"></div>
           
-          <div className="bg-white rounded-[32px] p-12 shadow-2xl relative group overflow-hidden max-w-[320px] w-full aspect-square flex items-center justify-center">
+          <div className="bg-white rounded-[32px] p-6 md:p-12 shadow-2xl relative group overflow-hidden max-w-[320px] w-full aspect-square flex items-center justify-center">
              <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_25%,rgba(255,255,255,0.5),transparent_60%)] pointer-events-none z-1"></div>
-             <div className="transition-transform duration-500 group-hover:scale-105 group-hover:rotate-[-2deg]">
-              {product.cat === 'combo' ? <ComboIcon className="scale-125" /> : 
-               <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix="modal" className="scale-150" />}
+             
+             <div className="relative w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-105 group-hover:rotate-[-2deg]">
+              {product.imageUrls && product.imageUrls.length > 0 ? (
+                <div className="relative w-full h-full">
+                  <Image 
+                    src={product.imageUrls[0]} 
+                    alt={product.name} 
+                    fill 
+                    className="object-contain drop-shadow-2xl"
+                    sizes="(max-width: 768px) 240px, 320px"
+                  />
+                </div>
+              ) : (
+                <>
+                  {product.cat === 'combo' ? (
+                    <ComboIcon className="scale-125" />
+                  ) : (
+                    <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix="modal" className="scale-150" />
+                  )}
+                </>
+              )}
              </div>
           </div>
         </div>

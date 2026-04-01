@@ -1,10 +1,10 @@
 "use client";
 
 import React from 'react';
-import { Star, Heart, ShoppingBag } from 'lucide-react';
+import Image from 'next/image';
+import { Star, Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -18,10 +18,35 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist, isInCart, onOpen, onAdd, onWish }) => {
   const getIcon = () => {
-    if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110" />;
+    // Prioritize real uploaded images
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      return (
+        <div className="relative w-28 h-28 md:w-44 md:h-44 transition-transform duration-700 group-hover:scale-110">
+          <Image 
+            src={product.imageUrls[0]} 
+            alt={product.name} 
+            fill 
+            className="object-contain drop-shadow-xl"
+            sizes="(max-width: 768px) 112px, 176px"
+          />
+        </div>
+      );
+    }
+
+    // Fallback to high-quality SVG icons or emojis
+    if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-110 transition-transform duration-700 group-hover:scale-125" />;
     if (product.cat === 'sweets') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🎁</div>;
     if (product.cat === 'honey') return <div className="text-5xl md:text-7xl group-hover:scale-110 transition-transform">🍯</div>;
-    return <JarIcon c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} sub="" idSuffix={product.id} className="scale-75 md:scale-100" />;
+    
+    return (
+      <JarIcon 
+        c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} 
+        c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} 
+        sub="" 
+        idSuffix={product.id} 
+        className="scale-75 md:scale-100 transition-transform duration-700 group-hover:scale-110" 
+      />
+    );
   };
 
   return (
@@ -61,7 +86,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInWishlist,
           </div>
         </div>
 
-        <div className="relative z-5 transition-transform duration-700 group-hover:scale-110 group-hover:rotate-[-2deg]">
+        <div className="relative z-5">
           {getIcon()}
         </div>
 
