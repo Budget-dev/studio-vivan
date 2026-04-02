@@ -93,10 +93,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button className="text-[13px] font-bold text-[#1B5E3B] hover:opacity-80 transition-opacity whitespace-nowrap">
-            Vivaan Health Partner
-          </button>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-[13px] font-medium text-primary/80 hover:text-primary flex items-center gap-1 transition-colors">
