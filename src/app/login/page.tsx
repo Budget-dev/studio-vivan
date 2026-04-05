@@ -10,9 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth, useUser, useFirestore } from '@/firebase';
 import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  updateProfile
+  RecaptchaVerifier, 
+  signInWithPhoneNumber,
+  updateProfile,
+  ConfirmationResult
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -31,6 +32,7 @@ export default function LoginPage() {
   const [step, setStep] = useState<'details' | 'otp'>('details');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   // Form Fields
   const [phone, setPhone] = useState('');
@@ -44,58 +46,82 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router, returnTo]);
 
+  const setupRecaptcha = () => {
+    if ((window as any).recaptchaVerifier) return;
+    try {
+      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': () => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+        }
+      });
+    } catch (err) {
+      console.error("Recaptcha initialization failed", err);
+    }
+  };
+
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!phone || phone.length < 10) {
       setError('Please enter a valid 10-digit phone number');
       return;
     }
+    if (!name || !email) {
+      setError('Please provide your name and email');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
 
-    // Simulation of OTP send
-    setTimeout(() => {
+    try {
+      setupRecaptcha();
+      const appVerifier = (window as any).recaptchaVerifier;
+      const formattedPhone = `+91${phone}`;
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      setConfirmationResult(confirmation);
       setStep('otp');
-      setLoading(false);
       toast({
-        title: "OTP Sent (Simulated)",
-        description: "For this prototype, please use code: 123456",
+        title: "OTP Sent",
+        description: `Verification code sent to +91 ${phone}`,
       });
-    }, 1500);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to send OTP. Please ensure your domain is authorized in Firebase Console.");
+      if ((window as any).recaptchaVerifier) {
+        (window as any).recaptchaVerifier.clear();
+        (window as any).recaptchaVerifier = null;
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp !== '123456') {
-      setError('Invalid OTP. Please use 123456 for the simulation.');
+    if (!confirmationResult) {
+      setError('Verification session expired. Please request a new OTP.');
+      setStep('details');
       return;
     }
+    
     setLoading(true);
+    setError(null);
     
     try {
-      const simulatedEmail = email.toLowerCase().trim();
-      const simulatedPass = `vivaan_user_${phone}`; // Consistent password for simulation
-      
-      let credential;
-      try {
-        credential = await createUserWithEmailAndPassword(auth, simulatedEmail, simulatedPass);
-      } catch (e: any) {
-        if (e.code === 'auth/email-already-in-use') {
-          credential = await signInWithEmailAndPassword(auth, simulatedEmail, simulatedPass);
-        } else {
-          throw e;
-        }
-      }
+      const result = await confirmationResult.confirm(otp);
+      const authenticatedUser = result.user;
 
-      if (credential.user) {
-        await updateProfile(credential.user, { displayName: name });
+      if (authenticatedUser) {
+        // Update profile display name
+        await updateProfile(authenticatedUser, { displayName: name });
         
-        // Save profile to Firestore
-        await setDoc(doc(db, 'users', credential.user.uid), {
-          id: credential.user.uid,
+        // Save/Sync profile to Firestore
+        await setDoc(doc(db, 'users', authenticatedUser.uid), {
+          id: authenticatedUser.uid,
           firstName: name.split(' ')[0] || '',
           lastName: name.split(' ').slice(1).join(' ') || '',
-          email: simulatedEmail,
+          email: email.toLowerCase().trim(),
           phoneNumber: phone,
           purityCoins: 500, // Welcome coins
           createdAt: new Date().toISOString(),
@@ -104,13 +130,13 @@ export default function LoginPage() {
 
         toast({
           title: "Login Successful",
-          description: `Welcome back, ${name}!`,
+          description: `Welcome to Vivaan Farms, ${name}!`,
         });
         
         router.push(returnTo);
       }
     } catch (e: any) {
-      setError(e.message || 'Verification failed. Please try again.');
+      setError(e.message || 'Verification failed. Please check the OTP and try again.');
     } finally {
       setLoading(false);
     }
@@ -131,6 +157,8 @@ export default function LoginPage() {
       <Header onOpenCart={() => {}} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
       <main className="max-w-[1200px] mx-auto px-5 py-12 md:py-20 flex flex-col items-center justify-center">
+        <div id="recaptcha-container"></div>
+        
         <div className="w-full max-w-md bg-white rounded-[40px] shadow-2xl border border-primary/5 overflow-hidden">
           <div className="bg-primary p-10 text-center relative overflow-hidden">
             <div className="absolute top-[-40px] right-[-40px] w-48 h-48 rounded-full bg-white/5 pointer-events-none"></div>
@@ -138,7 +166,7 @@ export default function LoginPage() {
               <ShieldCheck className="w-8 h-8" />
             </div>
             <h1 className="font-headline text-3xl font-extrabold text-white">Secure Login</h1>
-            <p className="text-white/40 text-[9px] font-black uppercase tracking-[3px] mt-2">Vivaan Farms OTP Gateway</p>
+            <p className="text-white/40 text-[9px] font-black uppercase tracking-[3px] mt-2">Vivaan Farms Mobile Gateway</p>
           </div>
 
           <div className="p-8 md:p-10">
@@ -190,18 +218,18 @@ export default function LoginPage() {
                 {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
 
                 <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl">
-                  {loading ? 'Sending OTP...' : 'Get OTP Verification →'}
+                  {loading ? 'Requesting OTP...' : 'Get SMS OTP Verification →'}
                 </Button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-6">
                 <div className="text-center mb-6">
-                  <p className="text-sm text-[#7A6848] font-medium">OTP sent to <strong>+91 {phone}</strong></p>
+                  <p className="text-sm text-[#7A6848] font-medium">Verification SMS sent to <strong>+91 {phone}</strong></p>
                   <button type="button" onClick={() => setStep('details')} className="text-xs text-primary font-black uppercase mt-2 hover:underline">Change Details</button>
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Enter 6-Digit OTP</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Enter 6-Digit Code</label>
                   <Input 
                     placeholder="· · · · · ·" 
                     className="h-18 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-4xl text-center font-extrabold focus-visible:ring-primary tracking-[8px]"
@@ -211,14 +239,14 @@ export default function LoginPage() {
                     required
                   />
                   <div className="flex items-center gap-2 justify-center text-[10px] text-primary/60 font-bold mt-2">
-                    <Info className="w-3 h-3" /> Use code 123456 for testing
+                    <Info className="w-3 h-3" /> Please check your phone messages
                   </div>
                 </div>
 
                 {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
 
                 <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl">
-                  {loading ? 'Verifying...' : 'Verify & Continue →'}
+                  {loading ? 'Verifying...' : 'Verify & Complete Login →'}
                 </Button>
               </form>
             )}
