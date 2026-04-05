@@ -17,7 +17,8 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Smartphone, Mail, User as UserIcon, Info } from 'lucide-react';
+import { ShieldCheck, Smartphone, Mail, User as UserIcon, Info, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -47,13 +48,15 @@ export default function LoginPage() {
   }, [user, isUserLoading, router, returnTo]);
 
   const setupRecaptcha = () => {
-    if ((window as any).recaptchaVerifier) return;
+    if ((window as any).recaptchaVerifier) {
+      try {
+        (window as any).recaptchaVerifier.clear();
+      } catch (e) {}
+    }
     try {
       (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         'size': 'invisible',
-        'callback': () => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-        }
+        'callback': () => {}
       });
     } catch (err) {
       console.error("Recaptcha initialization failed", err);
@@ -78,6 +81,7 @@ export default function LoginPage() {
       setupRecaptcha();
       const appVerifier = (window as any).recaptchaVerifier;
       const formattedPhone = `+91${phone}`;
+      
       const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
       setConfirmationResult(confirmation);
       setStep('otp');
@@ -86,10 +90,22 @@ export default function LoginPage() {
         description: `Verification code sent to +91 ${phone}`,
       });
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to send OTP. Please ensure your domain is authorized in Firebase Console.");
+      console.error("Auth Error:", err.code, err.message);
+      
+      if (err.code === 'auth/operation-not-allowed') {
+        setError("PHONE_AUTH_DISABLED");
+      } else if (err.code === 'auth/invalid-phone-number') {
+        setError("The phone number provided is invalid. Please check the format.");
+      } else if (err.code === 'auth/too-many-requests') {
+        setError("Too many attempts. Please try again later.");
+      } else {
+        setError(err.message || "Failed to send OTP. Please check your connection.");
+      }
+
       if ((window as any).recaptchaVerifier) {
-        (window as any).recaptchaVerifier.clear();
+        try {
+          (window as any).recaptchaVerifier.clear();
+        } catch (e) {}
         (window as any).recaptchaVerifier = null;
       }
     } finally {
@@ -170,7 +186,22 @@ export default function LoginPage() {
           </div>
 
           <div className="p-8 md:p-10">
-            {step === 'details' ? (
+            {error === "PHONE_AUTH_DISABLED" ? (
+              <div className="space-y-6">
+                <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 rounded-2xl p-6">
+                  <AlertTriangle className="h-5 w-5" />
+                  <AlertTitle className="font-bold mb-2">Setup Required</AlertTitle>
+                  <AlertDescription className="text-xs leading-relaxed opacity-90">
+                    Phone Authentication is not yet enabled in your Firebase Console. 
+                    <br /><br />
+                    Please go to <strong>Authentication > Sign-in method</strong>, add <strong>Phone</strong>, and click <strong>Enable</strong>.
+                  </AlertDescription>
+                </Alert>
+                <Button onClick={() => setError(null)} variant="outline" className="w-full h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">
+                  Try Again
+                </Button>
+              </div>
+            ) : step === 'details' ? (
               <form onSubmit={handleSendOtp} className="space-y-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Full Name</label>
