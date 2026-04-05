@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -40,8 +41,8 @@ export const Footer: React.FC = () => {
           <ul className="space-y-4 text-[13.5px] font-medium">
             <li><Link href="/" className="hover:text-white transition-colors">A2 Gir Cow Ghee</Link></li>
             <li><Link href="/" className="hover:text-white transition-colors">Artisanal Sweets</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Forest Honey</Link></li>
             <li><Link href="/" className="hover:text-white transition-colors">Combo Packs</Link></li>
-            <li><Link href="/" className="hover:text-white transition-colors">Superfoods</Link></li>
           </ul>
         </div>
 
@@ -51,18 +52,16 @@ export const Footer: React.FC = () => {
             <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
             <li><Link href="/about" className="hover:text-white transition-colors">Our Farm</Link></li>
             <li><Link href="/blog" className="hover:text-white transition-colors">Journal</Link></li>
-            <li><button className="hover:text-white transition-colors text-left">Farmer Partners</button></li>
             <li><button className="hover:text-white transition-colors text-left">Contact Us</button></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Policies</h4>
+          <h4 className="text-[11px] font-black text-white/50 tracking-[2.5px] uppercase mb-8">Support</h4>
           <ul className="space-y-4 text-[13.5px] font-medium">
             <li><button className="hover:text-white transition-colors text-left">Privacy Policy</button></li>
             <li><button className="hover:text-white transition-colors text-left">Refund Policy</button></li>
             <li><button className="hover:text-white transition-colors text-left">Shipping Policy</button></li>
-            <li><button className="hover:text-white transition-colors text-left">Terms of Service</button></li>
             <li><button className="hover:text-white transition-colors text-left">Track Order</button></li>
           </ul>
         </div>
@@ -70,17 +69,14 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-[11px] text-white/30 tracking-wider text-center md:text-left">
-          © 2025 Vivaan Farm Technologies Pvt. Ltd. · Gujarat, India · CIN: U01000GJ2018PTC101234
+          © 2025 Vivaan Farm Technologies Pvt. Ltd. · Gujarat, India
         </div>
         <div className="flex gap-2">
           <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 text-[10px] font-bold text-white/40">
             <ShieldCheck className="w-3 h-3" /> SSL Secured
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 text-[10px] font-bold text-white/40">
-            <CheckCircle className="w-3 h-3" /> RBI Approved
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 text-[10px] font-bold text-white/40">
-            <CreditCard className="w-3 h-3" /> Razorpay
+            <CreditCard className="w-3 h-3" /> Secure Pay
           </div>
         </div>
       </div>

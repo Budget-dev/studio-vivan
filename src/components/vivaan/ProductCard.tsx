@@ -71,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           ))}
         </div>
 
-        {/* Selling Fast Badge */}
+        {/* Status Badge */}
         {product.statusBadge && (
           <div className="absolute bottom-5 left-4 z-20 bg-[#FDF2D0] border border-[#F5D110]/30 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm">
             <Zap className="w-3 h-3 text-[#D4A017] fill-current" />
@@ -79,12 +79,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           </div>
         )}
 
-        {/* Main Product Visual */}
+        {/* Main Visual */}
         <div className="relative z-10 w-full h-full flex items-center justify-center">
           {getIcon()}
         </div>
 
-        {/* Floating Add Button anchored to seam */}
+        {/* Floating Add Button */}
         <div className="absolute right-5 bottom-0 translate-y-1/2 z-[40]">
           <button 
             onClick={(e) => { e.stopPropagation(); onAdd(product.id); }}

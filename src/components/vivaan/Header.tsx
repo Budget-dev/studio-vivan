@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <span className="hidden lg:inline ml-2 text-[13px] font-medium">Cart</span>
           </button>
 
-          {/* Mobile Menu Button (Optional) */}
+          {/* Mobile Menu Button */}
           <button className="xl:hidden w-10 h-10 flex items-center justify-center text-primary/80">
             <div className="w-5 flex flex-col gap-1">
               <span className="w-full h-0.5 bg-current rounded-full"></span>
