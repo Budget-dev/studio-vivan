@@ -194,7 +194,7 @@ export default function LoginPage() {
                   <AlertDescription className="text-xs leading-relaxed opacity-90">
                     Phone Authentication is not yet enabled in your Firebase Console. 
                     <br /><br />
-                    Please go to <strong>Authentication > Sign-in method</strong>, add <strong>Phone</strong>, and click <strong>Enable</strong>.
+                    Please go to <strong>Authentication &gt; Sign-in method</strong>, add <strong>Phone</strong>, and click <strong>Enable</strong>.
                   </AlertDescription>
                 </Alert>
                 <Button onClick={() => setError(null)} variant="outline" className="w-full h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">
