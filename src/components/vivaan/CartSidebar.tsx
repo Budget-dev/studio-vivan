@@ -1,7 +1,9 @@
+
 "use client";
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
 import { CartItem } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -18,6 +20,7 @@ interface CartSidebarProps {
 }
 
 export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart, onUpdateQty, onRemove, onCheckout }) => {
+  const router = useRouter();
   const [coupon, setCoupon] = useState('');
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState('');
@@ -36,6 +39,11 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     }
   };
 
+  const handleCheckout = () => {
+    onClose();
+    router.push('/checkout');
+  };
+
   const renderItemImage = (item: CartItem) => {
     if (item.imageUrls && item.imageUrls.length > 0) {
       return (
@@ -51,8 +59,6 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
     }
     
     if (item.cat === 'combo') return <ComboIcon className="scale-[0.6]" />;
-    if (item.cat === 'sweets') return <div className="text-3xl">🎁</div>;
-    if (item.cat === 'honey') return <div className="text-3xl">🍯</div>;
     return <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix={`cart-${item.id}`} className="scale-[0.8]" />;
   };
 
@@ -132,23 +138,19 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
               <span>Purity Coins (−200 🪙)</span>
               <span className="text-primary">−₹200</span>
             </div>
-            <div className="flex justify-between text-xs font-bold text-secondary">
-              <span>Delivery</span>
-              <span className="uppercase">FREE 🚚</span>
-            </div>
           </div>
 
           <div className="flex justify-between items-center pt-4 border-t-2 border-[#F9F6EF] mb-5">
-            <span className="text-base font-black uppercase tracking-tight">Total Payable</span>
+            <span className="text-base font-black uppercase tracking-tight">Total</span>
             <span className="font-headline text-3xl md:text-4xl font-extrabold text-foreground">₹{total.toLocaleString('en-IN')}</span>
           </div>
 
           <Button 
             disabled={cart.length === 0}
-            onClick={onCheckout}
+            onClick={handleCheckout}
             className="w-full h-14 bg-gradient-to-br from-[#1B5E3B] to-[#0D3520] rounded-full text-sm font-black uppercase tracking-widest text-white shadow-xl flex items-center justify-center gap-2"
           >
-            Checkout Securely <ArrowRight className="w-4 h-4" />
+            Review Order <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
       </div>

@@ -4,7 +4,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Search, ChevronDown, User, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ShoppingCart, Search, ChevronDown, User, X, LogOut, Package, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,8 +14,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser, useAuth } from '@/firebase';
 import { collection } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -25,8 +27,12 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter, onSearch }) => {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  
+  const auth = useAuth();
+  const { user } = useUser();
   const db = useFirestore();
   const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
   const { data: categories } = useCollection(categoriesRef);
@@ -35,6 +41,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
     e.preventDefault();
     onSearch(searchValue);
     setIsSearchOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
   };
 
   const navItems = [
@@ -93,21 +104,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="text-[13px] font-medium text-primary/80 hover:text-primary flex items-center gap-1 transition-colors">
-                Blogs <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="rounded-xl p-2 min-w-[180px] shadow-xl border-primary/5">
-              <DropdownMenuItem asChild className="rounded-lg py-2 px-3 text-xs font-medium cursor-pointer">
-                <Link href="/blog">Our Journal</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="rounded-lg py-2 px-3 text-xs font-medium cursor-pointer">
-                <Link href="/about">Purity Story</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/blog" className="text-[13px] font-medium text-primary/80 hover:text-primary transition-colors">
+            Journal
+          </Link>
         </nav>
 
         {/* Right: Actions */}
@@ -142,9 +141,38 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </div>
 
           {/* User Account */}
-          <Link href="/admin/login" className="w-10 h-10 hidden md:flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
-            <User className="w-5 h-5" />
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
+                <User className="w-5 h-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-2xl p-2 min-w-[200px] shadow-2xl border-primary/5">
+              {user ? (
+                <>
+                  <div className="px-4 py-3 border-b border-[#F9F6EF] mb-2">
+                    <div className="text-xs font-black text-primary truncate">{user.displayName || 'Farmer'}</div>
+                    <div className="text-[10px] text-muted-foreground truncate">{user.email}</div>
+                  </div>
+                  <DropdownMenuItem onClick={() => router.push('/track')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                    <Package className="w-4 h-4 mr-2 text-primary/40" /> Track My Order
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" /> Log Out
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onClick={() => router.push('/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                    <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push('/admin/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                    <ShieldCheck className="w-4 h-4 mr-2 text-primary/40" /> Admin Access
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Cart Button */}
           <button 
@@ -156,14 +184,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               {cartCount}
             </div>
             <span className="hidden lg:inline ml-2 text-[13px] font-medium">Cart</span>
-          </button>
-
-          {/* Mobile Menu Button */}
-          <button className="xl:hidden w-10 h-10 flex items-center justify-center text-primary/80">
-            <div className="w-5 flex flex-col gap-1">
-              <span className="w-full h-0.5 bg-current rounded-full"></span>
-              <span className="w-full h-0.5 bg-current rounded-full"></span>
-            </div>
           </button>
         </div>
       </div>
