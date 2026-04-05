@@ -10,18 +10,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth, useUser, useFirestore } from '@/firebase';
 import { 
-  signInAnonymously, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { cn } from '@/lib/utils';
-import { ShieldCheck, ArrowRight, Smartphone, Mail, User as UserIcon } from 'lucide-react';
+import { doc, setDoc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
+import { ShieldCheck, Smartphone, Mail, User as UserIcon, Info } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const returnTo = searchParams.get('returnTo') || '/';
   
   const auth = useAuth();
@@ -47,33 +47,34 @@ export default function LoginPage() {
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!phone || phone.length < 10) {
-      setError('Please enter a valid phone number');
+      setError('Please enter a valid 10-digit phone number');
       return;
     }
     setLoading(true);
-    // Simulation of OTP send. In real Firebase project, we'd use Recaptcha + signInWithPhoneNumber
+    setError(null);
+
+    // Simulation of OTP send
     setTimeout(() => {
       setStep('otp');
       setLoading(false);
-      setError(null);
+      toast({
+        title: "OTP Sent (Simulated)",
+        description: "For this prototype, please use code: 123456",
+      });
     }, 1500);
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otp) {
-      setError('Please enter the OTP');
+    if (otp !== '123456') {
+      setError('Invalid OTP. Please use 123456 for the simulation.');
       return;
     }
     setLoading(true);
     
     try {
-      // Simulation of verification
-      // For the prototype, we use Email/Pass or Anonymous to create the user session
-      // while capturing the Name/Email as requested.
-      
-      const simulatedEmail = email || `${phone}@vivaanfarms.com`;
-      const simulatedPass = `OTP_${otp}`;
+      const simulatedEmail = email.toLowerCase().trim();
+      const simulatedPass = `vivaan_user_${phone}`; // Consistent password for simulation
       
       let credential;
       try {
@@ -93,7 +94,7 @@ export default function LoginPage() {
         await setDoc(doc(db, 'users', credential.user.uid), {
           id: credential.user.uid,
           firstName: name.split(' ')[0] || '',
-          lastName: name.split(' ')[1] || '',
+          lastName: name.split(' ').slice(1).join(' ') || '',
           email: simulatedEmail,
           phoneNumber: phone,
           purityCoins: 500, // Welcome coins
@@ -101,10 +102,15 @@ export default function LoginPage() {
           updatedAt: new Date().toISOString()
         }, { merge: true });
 
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${name}!`,
+        });
+        
         router.push(returnTo);
       }
     } catch (e: any) {
-      setError(e.message || 'Verification failed');
+      setError(e.message || 'Verification failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -112,8 +118,9 @@ export default function LoginPage() {
 
   if (isUserLoading) {
     return (
-      <div className="min-h-screen bg-[#F9F6EF] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F9F6EF] flex flex-col items-center justify-center gap-4">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-primary font-bold animate-pulse">Authenticating...</p>
       </div>
     );
   }
@@ -123,18 +130,18 @@ export default function LoginPage() {
       <Ticker />
       <Header onOpenCart={() => {}} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
-      <main className="max-w-[1200px] mx-auto px-5 py-20 flex flex-col items-center justify-center">
+      <main className="max-w-[1200px] mx-auto px-5 py-12 md:py-20 flex flex-col items-center justify-center">
         <div className="w-full max-w-md bg-white rounded-[40px] shadow-2xl border border-primary/5 overflow-hidden">
-          <div className="bg-primary p-12 text-center relative overflow-hidden">
+          <div className="bg-primary p-10 text-center relative overflow-hidden">
             <div className="absolute top-[-40px] right-[-40px] w-48 h-48 rounded-full bg-white/5 pointer-events-none"></div>
-            <div className="w-20 h-20 bg-white/10 rounded-[28px] flex items-center justify-center mx-auto mb-6 text-white rotate-6">
-              <ShieldCheck className="w-10 h-10" />
+            <div className="w-16 h-16 bg-white/10 rounded-[24px] flex items-center justify-center mx-auto mb-6 text-white rotate-6">
+              <ShieldCheck className="w-8 h-8" />
             </div>
-            <h1 className="font-headline text-4xl font-extrabold text-white">Join Vivaan Farms</h1>
-            <p className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mt-2">Authentic Purity Gateway</p>
+            <h1 className="font-headline text-3xl font-extrabold text-white">Secure Login</h1>
+            <p className="text-white/40 text-[9px] font-black uppercase tracking-[3px] mt-2">Vivaan Farms OTP Gateway</p>
           </div>
 
-          <div className="p-10">
+          <div className="p-8 md:p-10">
             {step === 'details' ? (
               <form onSubmit={handleSendOtp} className="space-y-6">
                 <div className="space-y-2">
@@ -190,19 +197,22 @@ export default function LoginPage() {
               <form onSubmit={handleVerifyOtp} className="space-y-6">
                 <div className="text-center mb-6">
                   <p className="text-sm text-[#7A6848] font-medium">OTP sent to <strong>+91 {phone}</strong></p>
-                  <button onClick={() => setStep('details')} className="text-xs text-primary font-black uppercase mt-2 hover:underline">Change Details</button>
+                  <button type="button" onClick={() => setStep('details')} className="text-xs text-primary font-black uppercase mt-2 hover:underline">Change Details</button>
                 </div>
                 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Enter 6-Digit OTP</label>
                   <Input 
-                    placeholder="0 0 0 0 0 0" 
-                    className="h-18 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-4xl text-center font-extrabold focus-visible:ring-primary"
+                    placeholder="· · · · · ·" 
+                    className="h-18 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-4xl text-center font-extrabold focus-visible:ring-primary tracking-[8px]"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     maxLength={6}
                     required
                   />
+                  <div className="flex items-center gap-2 justify-center text-[10px] text-primary/60 font-bold mt-2">
+                    <Info className="w-3 h-3" /> Use code 123456 for testing
+                  </div>
                 </div>
 
                 {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}

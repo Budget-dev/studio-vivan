@@ -7,22 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth, useUser } from '@/firebase';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
-} from 'firebase/auth';
-import { cn } from '@/lib/utils';
-import { ShieldCheck, Smartphone, Lock } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { ShieldCheck, Lock, Info } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-  // Note: For pure OTP, we'd use Phone Auth. 
-  // To keep existing admin functionality while switching to OTP "style", 
-  // we use a simplified version of the main login for admin.
+  const ADMIN_PASS = 'Venky8466#'; 
 
   const [step, setStep] = useState<'request' | 'verify'>('request');
-  const [email, setEmail] = useState(ADMIN_EMAIL);
-  const [password, setPassword] = useState('Venky8466#'); // Pre-filled for demo/existing access
+  const [email] = useState(ADMIN_EMAIL);
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +24,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -41,24 +36,38 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    
     // Simulate OTP send to admin
     setTimeout(() => {
       setStep('verify');
       setIsLoading(false);
+      toast({
+        title: "Admin OTP Sent",
+        description: "Verification code is: 123456",
+      });
     }, 1500);
   };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (otp !== '123456') {
+      setError("Incorrect OTP code. Please use 123456.");
+      return;
+    }
+    
     setError(null);
     setIsLoading(true);
 
     try {
-      // Use existing credentials logic behind the "OTP" simulation
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+      // Behind the scenes, we use the master admin credentials
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASS);
+      toast({
+        title: "Admin Verified",
+        description: "Welcome to the Vivaan Farms Dashboard.",
+      });
       router.push('/admin');
     } catch (e: any) {
-      setError("Unauthorized access or incorrect OTP. Please contact master admin.");
+      setError("Authentication failed. Please ensure the admin account is active.");
     } finally {
       setIsLoading(false);
     }
@@ -114,13 +123,16 @@ export default function AdminLoginPage() {
               <div className="space-y-3">
                 <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">6-Digit Secure OTP</label>
                 <Input 
-                  placeholder="0 0 0 0 0 0" 
-                  className="h-20 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-5xl text-center font-extrabold focus-visible:ring-primary"
+                  placeholder="· · · · · ·" 
+                  className="h-20 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-5xl text-center font-extrabold focus-visible:ring-primary tracking-[4px]"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   maxLength={6}
                   required
                 />
+                <div className="flex items-center gap-2 justify-center text-[10px] text-primary/60 font-bold mt-2">
+                  <Info className="w-3 h-3" /> Use code 123456 for testing
+                </div>
               </div>
 
               {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
