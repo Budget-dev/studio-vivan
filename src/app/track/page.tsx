@@ -7,6 +7,7 @@ import { Header } from '@/components/vivaan/Header';
 import { Footer } from '@/components/vivaan/Footer';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
+import { LoginModal } from '@/components/vivaan/LoginModal';
 import { useCollection, useFirestore, useUser, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { Package, Truck, CheckCircle2, Clock, ChevronRight } from 'lucide-react';
@@ -16,6 +17,7 @@ export default function TrackOrderPage() {
   const router = useRouter();
   const db = useFirestore();
   const { user, isUserLoading } = useUser();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const ordersQuery = useMemoFirebase(() => {
     if (!user) return null;
@@ -57,7 +59,7 @@ export default function TrackOrderPage() {
           <div className="bg-white p-12 rounded-[40px] text-center border border-primary/5 shadow-xl">
              <Package className="w-16 h-16 text-primary/20 mx-auto mb-6" />
              <h2 className="text-2xl font-black mb-4">Please Login to track orders</h2>
-             <button onClick={() => router.push('/login')} className="h-14 px-10 bg-primary text-white rounded-full font-black uppercase tracking-widest">Login Now</button>
+             <button onClick={() => setIsLoginOpen(true)} className="h-14 px-10 bg-primary text-white rounded-full font-black uppercase tracking-widest">Login Now</button>
           </div>
         ) : orders && orders.length > 0 ? (
           <div className="space-y-6">
@@ -112,6 +114,11 @@ export default function TrackOrderPage() {
 
       <Footer />
       <BottomNav activeTab="account" onTabChange={(tab) => router.push(tab === 'home' ? '/' : `/${tab}`)} cartCount={0} />
+      
+      <LoginModal 
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+      />
     </div>
   );
 }

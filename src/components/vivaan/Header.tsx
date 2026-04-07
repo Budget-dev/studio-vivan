@@ -17,6 +17,7 @@ import {
 import { useCollection, useFirestore, useMemoFirebase, useUser, useAuth } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
+import { LoginModal } from './LoginModal';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   const router = useRouter();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   
   const auth = useAuth();
   const { user } = useUser();
@@ -163,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 </>
               ) : (
                 <>
-                  <DropdownMenuItem onClick={() => router.push('/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                  <DropdownMenuItem onClick={() => setIsLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
                     <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Login
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push('/admin/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
@@ -187,6 +189,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </button>
         </div>
       </div>
+
+      <LoginModal 
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+      />
     </header>
   );
 };
