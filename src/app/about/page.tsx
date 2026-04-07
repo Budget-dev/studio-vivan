@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -8,17 +9,13 @@ import { Footer } from '@/components/vivaan/Footer';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
-import { PaymentModal } from '@/components/vivaan/PaymentModal';
-import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { useCart } from '@/hooks/use-cart';
 import { CheckCircle2, Award, Heart, ShieldCheck } from 'lucide-react';
 
 export default function AboutPage() {
   const router = useRouter();
-  const { cart, updateQty, removeFromCart, totalQty, subtotal, clearCart } = useCart();
+  const { cart, updateQty, removeFromCart, totalQty } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
   const handleTabChange = (tab: string) => {
     if (tab === 'home' || tab === 'shop') {
@@ -140,21 +137,7 @@ export default function AboutPage() {
         cart={cart}
         onUpdateQty={updateQty}
         onRemove={removeFromCart}
-        onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
-      />
-
-      <PaymentModal 
-        isOpen={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
-        total={Math.max(0, subtotal - 200)}
-        itemCount={totalQty}
-        onSuccess={() => { setIsPaymentOpen(false); setIsSuccessOpen(true); }}
-      />
-
-      <SuccessModal 
-        isOpen={isSuccessOpen}
-        onClose={() => { setIsSuccessOpen(false); clearCart(); }}
-        total={Math.max(0, subtotal - 200)}
+        onCheckout={() => { setIsCartOpen(false); router.push('/checkout'); }}
       />
     </div>
   );

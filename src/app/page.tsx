@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { Hero } from '@/components/vivaan/Hero';
@@ -14,8 +15,6 @@ import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { ProductModal } from '@/components/vivaan/ProductModal';
-import { PaymentModal } from '@/components/vivaan/PaymentModal';
-import { SuccessModal } from '@/components/vivaan/SuccessModal';
 import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { Product } from '@/types';
@@ -26,6 +25,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 
 export default function VivaanFarms() {
+  const router = useRouter();
   const db = useFirestore();
   
   const productsQuery = useMemoFirebase(() => query(collection(db, 'products'), where('isLive', '==', true)), [db]);
@@ -36,10 +36,8 @@ export default function VivaanFarms() {
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
 
-  const { cart, addToCart, updateQty, removeFromCart, subtotal, totalQty, clearCart } = useCart();
+  const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
   const products = useMemo(() => {
     if (!dbProducts) return [];
@@ -104,7 +102,7 @@ export default function VivaanFarms() {
   const handleBuyNow = (p: Product, q: number) => {
     addToCart(p, q);
     setSelectedProduct(null);
-    setIsPaymentOpen(true);
+    router.push('/checkout');
   };
 
   const CATEGORIES = [
@@ -203,7 +201,7 @@ export default function VivaanFarms() {
         cart={cart}
         onUpdateQty={updateQty}
         onRemove={removeFromCart}
-        onCheckout={() => { setIsCartOpen(false); setIsPaymentOpen(true); }}
+        onCheckout={() => { setIsCartOpen(false); router.push('/checkout'); }}
       />
 
       <ProductModal 
@@ -212,20 +210,6 @@ export default function VivaanFarms() {
         onClose={() => setSelectedProduct(null)}
         onAddToCart={addToCart}
         onBuyNow={handleBuyNow}
-      />
-
-      <PaymentModal 
-        isOpen={isPaymentOpen}
-        onClose={() => setIsPaymentOpen(false)}
-        total={Math.max(0, subtotal - 200)}
-        itemCount={totalQty}
-        onSuccess={() => { setIsPaymentOpen(false); setIsSuccessOpen(true); }}
-      />
-
-      <SuccessModal 
-        isOpen={isSuccessOpen}
-        onClose={() => { setIsSuccessOpen(false); clearCart(); }}
-        total={Math.max(0, subtotal - 200)}
       />
 
       <LiveNotification />
