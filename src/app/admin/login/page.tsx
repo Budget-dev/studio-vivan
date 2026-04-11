@@ -8,16 +8,15 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth, useUser } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { ShieldCheck, Lock, Info } from 'lucide-react';
+import { ShieldCheck, Lock, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-  const ADMIN_PASS = 'Venky8466#'; 
+  const DEFAULT_PASS = 'Venky8466#'; 
 
-  const [step, setStep] = useState<'request' | 'verify'>('request');
-  const [email] = useState(ADMIN_EMAIL);
-  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState(ADMIN_EMAIL);
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -32,42 +31,20 @@ export default function AdminLoginPage() {
     }
   }, [user, router, ADMIN_EMAIL]);
 
-  const handleRequest = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    
-    // Simulate OTP send to admin
-    setTimeout(() => {
-      setStep('verify');
-      setIsLoading(false);
-      toast({
-        title: "Admin OTP Sent",
-        description: "Verification code is: 123456",
-      });
-    }, 1500);
-  };
-
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp !== '123456') {
-      setError("Incorrect OTP code. Please use 123456.");
-      return;
-    }
-    
     setError(null);
     setIsLoading(true);
 
     try {
-      // Behind the scenes, we use the master admin credentials
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASS);
+      await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Admin Verified",
-        description: "Welcome to the Vivaan Farms Dashboard.",
+        description: "Welcome back to the Vivaan Farms Dashboard.",
       });
       router.push('/admin');
     } catch (e: any) {
-      setError("Authentication failed. Please ensure the admin account is active.");
+      setError("Authentication failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -90,64 +67,51 @@ export default function AdminLoginPage() {
           <div className="w-20 h-20 bg-white/10 rounded-[28px] flex items-center justify-center mx-auto mb-6 text-white rotate-3">
             <ShieldCheck className="w-10 h-10" />
           </div>
-          <h1 className="font-headline text-4xl font-extrabold text-white">Admin Secure Access</h1>
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mt-2">OTP Protection Enabled</p>
+          <h1 className="font-headline text-4xl font-extrabold text-white">Admin Portal</h1>
+          <p className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mt-2">Secure Dashboard Access</p>
         </div>
         
         <CardContent className="p-10">
-          {step === 'request' ? (
-            <form onSubmit={handleRequest} className="space-y-8">
-              <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Authorized Admin Email</label>
-                <div className="relative">
-                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
-                  <Input 
-                    type="email" 
-                    value={email}
-                    readOnly
-                    className="h-16 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 opacity-70 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              <Button disabled={isLoading} className="w-full h-18 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-xl">
-                {isLoading ? 'Requesting OTP...' : 'Get Admin OTP →'}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleAuth} className="space-y-8">
-              <div className="text-center">
-                <p className="text-sm text-[#7A6848] font-medium">OTP sent to <strong>vivanfarms***@gmail.com</strong></p>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">6-Digit Secure OTP</label>
+          <form onSubmit={handleAuth} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Admin Email</label>
+              <div className="relative">
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
                 <Input 
-                  placeholder="· · · · · ·" 
-                  className="h-20 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-5xl text-center font-extrabold focus-visible:ring-primary tracking-[4px]"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  maxLength={6}
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 focus-visible:ring-primary"
                   required
                 />
-                <div className="flex items-center gap-2 justify-center text-[10px] text-primary/60 font-bold mt-2">
-                  <Info className="w-3 h-3" /> Use code 123456 for testing
-                </div>
               </div>
+            </div>
 
-              {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
+            <div className="space-y-2">
+              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
+                <Input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 focus-visible:ring-primary"
+                  required
+                />
+              </div>
+            </div>
 
-              <Button disabled={isLoading} className="w-full h-18 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-xl">
-                {isLoading ? 'Validating...' : 'Verify Admin Access →'}
-              </Button>
+            {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
 
-              <button type="button" onClick={() => setStep('request')} className="w-full text-xs font-black uppercase tracking-widest text-primary hover:underline">Resend OTP</button>
-            </form>
-          )}
+            <Button disabled={isLoading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-xl mt-4">
+              {isLoading ? 'Authenticating...' : 'Sign In to Dashboard →'}
+            </Button>
+          </form>
 
           <div className="mt-10 pt-10 border-t border-[#DDD0B5]/30 text-center">
             <p className="text-[9px] text-[#7A6848] font-bold leading-relaxed uppercase tracking-widest opacity-60">
-              Authorized personnel only. <br /> All login attempts are logged.
+              Authorized personnel only. <br /> All login attempts are recorded for security.
             </p>
           </div>
         </CardContent>
