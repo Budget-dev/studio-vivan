@@ -75,13 +75,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </div>
         </Link>
 
-        {/* Center: Desktop Nav Items */}
-        <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 mx-4">
+        {/* Center: Desktop Nav Items with increased spacing */}
+        <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-8">
           {navItems.map((item) => (
             <button 
               key={item.label}
               onClick={item.onClick}
-              className="text-[13px] font-medium text-primary/80 hover:text-primary transition-colors whitespace-nowrap"
+              className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase"
             >
               {item.label}
             </button>
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-[13px] font-medium text-primary/80 hover:text-primary flex items-center gap-1 transition-colors">
+              <button className="text-[13px] font-bold text-primary/80 hover:text-primary flex items-center gap-1.5 transition-all tracking-wide uppercase">
                 Shop <ChevronDown className="w-3.5 h-3.5" />
               </button>
             </DropdownMenuTrigger>
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 <DropdownMenuItem 
                   key={cat.id} 
                   onClick={() => onFilter(cat.name.toLowerCase())}
-                  className="rounded-lg py-2 px-3 text-xs font-medium cursor-pointer capitalize"
+                  className="rounded-lg py-2 px-3 text-xs font-bold cursor-pointer capitalize"
                 >
                   {cat.name}
                 </DropdownMenuItem>
@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href="/blog" className="text-[13px] font-medium text-primary/80 hover:text-primary transition-colors">
+          <Link href="/blog" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
             Journal
           </Link>
         </nav>
@@ -185,7 +185,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <div className="absolute -top-1 -right-1 md:right-0 bg-primary text-white text-[9px] font-black rounded-full min-w-[16px] h-4 flex items-center justify-center border-2 border-white">
               {cartCount}
             </div>
-            <span className="hidden lg:inline ml-2 text-[13px] font-medium">Cart</span>
+            <span className="hidden lg:inline ml-2 text-[13px] font-bold tracking-wide">CART</span>
           </button>
         </div>
       </div>
