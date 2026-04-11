@@ -15,7 +15,6 @@ import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { ProductModal } from '@/components/vivaan/ProductModal';
-import { LiveNotification } from '@/components/vivaan/LiveNotification';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { SplashScreen } from '@/components/vivaan/SplashScreen';
 import { Product } from '@/types';
@@ -251,8 +250,6 @@ export default function VivaanFarms() {
           onAddToCart={addToCart}
           onBuyNow={handleBuyNow}
         />
-
-        <LiveNotification />
 
         <BottomNav 
           activeTab={activeTab}
