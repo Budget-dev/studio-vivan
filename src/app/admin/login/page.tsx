@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -7,19 +6,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth, useUser } from '@/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { ShieldCheck, Lock, Mail } from 'lucide-react';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { ShieldCheck, Lock, Mail, Sparkles, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 /**
  * Admin Login Page
- * Strictly hardcodes the master admin email.
+ * Strictly hardcodes the master admin email and provides a one-time initialization flow.
  */
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-  // Note: Initial password Vivaan@Admin2025 should be set in Firebase Console manually.
   
   const [password, setPassword] = useState('');
+  const [isSetupMode, setIsSetupMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -40,15 +39,32 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
-      toast({
-        title: "Admin Verified",
-        description: "Welcome back to the Vivaan Farms Dashboard.",
-      });
+      if (isSetupMode) {
+        // One-time initialization logic
+        await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        toast({
+          title: "Admin Initialized",
+          description: "Your master credentials have been set. Welcome to Vivaan Farms.",
+        });
+      } else {
+        // Standard Sign In
+        await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        toast({
+          title: "Admin Verified",
+          description: "Welcome back to the Vivaan Farms Dashboard.",
+        });
+      }
       router.push('/admin');
     } catch (e: any) {
       console.error("Auth Error:", e.code, e.message);
-      setError("Access Denied. Invalid password or unauthorized account.");
+      if (e.code === 'auth/email-already-in-use') {
+        setError("Admin account is already initialized. Please use the Sign In form.");
+        setIsSetupMode(false);
+      } else if (e.code === 'auth/weak-password') {
+        setError("Password should be at least 6 characters.");
+      } else {
+        setError("Access Denied. Invalid credentials or unauthorized attempt.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -66,13 +82,17 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F9F6EF] p-4 font-body">
       <Card className="w-full max-w-md shadow-2xl border-none rounded-[32px] overflow-hidden">
-        <div className="bg-primary p-12 text-center relative">
+        <div className={`p-12 text-center relative transition-colors duration-500 ${isSetupMode ? 'bg-secondary' : 'bg-primary'}`}>
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
           <div className="w-20 h-20 bg-white/10 rounded-[28px] flex items-center justify-center mx-auto mb-6 text-white rotate-3">
-            <ShieldCheck className="w-10 h-10" />
+            {isSetupMode ? <KeyRound className="w-10 h-10" /> : <ShieldCheck className="w-10 h-10" />}
           </div>
-          <h1 className="font-headline text-4xl font-extrabold text-white">Admin Portal</h1>
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mt-2">Secure Dashboard Access</p>
+          <h1 className="font-headline text-4xl font-extrabold text-white">
+            {isSetupMode ? 'Admin Setup' : 'Admin Portal'}
+          </h1>
+          <p className="text-white/40 text-[10px] font-black uppercase tracking-[3px] mt-2">
+            {isSetupMode ? 'Initialize Master Password' : 'Secure Dashboard Access'}
+          </p>
         </div>
         
         <CardContent className="p-10">
@@ -91,14 +111,16 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Password</label>
+              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">
+                {isSetupMode ? 'New Admin Password' : 'Password'}
+              </label>
               <div className="relative">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
                 <Input 
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your secret password"
+                  placeholder={isSetupMode ? "Create a strong password" : "Enter your secret password"}
                   className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 focus-visible:ring-primary"
                   required
                 />
@@ -106,17 +128,39 @@ export default function AdminLoginPage() {
             </div>
 
             {error && (
-              <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-[11px] font-bold text-center leading-relaxed">
+              <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-[11px] font-bold text-center leading-relaxed animate-in fade-in zoom-in-95">
                 {error}
               </div>
             )}
 
-            <Button disabled={isLoading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-xl mt-4">
-              {isLoading ? 'Authenticating...' : 'Sign In to Dashboard →'}
+            <Button 
+              disabled={isLoading} 
+              className={`w-full h-16 rounded-full font-black uppercase tracking-[3px] shadow-xl mt-4 transition-all ${isSetupMode ? 'bg-secondary hover:bg-primary' : 'bg-primary hover:bg-secondary'}`}
+            >
+              {isLoading 
+                ? (isSetupMode ? 'Initializing...' : 'Authenticating...') 
+                : (isSetupMode ? 'Set Password & Initialize →' : 'Sign In to Dashboard →')
+              }
             </Button>
           </form>
 
-          <div className="mt-10 pt-10 border-t border-[#DDD0B5]/30 text-center">
+          <div className="mt-8 pt-8 border-t border-[#DDD0B5]/30 text-center space-y-4">
+            {!isSetupMode ? (
+              <button 
+                onClick={() => { setIsSetupMode(true); setError(null); }}
+                className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline flex items-center justify-center gap-2 mx-auto"
+              >
+                <Sparkles className="w-3.5 h-3.5" /> First-time use? Initialize Credentials
+              </button>
+            ) : (
+              <button 
+                onClick={() => { setIsSetupMode(false); setError(null); }}
+                className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] hover:underline"
+              >
+                ← Back to Login
+              </button>
+            )}
+            
             <p className="text-[9px] text-[#7A6848] font-medium leading-relaxed italic opacity-60">
               Only authorized farm administrators can access this secure environment.
             </p>
