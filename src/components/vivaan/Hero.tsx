@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -20,7 +21,7 @@ export const Hero: React.FC = () => {
   const { data: banners, isLoading } = useCollection(bannersRef);
 
   if (isLoading) {
-    return <div className="w-full h-[220px] md:h-[350px] bg-primary/5 animate-pulse flex items-center justify-center">Loading Banners...</div>;
+    return <div className="w-full h-[220px] md:h-[350px] bg-primary/5 animate-pulse flex items-center justify-center border-b border-border/10"></div>;
   }
 
   // Fallback banners if none are in the DB yet
@@ -49,6 +50,7 @@ export const Hero: React.FC = () => {
                   fill
                   className="object-cover brightness-[0.85]"
                   priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent flex items-center">
                   <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">

@@ -48,7 +48,7 @@ export default function VivaanFarms() {
       if (!productsLoading) {
         setShowSplash(false);
       }
-    }, 2000); // Minimum 2 seconds for branding impact
+    }, 2500); // Minimum 2.5 seconds for branding impact
 
     return () => clearTimeout(timer);
   }, [productsLoading]);
@@ -57,7 +57,7 @@ export default function VivaanFarms() {
   useEffect(() => {
     const backupTimer = setTimeout(() => {
       setShowSplash(false);
-    }, 5000); 
+    }, 6000); 
     return () => clearTimeout(backupTimer);
   }, []);
 
@@ -136,13 +136,13 @@ export default function VivaanFarms() {
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showSplash && (
           <motion.div
             key="splash"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[9999]"
           >
             <SplashScreen />
@@ -151,8 +151,8 @@ export default function VivaanFarms() {
       </AnimatePresence>
 
       <div className={cn(
-        "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0 transition-opacity duration-1000",
-        showSplash ? "opacity-0" : "opacity-100"
+        "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0 transition-all duration-1000",
+        showSplash ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
       )}>
         <Ticker />
         <Header 
@@ -202,9 +202,9 @@ export default function VivaanFarms() {
               </div>
 
               {productsLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 animate-pulse">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-gray-100 rounded-[32px] aspect-[3/4]"></div>
+                    <div key={i} className="bg-white/50 rounded-[32px] aspect-[3/4] animate-pulse border-2 border-dashed border-[#DDD0B5]/30"></div>
                   ))}
                 </div>
               ) : filteredProducts.length > 0 ? (
