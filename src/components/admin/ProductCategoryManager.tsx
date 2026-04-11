@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -192,11 +193,14 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                 {/* Right Column: Visuals & Badges */}
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images (Main & Hover)</label>
                     <div className="flex flex-wrap gap-3">
                       {uploadedImages.map((img, idx) => (
                         <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-primary/10">
                           <Image src={img} alt="Preview" fill className="object-cover" />
+                          <div className="absolute top-0 left-0 bg-primary/90 text-white text-[7px] font-black px-1.5 py-0.5 rounded-br-lg uppercase">
+                            {idx === 0 ? 'Main' : idx === 1 ? 'Hover' : `Gallery`}
+                          </div>
                           <button onClick={() => removeImage(idx)} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"><X className="w-3 h-3" /></button>
                         </div>
                       ))}
@@ -206,6 +210,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                       </button>
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
                     </div>
+                    <p className="text-[9px] text-[#7A6848] font-bold italic mt-1">* 1st img: Static display | 2nd img: Shown on hover</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">

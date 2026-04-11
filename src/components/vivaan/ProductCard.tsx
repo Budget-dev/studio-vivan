@@ -24,13 +24,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
     if (product.imageUrls && product.imageUrls.length > 0) {
       return (
         <div className="relative w-full aspect-square transition-transform duration-700 group-hover:scale-105">
+          {/* Main Image */}
           <Image 
             src={product.imageUrls[0]} 
             alt={product.name} 
             fill 
-            className="object-contain"
+            className={cn(
+              "object-contain transition-opacity duration-500",
+              product.imageUrls.length > 1 ? "group-hover:opacity-0" : "opacity-100"
+            )}
             sizes="(max-width: 768px) 150px, 220px"
           />
+          
+          {/* Hover Image (Second image in array) */}
+          {product.imageUrls.length > 1 && (
+            <Image 
+              src={product.imageUrls[1]} 
+              alt={`${product.name} alternate`} 
+              fill 
+              className="object-contain absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              sizes="(max-width: 768px) 150px, 220px"
+            />
+          )}
         </div>
       );
     }
