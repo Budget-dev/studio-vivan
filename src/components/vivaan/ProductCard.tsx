@@ -11,8 +11,8 @@ import { cn } from '@/lib/utils';
 interface ProductCardProps {
   product: Product;
   isInCart: boolean;
-  onOpen: (id: string) => void;
-  onAdd: (id: string) => void;
+  onOpen: (product: Product) => void;
+  onAdd: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onOpen, onAdd }) => {
@@ -64,7 +64,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
 
   return (
     <div 
-      onClick={() => onOpen(product.id)}
+      onClick={() => onOpen(product)}
       className="bg-white rounded-[24px] md:rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full w-full max-w-[340px] mx-auto"
     >
       {/* Top Section: Image & Overlays */}
@@ -102,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
         {/* Floating Add Button */}
         <div className="absolute right-3 md:right-5 bottom-0 translate-y-1/2 z-[40]">
           <button 
-            onClick={(e) => { e.stopPropagation(); onAdd(product.id); }}
+            onClick={(e) => { e.stopPropagation(); onAdd(product); }}
             className={cn(
               "h-9 md:h-12 px-4 md:px-8 rounded-xl md:rounded-2xl flex items-center gap-1.5 md:gap-2 font-black text-[10px] md:text-[12px] uppercase tracking-widest shadow-2xl transition-all active:scale-95 border-none",
               isInCart ? "bg-accent text-white" : "bg-primary text-white hover:bg-secondary"

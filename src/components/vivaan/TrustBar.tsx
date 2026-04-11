@@ -1,3 +1,6 @@
+
+"use client";
+
 import React from 'react';
 import { Truck, ShieldCheck, Heart, Star } from 'lucide-react';
 

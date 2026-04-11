@@ -13,13 +13,12 @@ import { useToast } from '@/hooks/use-toast';
 
 /**
  * Admin Login Page
- * Strictly hardcodes the master admin email and provides initialization guidance.
+ * Strictly hardcodes the master admin email.
  */
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-  // Initial password set for one-time initialization in Firebase Console
-  const INITIAL_PASSWORD = 'Vivaan@Admin2025'; 
-
+  // Note: Initial password Vivaan@Admin2025 should be set in Firebase Console manually.
+  
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +40,6 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      // Direct sign in with hardcoded email and user-entered password
       await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
       toast({
         title: "Admin Verified",
@@ -50,7 +48,7 @@ export default function AdminLoginPage() {
       router.push('/admin');
     } catch (e: any) {
       console.error("Auth Error:", e.code, e.message);
-      setError("Access Denied. Please ensure this email is registered in Firebase with the initialized password.");
+      setError("Access Denied. Invalid password or unauthorized account.");
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +98,7 @@ export default function AdminLoginPage() {
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Enter your secret password"
                   className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 focus-visible:ring-primary"
                   required
                 />
@@ -119,12 +117,8 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="mt-10 pt-10 border-t border-[#DDD0B5]/30 text-center">
-            <p className="text-[10px] text-[#7A6848] font-bold leading-relaxed uppercase tracking-widest opacity-60">
-              One-Time Initialization Password:<br />
-              <strong className="text-primary">{INITIAL_PASSWORD}</strong>
-            </p>
-            <p className="text-[9px] text-[#7A6848] font-medium mt-4 italic">
-              Please register this user in your Firebase Authentication Console if you haven't already.
+            <p className="text-[9px] text-[#7A6848] font-medium leading-relaxed italic opacity-60">
+              Only authorized farm administrators can access this secure environment.
             </p>
           </div>
         </CardContent>
