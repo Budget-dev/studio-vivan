@@ -26,7 +26,7 @@ import { Label } from '@/components/ui/label';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, serverTimestamp } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Camera, X, Trash2, CloudUpload, Sparkles } from 'lucide-react';
+import { Camera, X, Trash2, CloudUpload, Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminBannersPage() {
@@ -37,18 +37,46 @@ export default function AdminBannersPage() {
   const { data: banners, isLoading } = useCollection(bannersRef);
 
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [placement, setPlacement] = useState('Hero');
   const [isActive, setIsActive] = useState(true);
   const [imageUrl, setImageUrl] = useState('');
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Utility to compress image before uploading to Firestore (Stay under 1MB)
+  const compressImage = (base64Str: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        // Using JPEG with 0.7 quality to significantly reduce Base64 string size
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string);
+        setImageUrl(compressed);
       };
       reader.readAsDataURL(file);
     }
@@ -63,6 +91,8 @@ export default function AdminBannersPage() {
       });
       return;
     }
+
+    setIsUploading(true);
 
     const newBanner = {
       title,
@@ -88,9 +118,11 @@ export default function AdminBannersPage() {
     } catch (e) {
       toast({
         title: "Error",
-        description: "Failed to upload banner. Please try again.",
+        description: "Failed to upload banner. The image might be too large.",
         variant: "destructive"
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -200,9 +232,14 @@ export default function AdminBannersPage() {
 
               <Button 
                 onClick={handleAddBanner}
+                disabled={isUploading}
                 className="w-full h-14 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-widest shadow-xl transition-all"
               >
-                Upload Content <CloudUpload className="w-4 h-4 ml-2" />
+                {isUploading ? (
+                  <>Processing... <Loader2 className="w-4 h-4 ml-2 animate-spin" /></>
+                ) : (
+                  <>Upload Content <CloudUpload className="w-4 h-4 ml-2" /></>
+                )}
               </Button>
             </div>
           </DialogContent>
@@ -269,7 +306,7 @@ export default function AdminBannersPage() {
         </div>
         <h3 className="font-headline text-3xl font-extrabold text-primary mb-4">Content Strategy</h3>
         <p className="text-[#7A6848] text-sm leading-relaxed mb-8 font-medium">
-          Use high-resolution 1600x600 images for Hero banners. Keep text centered or left-aligned to ensure it doesn't overlap with the user interface.
+          Images are automatically optimized for web. Use high-resolution originals for the best result. Hero banners appear directly on your main landing page.
         </p>
       </Card>
     </div>

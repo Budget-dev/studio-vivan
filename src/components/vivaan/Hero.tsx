@@ -13,11 +13,21 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, orderBy } from 'firebase/firestore';
 
 export const Hero: React.FC = () => {
   const db = useFirestore();
-  const bannersRef = useMemoFirebase(() => query(collection(db, 'banners'), where('isActive', '==', true), where('placement', '==', 'Hero')), [db]);
+  
+  // Robust query for active hero banners, ordered by position
+  const bannersRef = useMemoFirebase(() => 
+    query(
+      collection(db, 'banners'), 
+      where('isActive', '==', true), 
+      where('placement', '==', 'Hero'),
+      orderBy('position', 'asc')
+    ), [db]
+  );
+  
   const { data: banners, isLoading } = useCollection(bannersRef);
 
   if (isLoading) {
@@ -30,7 +40,7 @@ export const Hero: React.FC = () => {
       id: 'default-1',
       title: 'Experience Pure Purity',
       description: 'Traditional Bilona A2 Ghee directly from our Gujarat Farm.',
-      imageUrl: 'https://picsum.photos/seed/vivaan1/1600/600',
+      imageUrl: 'https://i.ibb.co/Pzmmm9j3/Chat-GPT-Image-Mar-20-2026-09-52-12-AM.png',
     }
   ];
 
@@ -46,7 +56,7 @@ export const Hero: React.FC = () => {
               <div className="relative w-full h-[220px] md:h-[350px]">
                 <Image
                   src={banner.imageUrl}
-                  alt={banner.title}
+                  alt={banner.title || "Promotional Banner"}
                   fill
                   className="object-cover brightness-[0.85]"
                   priority={index === 0}
