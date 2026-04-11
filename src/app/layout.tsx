@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { WhatsAppButton } from '@/components/vivaan/WhatsAppButton';
 
 export const metadata: Metadata = {
   title: 'Vivaan Farms — Pure A2 Ghee & Farm Goods',
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <FirebaseClientProvider>
           {children}
+          <WhatsAppButton />
         </FirebaseClientProvider>
       </body>
     </html>
