@@ -78,13 +78,32 @@ const generateLivePurchaseNotificationFlow = ai.defineFlow(
     const randomIndex = Math.floor(Math.random() * customerProductData.length);
     const { name: customerName, city: customerCity, product: productName } = customerProductData[randomIndex];
 
-    // Call the prompt with the dynamically selected data
-    const { output } = await generateNotificationPrompt({
-      customerName,
-      customerCity,
-      productName,
-    });
-    return output!; // The prompt output is directly the flow output
+    try {
+      // Call the prompt with the dynamically selected data
+      const { output } = await generateNotificationPrompt({
+        customerName,
+        customerCity,
+        productName,
+      });
+      
+      if (!output) throw new Error('No output from model');
+      return output;
+    } catch (error) {
+      // Graceful fallback for quota limits (429) or other API errors
+      console.warn('AI Notification generation failed, using local fallback:', error);
+      
+      const fallbacks = [
+        `${customerName} from ${customerCity} just purchased ${productName}!`,
+        `Amazing! ${customerName} from ${customerCity} just bought ${productName}.`,
+        `${customerName} (${customerCity}) recently ordered ${productName}.`,
+        `Look! ${customerName} from ${customerCity} just snapped up ${productName}!`,
+      ];
+      
+      const fallbackIndex = Math.floor(Math.random() * fallbacks.length);
+      return {
+        message: fallbacks[fallbackIndex]
+      };
+    }
   }
 );
 
