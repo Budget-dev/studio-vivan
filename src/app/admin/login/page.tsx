@@ -11,11 +11,15 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { ShieldCheck, Lock, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+/**
+ * Admin Login Page
+ * Strictly hardcodes the master admin email and provides initialization guidance.
+ */
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
-  const DEFAULT_PASS = 'Venky8466#'; 
+  // Initial password set for one-time initialization in Firebase Console
+  const INITIAL_PASSWORD = 'Vivaan@Admin2025'; 
 
-  const [email, setEmail] = useState(ADMIN_EMAIL);
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,14 +41,16 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Direct sign in with hardcoded email and user-entered password
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
       toast({
         title: "Admin Verified",
         description: "Welcome back to the Vivaan Farms Dashboard.",
       });
       router.push('/admin');
     } catch (e: any) {
-      setError("Authentication failed. Please check your credentials.");
+      console.error("Auth Error:", e.code, e.message);
+      setError("Access Denied. Please ensure this email is registered in Firebase with the initialized password.");
     } finally {
       setIsLoading(false);
     }
@@ -74,15 +80,14 @@ export default function AdminLoginPage() {
         <CardContent className="p-10">
           <form onSubmit={handleAuth} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Admin Email</label>
+              <label className="text-[11px] font-black uppercase tracking-widest text-[#7A6848]">Authorized Admin Email</label>
               <div className="relative">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
                 <Input 
                   type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 focus-visible:ring-primary"
-                  required
+                  value={ADMIN_EMAIL}
+                  disabled
+                  className="h-14 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base px-14 opacity-60 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -102,7 +107,11 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
+            {error && (
+              <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-[11px] font-bold text-center leading-relaxed">
+                {error}
+              </div>
+            )}
 
             <Button disabled={isLoading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-xl mt-4">
               {isLoading ? 'Authenticating...' : 'Sign In to Dashboard →'}
@@ -110,8 +119,12 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="mt-10 pt-10 border-t border-[#DDD0B5]/30 text-center">
-            <p className="text-[9px] text-[#7A6848] font-bold leading-relaxed uppercase tracking-widest opacity-60">
-              Authorized personnel only. <br /> All login attempts are recorded for security.
+            <p className="text-[10px] text-[#7A6848] font-bold leading-relaxed uppercase tracking-widest opacity-60">
+              One-Time Initialization Password:<br />
+              <strong className="text-primary">{INITIAL_PASSWORD}</strong>
+            </p>
+            <p className="text-[9px] text-[#7A6848] font-medium mt-4 italic">
+              Please register this user in your Firebase Authentication Console if you haven't already.
             </p>
           </div>
         </CardContent>
