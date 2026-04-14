@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -108,17 +107,19 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
     <header className="bg-white sticky top-0 z-[900] border-b border-primary/5">
       <div className="max-w-[1500px] mx-auto px-4 md:px-10 h-[64px] md:h-[90px] flex items-center justify-between">
         
-        {/* Left: Hamburger & Logo Area */}
-        <div className="flex items-center gap-3">
-          {/* Mobile Hamburger */}
+        {/* Left: Mobile Hamburger */}
+        <div className="md:hidden w-10 flex justify-start">
           <button 
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden w-10 h-10 flex items-center justify-center text-primary/80 hover:bg-primary/5 rounded-full transition-all"
+            className="w-10 h-10 flex items-center justify-center text-primary/80 hover:bg-primary/5 rounded-full transition-all"
           >
             <Menu className="w-6 h-6" />
           </button>
+        </div>
 
-          <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative text-left">
+        {/* Center: Logo (Centered on mobile, left on desktop) */}
+        <div className="flex-1 flex justify-center md:justify-start">
+          <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative text-center md:text-left">
             {/* Desktop Logo Image */}
             <div className="hidden md:block w-32 h-32 relative transition-transform duration-300 group-hover:scale-105">
               <Image 
@@ -131,10 +132,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             
-            {/* Mobile Stylized Text Logo (Anveshan style) */}
-            <div className="md:hidden flex flex-col items-start">
+            {/* Mobile Stylized Text Logo */}
+            <div className="md:hidden flex flex-col items-center">
               <span className="font-headline text-3xl font-bold text-primary leading-none tracking-tight lowercase">vivaan</span>
-              <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5 ml-0.5">farms</span>
+              <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
             </div>
 
             {!user && (
@@ -147,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </button>
         </div>
 
-        {/* Center: Desktop Nav Items */}
+        {/* Center Desktop Nav */}
         <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-8">
           {navItems.map((item) => (
             <button 
@@ -158,18 +159,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               {item.label}
             </button>
           ))}
-
           <Link href="/about" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
             About Us
           </Link>
-
           <Link href="/contact" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
             Contact Us
           </Link>
         </nav>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2 md:gap-5 shrink-0">
+        {/* Right Actions */}
+        <div className="flex items-center justify-end gap-1 md:gap-5 w-10 md:w-auto">
           <div className="relative">
             {isSearchOpen ? (
               <form onSubmit={handleSearch} className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center animate-in slide-in-from-right-4 duration-300">
@@ -212,11 +211,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   </DropdownMenuItem>
                 </>
               ) : (
-                <>
-                  <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
-                    <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Sign In
-                  </DropdownMenuItem>
-                </>
+                <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                  <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Sign In
+                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -231,7 +228,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0 border-none bg-[#FDFBFA]">
           <SheetHeader className="sr-only">
