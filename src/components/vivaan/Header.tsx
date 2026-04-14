@@ -216,9 +216,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
                     <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Sign In
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push('/admin/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
-                    <ShieldCheck className="w-4 h-4 mr-2 text-primary/40" /> Admin Access
-                  </DropdownMenuItem>
                 </>
               )}
             </DropdownMenuContent>
