@@ -53,9 +53,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   const router = useRouter();
   const { toast } = useToast();
   const [searchValue, setSearchValue] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setSearchOpen] = useState(false);
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const auth = useAuth();
   const { user } = useUser();
@@ -66,7 +66,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(searchValue);
-    setIsSearchOpen(false);
+    setSearchOpen(false);
   };
 
   const handleLogout = async () => {
@@ -97,10 +97,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   };
 
   const navItems = [
-    { label: 'All Products', onClick: () => { onFilter('all'); setIsMobileMenuOpen(false); } },
-    { label: 'A2 Ghee', onClick: () => { onFilter('ghee'); setIsMobileMenuOpen(false); } },
-    { label: 'Sweets', onClick: () => { onFilter('sweets'); setIsMobileMenuOpen(false); } },
-    { label: 'Honey', onClick: () => { onFilter('honey'); setIsMobileMenuOpen(false); } },
+    { label: 'All Products', onClick: () => { onFilter('all'); setMobileMenuOpen(false); } },
+    { label: 'A2 Ghee', onClick: () => { onFilter('ghee'); setMobileMenuOpen(false); } },
+    { label: 'Sweets', onClick: () => { onFilter('sweets'); setMobileMenuOpen(false); } },
+    { label: 'Honey', onClick: () => { onFilter('honey'); setMobileMenuOpen(false); } },
   ];
 
   return (
@@ -111,15 +111,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         <div className="flex items-center gap-3">
           {/* Mobile Hamburger */}
           <button 
-            onClick={() => setIsMobileMenuOpen(true)}
+            onClick={() => setMobileMenuOpen(true)}
             className="md:hidden w-10 h-10 flex items-center justify-center text-primary/80 hover:bg-primary/5 rounded-full transition-all"
           >
             <Menu className="w-6 h-6" />
           </button>
 
-          <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative">
+          <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative text-left">
             {/* Desktop Logo Image */}
-            <div className="hidden md:block w-32 h-32 relative items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <div className="hidden md:block w-32 h-32 relative transition-transform duration-300 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -194,12 +194,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
-                <button type="button" onClick={() => setIsSearchOpen(false)} className="absolute right-3 text-primary/40 hover:text-primary">
+                <button type="button" onClick={() => setSearchOpen(false)} className="absolute right-3 text-primary/40 hover:text-primary">
                   <X className="w-4 h-4" />
                 </button>
               </form>
             ) : (
-              <button onClick={() => setIsSearchOpen(true)} className="w-9 h-9 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
+              <button onClick={() => setSearchOpen(true)} className="w-9 h-9 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
                 <Search className="w-5 h-5" />
               </button>
             )}
@@ -227,7 +227,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 </>
               ) : (
                 <>
-                  <DropdownMenuItem onClick={() => setIsLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
+                  <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
                     <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Sign In
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push('/admin/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
@@ -249,8 +249,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
       </div>
 
       {/* Mobile Drawer Navigation */}
-      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+      <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="w-[300px] sm:w-[350px] p-0 border-none bg-[#FDFBFA]">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Navigation Menu</SheetTitle>
+          </SheetHeader>
           <div className="h-full flex flex-col">
             <div className="p-8 bg-primary text-white relative overflow-hidden">
               <div className="absolute top-[-30px] right-[-30px] w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
@@ -264,30 +267,32 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                     className="brightness-0 invert object-contain"
                   />
                 </div>
-                <div>
+                <div className="text-left">
                   <div className="font-headline text-2xl font-bold tracking-tight lowercase">vivaan</div>
                   <div className="text-[8px] font-black text-white/40 uppercase tracking-[3px]">farms</div>
                 </div>
               </div>
               
               {user ? (
-                <div className="relative z-10">
+                <div className="relative z-10 text-left">
                   <div className="text-sm font-bold opacity-60">Welcome,</div>
                   <div className="text-xl font-headline font-extrabold">{user.displayName || 'Farmer'}</div>
                 </div>
               ) : (
-                <button 
-                  onClick={() => { setIsLoginOpen(true); setIsMobileMenuOpen(false); }}
-                  className="relative z-10 h-11 px-6 rounded-full bg-white text-primary text-xs font-black uppercase tracking-widest shadow-xl"
-                >
-                  Sign In ✦
-                </button>
+                <div className="text-left">
+                  <button 
+                    onClick={() => { setLoginOpen(true); setMobileMenuOpen(false); }}
+                    className="relative z-10 h-11 px-6 rounded-full bg-white text-primary text-xs font-black uppercase tracking-widest shadow-xl"
+                  >
+                    Sign In ✦
+                  </button>
+                </div>
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto py-6">
               <div className="px-6 mb-8">
-                <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-4">Store Collections</div>
+                <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-4 text-left">Store Collections</div>
                 <div className="space-y-1">
                   {navItems.map((item) => (
                     <button 
@@ -303,11 +308,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               </div>
 
               <div className="px-6 mb-8">
-                <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-4">Discovery</div>
+                <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-4 text-left">Discovery</div>
                 <div className="space-y-1">
                   <Link 
                     href="/blog" 
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
                   >
                     <BookOpen className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
@@ -315,7 +320,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   </Link>
                   <Link 
                     href="/about" 
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
                   >
                     <Info className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
@@ -323,7 +328,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   </Link>
                   <Link 
                     href="/track" 
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
                   >
                     <Package className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
@@ -352,7 +357,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </SheetContent>
       </Sheet>
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
     </header>
   );
 };
