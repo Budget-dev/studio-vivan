@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -650,11 +651,11 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user profiles. Accessible only by the owner (request.auth.uid matches userId). Includes denormalized 'id' for direct authorization."
+          "description": "Stores user profiles. Accessible only by the owner (request.auth.uid matches userId)."
         }
       },
       {
-        "path": "/productCategories/{categoryId}",
+        "path": "/categories/{categoryId}",
         "definition": {
           "entityName": "ProductCategory",
           "schema": {
@@ -680,17 +681,7 @@
           "schema": {
             "$ref": "#/backend/entities/ProductVariant"
           },
-          "description": "Stores specific product variants (e.g., sizes, volumes) nested under their parent product. Publicly readable by all users. Write access restricted to administrators. Includes denormalized 'productId' for context.",
-          "params": [
-            {
-              "name": "productId",
-              "description": "The unique identifier of the parent Product."
-            },
-            {
-              "name": "variantId",
-              "description": "The unique identifier of the ProductVariant."
-            }
-          ]
+          "description": "Stores specific product variants (e.g., sizes, volumes) nested under their parent product."
         }
       },
       {
@@ -700,17 +691,7 @@
           "schema": {
             "$ref": "#/backend/entities/CartItem"
           },
-          "description": "Stores individual items in a user's shopping cart. Accessible only by the owner (request.auth.uid matches userId). Includes denormalized 'userId' for direct authorization and 'productVariantId' for product linking.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the UserProfile who owns the cart item."
-            },
-            {
-              "name": "cartItemId",
-              "description": "The unique identifier of the CartItem."
-            }
-          ]
+          "description": "Stores individual items in a user's shopping cart. Accessible only by the owner."
         }
       },
       {
@@ -720,17 +701,7 @@
           "schema": {
             "$ref": "#/backend/entities/WishlistItem"
           },
-          "description": "Stores products in a user's wishlist. Accessible only by the owner (request.auth.uid matches userId). Includes denormalized 'userId' for direct authorization and 'productId' for product linking.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the UserProfile who owns the wishlist item."
-            },
-            {
-              "name": "wishlistItemId",
-              "description": "The unique identifier of the WishlistItem."
-            }
-          ]
+          "description": "Stores products in a user's wishlist. Accessible only by the owner."
         }
       },
       {
@@ -740,51 +711,27 @@
           "schema": {
             "$ref": "#/backend/entities/CouponCode"
           },
-          "description": "Stores promotional coupon codes. Publicly readable for active coupons. Write access restricted to administrators. Includes denormalized 'isActive' for authorization independence in read rules."
+          "description": "Stores promotional coupon codes. Publicly readable for active coupons."
         }
       },
       {
-        "path": "/userProfiles/{userId}/orders/{orderId}",
+        "path": "/orders/{orderId}",
         "definition": {
           "entityName": "Order",
           "schema": {
             "$ref": "#/backend/entities/Order"
           },
-          "description": "Stores customer orders. Accessible only by the owner (request.auth.uid matches userId). Includes denormalized 'userId' for direct authorization. Admin users can also read orders.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the UserProfile who placed the order."
-            },
-            {
-              "name": "orderId",
-              "description": "The unique identifier of the Order."
-            }
-          ]
+          "description": "Stores customer orders. Accessible only by the owner or administrators."
         }
       },
       {
-        "path": "/userProfiles/{userId}/orders/{orderId}/orderItems/{orderItemId}",
+        "path": "/orders/{orderId}/orderItems/{orderItemId}",
         "definition": {
           "entityName": "OrderItem",
           "schema": {
             "$ref": "#/backend/entities/OrderItem"
           },
-          "description": "Stores individual items within an order. Accessible only by the owner of the parent order (request.auth.uid matches userId). Includes denormalized 'orderId' and 'productVariantId' for context, and 'userId' in the path for direct authorization. Admin users can also read order items.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the UserProfile who owns the parent order."
-            },
-            {
-              "name": "orderId",
-              "description": "The unique identifier of the parent Order."
-            },
-            {
-              "name": "orderItemId",
-              "description": "The unique identifier of the OrderItem."
-            }
-          ]
+          "description": "Stores individual items within an order."
         }
       },
       {
@@ -794,7 +741,7 @@
           "schema": {
             "$ref": "#/backend/entities/Review"
           },
-          "description": "Stores customer reviews. Publicly readable by all users. Authenticated users can create/update their own reviews. Write access is also available for administrators. Includes denormalized 'userId' and 'productVariantId' for authorization independence and linking."
+          "description": "Stores customer reviews. Publicly readable."
         }
       },
       {
@@ -804,7 +751,7 @@
           "schema": {
             "$ref": "#/backend/entities/Banner"
           },
-          "description": "Stores dynamic content banners. Publicly readable by all users (authenticated and unauthenticated) to display promotional messages and UI elements. Write access restricted to administrators. Includes denormalized 'isActive', 'startDate', and 'endDate' for authorization independence and display logic."
+          "description": "Stores dynamic content banners. Publicly readable."
         }
       },
       {
@@ -814,16 +761,9 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Special collection used for Database Access Control (DBAC). The existence of a document at /adminRoles/{uid} grants administrator privileges to the user with the corresponding uid. No additional fields are typically required for role checks; the document's mere existence is sufficient for authorization.",
-          "params": [
-            {
-              "name": "uid",
-              "description": "The Firebase Authentication User ID of an administrator."
-            }
-          ]
+          "description": "Special collection used for Database Access Control (DBAC). Existence grants admin privileges."
         }
       }
-    ],
-    "reasoning": "The recommended Firestore structure addresses the reported 'Missing or insufficient permissions' error for the 'banners' collection by designing it for public read access. The `Banner` entity is crucial for displaying dynamic content like promotional messages, hero sections, and urgency bars across the application. As such, these banners need to be accessible to all users, including unauthenticated ones, to ensure the application's core UI elements load correctly. Placing them in a top-level `/banners` collection with a rule allowing reads for everyone directly resolves the `auth: null` list operation denial.\n\nThis design adheres to all core principles and mandates:\n\n1.  **Authorization Independence & QAPs:**\n    *   **Public Data Collections (`/banners`, `/productCategories`, `/products`, `/products/{productId}/variants`, `/couponCodes`, `/reviews`):** These are structured for public `list` and `read` operations. For instance, `/banners` will have rules like `allow read: if true;`, enabling unauthenticated access and satisfying QAPs by allowing direct listing without client-side filtering or complex `get()` calls. For `/couponCodes`, `isActive: true` is a field within the document, allowing filtering in rules without `get()`. For `/reviews`, `userId` and `productVariantId` are embedded fields, enabling authorization for owner-specific writes without external lookups.\n    *   **Private User Data Collections (`/userProfiles/{userId}`, `/userProfiles/{userId}/cartItems`, `/userProfiles/{userId}/wishlistItems`, `/userProfiles/{userId}/orders`, `/userProfiles/{userId}/orders/{orderId}/orderItems`):** These collections leverage path-based ownership, where the `{userId}` wildcard directly corresponds to `request.auth.uid`. This design ensures atomic security rules (e.g., `allow read, write: if request.auth.uid == userId;`) without any `get()` calls, perfectly meeting Authorization Independence and simplifying `list` queries for a user's own data.\n\n2.  **Structural Segregation:** Each collection/subcollection maintains a homogeneous security posture. For example, `/products` contains only publicly viewable product data, while `/userProfiles/{userId}/cartItems` contains only items private to that specific user. This avoids complex, multi-condition security rules within a single collection.\n\n3.  **Access Modeling:**\n    *   **Private User Data:** Consistently uses path-based ownership: `/userProfiles/{userId}/...`\n    *   **Hierarchical Paths:** Maintained for nested data like `/products/{productId}/variants/{variantId}` and `/userProfiles/{userId}/orders/{orderId}/orderItems/{orderItemId}`, where the parent's ID is explicitly in the path, simplifying rules and client-side querying.\n    *   **Global Roles (DBAC):** `/adminRoles/{uid}` is introduced to signal administrative privileges via document existence, adhering to the 'Existence over Content' principle.\n\n4.  **Data Clarity and Predictability:** Semantic and consistent naming conventions (`userId`, `productId`, `reviewId`) are used for wildcards and fields. Fields like `isActive` (for banners/coupons) and `status` (for orders) explicitly model state rather than inferring it from multiple flags, enhancing debuggability and maintainability.\n\nThis structure prioritizes security and performance by eliminating cross-document authorization dependencies and simplifying security rules, making the system robust and easy to audit."
+    ]
   }
 }

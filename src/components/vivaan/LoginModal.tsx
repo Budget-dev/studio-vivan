@@ -134,7 +134,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
     try {
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, { displayName: name });
-        await setDoc(doc(db, 'users', tempUid), {
+        await setDoc(doc(db, 'userProfiles', tempUid), {
           id: tempUid,
           firstName: name.split(' ')[0] || '',
           lastName: name.split(' ').slice(1).join(' ') || '',

@@ -133,7 +133,7 @@ export default function LoginPage() {
         await updateProfile(authenticatedUser, { displayName: name });
         
         // Save/Sync profile to Firestore
-        await setDoc(doc(db, 'users', authenticatedUser.uid), {
+        await setDoc(doc(db, 'userProfiles', authenticatedUser.uid), {
           id: authenticatedUser.uid,
           firstName: name.split(' ')[0] || '',
           lastName: name.split(' ').slice(1).join(' ') || '',
