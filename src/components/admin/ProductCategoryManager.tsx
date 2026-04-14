@@ -4,7 +4,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,9 +20,10 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, serverTimestamp, doc } from 'firebase/firestore';
+import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Search, Plus, ExternalLink, Pen, Trash2, Camera, X, Zap, Star } from 'lucide-react';
+import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCategoryManagerProps {
   category: string;
@@ -38,14 +39,12 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   icon
 }) => {
   const db = useFirestore();
+  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Strictly filter products by category to ensure the admin only sees relevant items
-  const productsQuery = useMemoFirebase(() => 
-    query(collection(db, 'products'), where('categoryId', '==', category.toLowerCase())), 
-    [db, category]
-  );
-  const { data: products, isLoading } = useCollection(productsQuery);
+  // Fetch all products and filter in memory to avoid indexing issues and ensure instant updates
+  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
+  const { data: allProducts, isLoading } = useCollection(productsRef);
   
   const [searchTerm, setSearchValue] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -63,12 +62,16 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [topBadge, setTopBadge] = useState('New Launch');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
+  // Filter products by category AND search term in memory
   const filteredProducts = useMemo(() => {
-    if (!products) return [];
-    return products.filter(p => 
-      p.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [products, searchTerm]);
+    if (!allProducts) return [];
+    const targetCat = category.toLowerCase();
+    return allProducts.filter(p => {
+      const matchesCat = (p.categoryId || '').toLowerCase() === targetCat;
+      const matchesSearch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesCat && matchesSearch;
+    });
+  }, [allProducts, category, searchTerm]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -89,7 +92,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
   const handleAdd = () => {
     if (!name || !price) {
-      alert("Please provide at least a name and price.");
+      toast({ variant: "destructive", title: "Missing Info", description: "Product name and price are required." });
       return;
     }
 
@@ -117,6 +120,9 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     };
 
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
+    
+    toast({ title: "Product Added", description: `${name} is now live in the ${category} collection.` });
+    
     setIsAddOpen(false);
     
     // Reset form
@@ -126,6 +132,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       deleteDocumentNonBlocking(doc(db, 'products', id));
+      toast({ title: "Product Removed", description: "Item has been deleted from inventory." });
     }
   };
 
@@ -135,7 +142,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
   return (
     <div className="space-y-10">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -165,7 +171,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
               </DialogHeader>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column: Basic Info */}
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Name</label>
@@ -200,17 +205,13 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                   </div>
                 </div>
 
-                {/* Right Column: Visuals & Badges */}
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images (Main & Hover)</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Images</label>
                     <div className="flex flex-wrap gap-3">
                       {uploadedImages.map((img, idx) => (
                         <div key={idx} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-primary/10">
                           <Image src={img} alt="Preview" fill className="object-cover" />
-                          <div className="absolute top-0 left-0 bg-primary/90 text-white text-[7px] font-black px-1.5 py-0.5 rounded-br-lg uppercase">
-                            {idx === 0 ? 'Main' : idx === 1 ? 'Hover' : `Gallery`}
-                          </div>
                           <button onClick={() => removeImage(idx)} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"><X className="w-3 h-3" /></button>
                         </div>
                       ))}
@@ -220,27 +221,26 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                       </button>
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
                     </div>
-                    <p className="text-[9px] text-[#7A6848] font-bold italic mt-1">* 1st img: Static display | 2nd img: Shown on hover</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Status Badge</label>
-                      <Input value={statusBadge} onChange={(e) => setStatusBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. Selling Fast" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Status</label>
+                      <Input value={statusBadge} onChange={(e) => setStatusBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="Selling Fast" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Top Badge</label>
-                      <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. New Launch" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Badge</label>
+                      <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="New Launch" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Social Proof (🔥)</label>
-                      <Input value={soldLabel} onChange={(e) => setSoldLabel(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="e.g. 1.5k+" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Sold Proof</label>
+                      <Input value={soldLabel} onChange={(e) => setSoldLabel(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="1.5k+" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Review Count</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Reviews</label>
                       <Input type="number" value={reviews} onChange={(e) => setReviews(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="278" />
                     </div>
                   </div>
@@ -249,14 +249,13 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
               <div className="flex gap-4 mt-10">
                 <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Cancel</Button>
-                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Save High-Converting Listing</Button>
+                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Save Product</Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
       </div>
 
-      {/* Main Table Card */}
       <Card className="border-none shadow-xl rounded-[40px] overflow-hidden bg-white">
         <div className="p-8 border-b border-[#F9F6EF] flex items-center justify-between">
           <div className="relative flex-1 max-w-md">
@@ -269,7 +268,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             />
           </div>
           <div className="flex items-center gap-4 text-[#7A6848] font-bold text-xs">
-            <span className="uppercase tracking-widest">{products?.length || 0} Products in {category}</span>
+            <span className="uppercase tracking-widest">{filteredProducts.length} Items Listed</span>
           </div>
         </div>
         
@@ -301,7 +300,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                   <div className="space-y-1">
                     <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
                     <div className="flex gap-1">
-                      {p.badges?.map((b, i: number) => (
+                      {p.badges?.map((b: string, i: number) => (
                         <span key={i} className="px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[8px] font-black uppercase">{b}</span>
                       ))}
                     </div>

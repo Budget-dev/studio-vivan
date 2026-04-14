@@ -36,7 +36,6 @@ export default function VivaanFarms() {
   const router = useRouter();
   const db = useFirestore();
   
-  // Fetch all products to ensure maximum visibility and avoid index latency
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: dbProducts, isLoading: productsLoading } = useCollection(productsRef);
 
@@ -49,26 +48,26 @@ export default function VivaanFarms() {
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
   useEffect(() => {
+    // Speed up splash exit once loading is done
     if (!productsLoading) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 800); 
+      }, 400); 
       return () => clearTimeout(timer);
     }
   }, [productsLoading]);
 
-  // Robust Product Mapping with sensible fallbacks
   const products = useMemo(() => {
     if (!dbProducts) return [];
     
-    // Show all unless explicitly marked as not live
     return dbProducts
       .filter(p => p.isLive !== false)
       .map((p, i) => ({
         ...p,
         cat: (p.categoryId || 'uncategorized').toLowerCase(),
         price: Number(p.basePrice) || 0,
-        vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
+        mrpPrice: Number(p.mrpPrice) || 0,
+        vol: p.volumeValue ? `${p.volumeValue}${p.volumeUnit || ''}` : 'Standard',
         pi: i,
         rating: Number(p.rating) || 4.9,
         reviewCount: Number(p.reviewCount) || 0,
@@ -135,7 +134,7 @@ export default function VivaanFarms() {
             key="splash"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[9999]"
           >
             <SplashScreen />
@@ -158,7 +157,7 @@ export default function VivaanFarms() {
           opacity: showSplash ? 0 : 1,
           scale: showSplash ? 0.98 : 1
         }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
           "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0"
         )}
