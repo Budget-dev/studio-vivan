@@ -26,7 +26,7 @@ export const VideoSection: React.FC = () => {
     });
   }, [api]);
 
-  const videos = [0, 1, 2, 3];
+  const videos = [0, 1, 2, 3, 4, 5];
 
   return (
     <section className="py-10 md:py-20 bg-[#EBF5EE] overflow-hidden">
@@ -38,12 +38,12 @@ export const VideoSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </div>
 
-        {/* Mobile View: Horizontal Swiper with "Peek" */}
-        <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 md:hidden -mx-5 px-5 pb-8">
+        {/* Mobile View: Horizontal Swiper with smaller minimized cards */}
+        <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 md:hidden -mx-5 px-5 pb-8">
           {videos.map((i) => (
             <div 
               key={i} 
-              className="relative min-w-[260px] aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
+              className="relative min-w-[160px] aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
             >
               <video
                 src={videoUrl}
@@ -58,13 +58,13 @@ export const VideoSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Desktop View: Horizontal Scrollable Carousel with Dots */}
+        {/* Desktop View: Horizontal Scrollable Carousel showing more minimized items side-by-side */}
         <div className="hidden md:block">
           <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent className="-ml-6">
+            <CarouselContent className="-ml-4">
               {videos.map((i) => (
-                <CarouselItem key={i} className="pl-6 md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <div className="relative aspect-[9/16] rounded-[32px] overflow-hidden shadow-xl border-4 border-white group">
+                <CarouselItem key={i} className="pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <div className="relative aspect-[9/16] rounded-[24px] overflow-hidden shadow-xl border-[3px] border-white group">
                     <video
                       src={videoUrl}
                       className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-500"
@@ -86,10 +86,10 @@ export const VideoSection: React.FC = () => {
                   key={i}
                   onClick={() => api?.scrollTo(i)}
                   className={cn(
-                    "h-2.5 rounded-full transition-all duration-500 ease-out",
+                    "h-2 rounded-full transition-all duration-500 ease-out",
                     current === i 
-                      ? "bg-primary w-10" 
-                      : "bg-primary/20 hover:bg-primary/40 w-2.5"
+                      ? "bg-primary w-8" 
+                      : "bg-primary/20 hover:bg-primary/40 w-2"
                   )}
                   aria-label={`Go to slide ${i + 1}`}
                 />
