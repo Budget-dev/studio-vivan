@@ -70,7 +70,7 @@ export default function VivaanFarms() {
     return dbProducts.map((p, i) => ({
       ...p,
       // Map categoryId from Firestore to the 'cat' property used by the UI
-      cat: p.categoryId || 'uncategorized',
+      cat: (p.categoryId || 'uncategorized').toLowerCase(),
       price: p.basePrice || 0,
       vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
       pi: i,
@@ -124,45 +124,10 @@ export default function VivaanFarms() {
     router.push('/checkout');
   };
 
-  const CategorySection = ({ catId, label }: { catId: string, label: string }) => {
-    const sectionProducts = products.filter(p => p.cat === catId);
-    if (sectionProducts.length === 0) return null;
-
-    return (
-      <div className="mb-12 md:mb-20">
-        <div className="flex items-center justify-between mb-6 px-1">
-          <div className="space-y-1">
-            <h3 className="font-headline text-2xl md:text-4xl font-extrabold text-primary">{label}</h3>
-            <div className="w-12 h-0.5 bg-primary/20 rounded-full"></div>
-          </div>
-        </div>
-
-        <div className="relative group">
-          <div className="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 px-1">
-            {sectionProducts.map((p) => (
-              <div key={p.id} className="min-w-[82vw] md:min-w-0 snap-center">
-                <ProductCard 
-                  product={p} 
-                  isInCart={cart.some(c => c.id === p.id)}
-                  onOpen={() => setSelectedProduct(p)}
-                  onAdd={() => addToCart(p)}
-                />
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex justify-end mt-4">
-            <button 
-              onClick={() => handleCategoryFilter(catId)}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-primary/20 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
-            >
-              See All {label} <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const filteredProducts = useMemo(() => {
+    if (filter === 'all') return products;
+    return products.filter(p => p.cat === filter);
+  }, [products, filter]);
 
   return (
     <>
@@ -239,27 +204,24 @@ export default function VivaanFarms() {
                   ))}
                 </div>
               ) : (
-                <>
-                  {filter === 'all' ? (
-                    <div className="space-y-4">
-                      <CategorySection catId="ghee" label="A2 Gir Cow Ghee" />
-                      <CategorySection catId="sweets" label="Farm Fresh Sweets" />
-                      <CategorySection catId="honey" label="Forest Organic Honey" />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                      {products.filter(p => p.cat === filter).map((p) => (
-                        <ProductCard 
-                          key={p.id} 
-                          product={p} 
-                          isInCart={cart.some(c => c.id === p.id)}
-                          onOpen={() => setSelectedProduct(p)}
-                          onAdd={() => addToCart(p)}
-                        />
-                      ))}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                  {filteredProducts.map((p) => (
+                    <ProductCard 
+                      key={p.id} 
+                      product={p} 
+                      isInCart={cart.some(c => c.id === p.id)}
+                      onOpen={() => setSelectedProduct(p)}
+                      onAdd={() => addToCart(p)}
+                    />
+                  ))}
+                  {filteredProducts.length === 0 && (
+                    <div className="col-span-full py-20 text-center">
+                      <div className="text-4xl mb-4">🍃</div>
+                      <h3 className="font-headline text-2xl font-bold text-primary">No products found</h3>
+                      <p className="text-muted-foreground mt-2">Try selecting a different category.</p>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </div>
           </section>
