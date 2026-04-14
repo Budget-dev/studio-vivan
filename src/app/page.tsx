@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
@@ -23,6 +24,14 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+
+const CATEGORIES = [
+  { id: 'all', label: 'All', ico: '🌿' },
+  { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
+  { id: 'sweets', label: 'Sweets', ico: '🎁' },
+  { id: 'honey', label: 'Honey', ico: '🍯' },
+];
 
 export default function VivaanFarms() {
   const router = useRouter();
@@ -40,18 +49,15 @@ export default function VivaanFarms() {
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
-  // Hide splash screen after minimum duration and content loaded
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!productsLoading) {
         setShowSplash(false);
       }
     }, 2500); 
-
     return () => clearTimeout(timer);
   }, [productsLoading]);
 
-  // Ensure splash hides even if products fail to load or take too long
   useEffect(() => {
     const backupTimer = setTimeout(() => {
       setShowSplash(false);
@@ -91,15 +97,6 @@ export default function VivaanFarms() {
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    if (aiCategories) {
-      if (aiCategories.includes('all')) return products;
-      return products.filter(p => aiCategories.includes(p.cat));
-    }
-    if (filter === 'all') return products;
-    return products.filter(p => p.cat === filter);
-  }, [filter, aiCategories, products]);
-
   const handleCategoryFilter = (cat: string) => {
     setAiCategories(null);
     setFilter(cat);
@@ -125,12 +122,47 @@ export default function VivaanFarms() {
     router.push('/checkout');
   };
 
-  const CATEGORIES = [
-    { id: 'all', label: 'All', ico: '🌿' },
-    { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-    { id: 'sweets', label: 'Sweets', ico: '🎁' },
-    { id: 'honey', label: 'Honey', ico: '🍯' },
-  ];
+  // Helper to render a category row
+  const CategorySection = ({ catId, label }: { catId: string, label: string }) => {
+    const sectionProducts = products.filter(p => p.cat === catId);
+    if (sectionProducts.length === 0) return null;
+
+    return (
+      <div className="mb-12 md:mb-20">
+        <div className="flex items-center justify-between mb-6 px-1">
+          <div className="space-y-1">
+            <h3 className="font-headline text-2xl md:text-4xl font-extrabold text-primary">{label}</h3>
+            <div className="w-12 h-0.5 bg-primary/20 rounded-full"></div>
+          </div>
+        </div>
+
+        {/* Desktop Grid / Mobile Scroll */}
+        <div className="relative group">
+          <div className="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 px-1">
+            {sectionProducts.map((p) => (
+              <div key={p.id} className="min-w-[82vw] md:min-w-0 snap-center">
+                <ProductCard 
+                  product={p} 
+                  isInCart={cart.some(c => c.id === p.id)}
+                  onOpen={() => setSelectedProduct(p)}
+                  onAdd={() => addToCart(p)}
+                />
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-end mt-4">
+            <button 
+              onClick={() => handleCategoryFilter(catId)}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-primary/20 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
+            >
+              See All {label} <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -148,7 +180,6 @@ export default function VivaanFarms() {
         )}
       </AnimatePresence>
 
-      {/* Persistent Ticker and Header (above scaling div) */}
       <div className={cn("sticky top-0 z-[900] transition-opacity duration-500", showSplash ? "opacity-0" : "opacity-100")}>
         <Ticker />
         <Header 
@@ -181,8 +212,8 @@ export default function VivaanFarms() {
 
           <section className="py-8 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              {/* Optimized Category Bar for Mobile */}
-              <div className="flex justify-center mb-8 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
+              {/* Category Nav Bar */}
+              <div className="flex justify-center mb-10 md:mb-16 overflow-x-auto no-scrollbar px-2 w-full">
                 <div className="flex gap-1.5 md:gap-4 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max md:min-w-0">
                   {CATEGORIES.map((cat) => (
                     <button
@@ -202,35 +233,34 @@ export default function VivaanFarms() {
                 </div>
               </div>
 
-              <div className="text-center mb-6 md:mb-16 space-y-3">
-                <div className="text-[9px] font-black text-[#7A6848] tracking-[2.5px] uppercase">TRADITIONAL COLLECTION</div>
-                <h2 className="font-headline text-3xl md:text-6xl font-extrabold leading-none capitalize">
-                  {filter === 'all' ? 'Pure Farm Purity' : `${filter} Collection`}
-                </h2>
-              </div>
-
               {productsLoading ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                   {[...Array(4)].map((_, i) => (
                     <div key={i} className="bg-white/50 rounded-[32px] aspect-[3/4] animate-pulse border-2 border-dashed border-[#DDD0B5]/30"></div>
                   ))}
                 </div>
-              ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                  {filteredProducts.map((p) => (
-                    <ProductCard 
-                      key={p.id} 
-                      product={p} 
-                      isInCart={cart.some(c => c.id === p.id)}
-                      onOpen={() => setSelectedProduct(p)}
-                      onAdd={() => addToCart(p)}
-                    />
-                  ))}
-                </div>
               ) : (
-                <div className="py-20 text-center text-[#7A6848] font-medium italic bg-white/50 rounded-[40px] border-2 border-dashed border-[#DDD0B5]">
-                  No products found in this category.
-                </div>
+                <>
+                  {filter === 'all' ? (
+                    <div className="space-y-4">
+                      <CategorySection catId="ghee" label="A2 Gir Cow Ghee" />
+                      <CategorySection catId="sweets" label="Farm Fresh Sweets" />
+                      <CategorySection catId="honey" label="Forest Organic Honey" />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                      {products.filter(p => p.cat === filter).map((p) => (
+                        <ProductCard 
+                          key={p.id} 
+                          product={p} 
+                          isInCart={cart.some(c => c.id === p.id)}
+                          onOpen={() => setSelectedProduct(p)}
+                          onAdd={() => addToCart(p)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </section>
@@ -244,7 +274,6 @@ export default function VivaanFarms() {
         <Footer />
       </motion.div>
 
-      {/* Truly Fixed Components (Outside transforming containers) */}
       <BottomNav 
         activeTab={activeTab}
         onTabChange={handleTabChange}

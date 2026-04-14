@@ -63,7 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
   return (
     <div 
       onClick={() => onOpen(product)}
-      className="bg-white rounded-[20px] md:rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full w-full mx-auto"
+      className="bg-white rounded-[20px] md:rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full w-full mx-auto shadow-sm"
     >
       {/* Top Section: Image Area */}
       <div className="relative aspect-[1/1] bg-[#F3F4F6]/50 p-2 md:p-4 flex items-center justify-center">
