@@ -18,7 +18,8 @@ import {
   Home,
   BookOpen,
   Info,
-  ChevronRight
+  ChevronRight,
+  Phone
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -158,27 +159,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </button>
           ))}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="text-[13px] font-bold text-primary/80 hover:text-primary flex items-center gap-1.5 transition-all tracking-wide uppercase">
-                Shop <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="rounded-xl p-2 min-w-[180px] shadow-xl border-primary/5">
-              {categories?.map((cat) => (
-                <DropdownMenuItem 
-                  key={cat.id} 
-                  onClick={() => onFilter(cat.name.toLowerCase())}
-                  className="rounded-lg py-2 px-3 text-xs font-bold cursor-pointer capitalize"
-                >
-                  {cat.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/about" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
+            About Us
+          </Link>
 
-          <Link href="/blog" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
-            Journal
+          <Link href="/contact" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
+            Contact Us
           </Link>
         </nav>
 
@@ -311,20 +297,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-4 text-left">Discovery</div>
                 <div className="space-y-1">
                   <Link 
-                    href="/blog" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
-                  >
-                    <BookOpen className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
-                    <span className="text-sm font-bold text-primary/80 group-hover:text-primary">Our Journal</span>
-                  </Link>
-                  <Link 
                     href="/about" 
                     onClick={() => setMobileMenuOpen(false)}
                     className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
                   >
                     <Info className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
-                    <span className="text-sm font-bold text-primary/80 group-hover:text-primary">About Vivaan</span>
+                    <span className="text-sm font-bold text-primary/80 group-hover:text-primary">About Us</span>
+                  </Link>
+                  <Link 
+                    href="/contact" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-4 py-3.5 px-4 rounded-2xl hover:bg-primary/5 transition-all group"
+                  >
+                    <Phone className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
+                    <span className="text-sm font-bold text-primary/80 group-hover:text-primary">Contact Us</span>
                   </Link>
                   <Link 
                     href="/track" 
