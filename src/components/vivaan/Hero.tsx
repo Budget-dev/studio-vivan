@@ -7,8 +7,8 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 /**
  * Hero Banner Component
- * Fixed responsiveness: Changed width to 100% and removed absolute positioning constraints 
- * that caused image hiding on smaller screens. Used aspect ratio for perfect fitting.
+ * Fixed responsiveness: Used a reliable aspect-ratio container to ensure the 
+ * banner shows fully and scales correctly across all screen sizes.
  */
 export const Hero: React.FC = () => {
   const mainBanner = PlaceHolderImages.find(img => img.id === 'hero-banner-main');
@@ -16,12 +16,13 @@ export const Hero: React.FC = () => {
 
   return (
     <section className="w-full bg-[#F9F6EF] px-0 md:px-10 md:pt-6">
-      <div className="relative w-full aspect-[16/8] md:aspect-[3/1] overflow-hidden md:rounded-[40px] shadow-sm">
+      <div className="relative w-full aspect-[16/7] md:aspect-[3/1] overflow-hidden md:rounded-[40px] shadow-sm">
         <Image
           src={bannerUrl}
           alt="Vivaan Farms Banner"
-          fill
-          className="object-cover object-center"
+          width={1600}
+          height={533}
+          className="w-full h-full object-cover object-center"
           priority
           loading="eager"
           sizes="100vw"

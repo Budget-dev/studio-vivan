@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -41,23 +42,23 @@ export const NativeSection: React.FC = () => {
           {NATIVE_CARDS.map((card, i) => (
             <div 
               key={i} 
-              className="relative min-w-[280px] md:min-w-0 aspect-[4/5.5] rounded-[20px] md:rounded-[24px] overflow-hidden group shadow-lg bg-white shrink-0 snap-center"
+              className="relative min-w-[240px] md:min-w-0 aspect-[4/5] rounded-[20px] md:rounded-[24px] overflow-hidden group shadow-lg bg-white shrink-0 snap-center"
             >
               <Image 
                 src="https://www.anveshan.farm/cdn/shop/files/Artboard_1_copy_3_faa53739-3e80-431a-ba0e-7b6e3528ef6b.jpg?format=webp&v=1752322603&width=450"
                 alt={card.title}
                 fill
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                sizes="(max-width: 768px) 280px, 450px"
+                sizes="(max-width: 768px) 240px, 450px"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
               <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end md:justify-center text-center">
                 <div className="space-y-2 md:space-y-4">
                   <div className="text-[10px] font-black uppercase tracking-[2px] text-white/90">{card.subtitle}</div>
-                  <h3 className="font-headline text-xl md:text-3xl font-bold text-white leading-tight">
+                  <h3 className="font-headline text-lg md:text-3xl font-bold text-white leading-tight">
                     {card.title}
                   </h3>
-                  <p className="text-white/80 text-[10px] md:text-sm leading-relaxed font-medium line-clamp-3 md:line-clamp-none">
+                  <p className="hidden md:block text-white/80 text-sm leading-relaxed font-medium">
                     {card.desc}
                   </p>
                 </div>
