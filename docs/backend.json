@@ -1,240 +1,60 @@
 {
   "entities": {
     "UserProfile": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProfile",
+      "description": "User account details and loyalty points.",
       "type": "object",
-      "description": "Represents a user's profile within the application, storing personal information and loyalty points.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the UserProfile entity."
-        },
-        "firstName": {
-          "type": "string",
-          "description": "The first name of the user."
-        },
-        "lastName": {
-          "type": "string",
-          "description": "The last name of the user."
-        },
-        "email": {
-          "type": "string",
-          "description": "The email address of the user.",
-          "format": "email"
-        },
-        "phoneNumber": {
-          "type": "string",
-          "description": "The phone number of the user."
-        },
-        "purityCoins": {
-          "type": "number",
-          "description": "The current balance of loyalty points (Purity Coins) accumulated by the user."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the user profile was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the user profile was last updated.",
-          "format": "date-time"
-        }
+        "id": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phoneNumber": { "type": "string" },
+        "purityCoins": { "type": "number" }
       },
-      "required": [
-        "id",
-        "email",
-        "purityCoins",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "ProductCategory": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ProductCategory",
-      "type": "object",
-      "description": "Defines broad categories for organizing products, such as 'Ghee' or 'Honey'.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the ProductCategory entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the product category."
-        },
-        "description": {
-          "type": "string",
-          "description": "A brief explanation or summary of the category."
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ]
-    },
-    "Product": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Product",
-      "type": "object",
-      "description": "Represents a distinct product offering.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Product entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The primary name of the product."
-        },
-        "description": {
-          "type": "string",
-          "description": "A general description of the product."
-        },
-        "basePrice": {
-          "type": "number",
-          "description": "The starting price for the standard variant."
-        },
-        "mrpPrice": {
-          "type": "number",
-          "description": "The original price before discounts."
-        },
-        "rating": {
-          "type": "number",
-          "description": "The average customer rating."
-        },
-        "reviewCount": {
-          "type": "number",
-          "description": "Total count of customer reviews."
-        },
-        "categoryId": {
-          "type": "string",
-          "description": "The ID of the category this product belongs to."
-        },
-        "imageUrls": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "URLs to images of the product."
-        },
-        "isLive": {
-          "type": "boolean",
-          "description": "Whether the product is visible on the storefront."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "basePrice",
-        "categoryId",
-        "isLive"
-      ]
+      "required": ["id", "email", "purityCoins"]
     },
     "Banner": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Banner",
+      "description": "Promotional visuals for the homepage.",
       "type": "object",
-      "description": "Promotional banners displayed on the homepage.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier."
-        },
-        "title": {
-          "type": "string",
-          "description": "Banner headline."
-        },
-        "description": {
-          "type": "string",
-          "description": "Secondary text."
-        },
-        "imageUrl": {
-          "type": "string",
-          "description": "The compressed image data or URL."
-        },
-        "placement": {
-          "type": "string",
-          "description": "Location (e.g. 'Hero')."
-        },
-        "isActive": {
-          "type": "boolean",
-          "description": "Visibility flag."
-        },
-        "position": {
-          "type": "number",
-          "description": "Order of display."
-        }
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "placement": { "type": "string" },
+        "isActive": { "type": "boolean" }
       },
-      "required": [
-        "id",
-        "imageUrl",
-        "isActive"
-      ]
+      "required": ["id", "imageUrl", "isActive"]
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "phone",
-      "anonymous"
-    ]
+    "providers": ["password", "phone"]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/userProfiles/{userId}",
-        "definition": {
-          "entityName": "UserProfile",
-          "schema": {
-            "$ref": "#/backend/entities/UserProfile"
-          },
-          "description": "Stores user profile data."
-        }
-      },
-      {
-        "path": "/categories/{categoryId}",
-        "definition": {
-          "entityName": "ProductCategory",
-          "schema": {
-            "$ref": "#/backend/entities/ProductCategory"
-          },
-          "description": "Stores product categories."
-        }
-      },
-      {
-        "path": "/products/{productId}",
-        "definition": {
-          "entityName": "Product",
-          "schema": {
-            "$ref": "#/backend/entities/Product"
-          },
-          "description": "Stores product listings."
-        }
-      },
-      {
-        "path": "/banners/{bannerId}",
-        "definition": {
-          "entityName": "Banner",
-          "schema": {
-            "$ref": "#/backend/entities/Banner"
-          },
-          "description": "Stores promotional banners."
-        }
-      },
-      {
-        "path": "/adminRoles/{uid}",
-        "definition": {
-          "entityName": "AdminRole",
-          "schema": {
-            "type": "object",
-            "properties": {
-              "email": { "type": "string" },
-              "role": { "type": "string" }
-            }
-          },
-          "description": "Special collection used for Admin privileges check."
-        }
-      }
-    ]
+    "/userProfiles/{userId}": {
+      "schema": "#/entities/UserProfile",
+      "description": "Customer profiles."
+    },
+    "/banners/{bannerId}": {
+      "schema": "#/entities/Banner",
+      "description": "Homepage promotional banners."
+    },
+    "/categories/{categoryId}": {
+      "schema": "object",
+      "description": "Product categories."
+    },
+    "/products/{productId}": {
+      "schema": "object",
+      "description": "Farm inventory."
+    },
+    "/adminRoles/{uid}": {
+      "schema": "object",
+      "description": "Admin privilege registry."
+    },
+    "/orders/{orderId}": {
+      "schema": "object",
+      "description": "Customer transactions."
+    }
   }
 }

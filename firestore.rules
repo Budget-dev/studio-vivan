@@ -8,86 +8,62 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isMasterAdmin() {
+      // Master admin is the only account with universal permissions
+      return isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
+    }
+
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    function isAdmin() {
-      // Check if the user's email is the hardcoded master email
-      // OR if they have a role document in adminRoles
-      return isSignedIn() && (
-        request.auth.token.email == 'vivanfarmsnatural@gmail.com' ||
-        exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid))
-      );
+    // --- Universal Master Access ---
+    // This grants vivanfarmsnatural@gmail.com absolute permission over EVERYTHING
+    match /{document=**} {
+      allow read, write: if isMasterAdmin();
     }
 
-    // --- Collection Rules ---
+    // --- Public Collection Rules ---
+    // These allow the website to load banners and products for logged-out visitors
 
     match /banners/{bannerId} {
       allow get, list: if true;
-      allow write: if isAdmin();
     }
 
     match /categories/{categoryId} {
       allow get, list: if true;
-      allow write: if isAdmin();
     }
 
     match /products/{productId} {
       allow get, list: if true;
-      allow write: if isAdmin();
-
       match /variants/{variantId} {
         allow get, list: if true;
-        allow write: if isAdmin();
       }
     }
 
+    // --- User and Order Rules ---
+
     match /userProfiles/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
-      allow list: if isAdmin();
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isOwner(userId) && request.resource.data.id == userId;
-      allow delete: if false;
-
-      match /cartItems/{cartItemId} {
-        allow read, write: if isOwner(userId);
-      }
-
-      match /wishlistItems/{wishlistItemId} {
-        allow read, write: if isOwner(userId);
-      }
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+      allow list: if false; // Only admin can list (covered by recursive rule)
     }
 
     match /orders/{orderId} {
-      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
-      allow list: if isAdmin() || (isSignedIn() && request.query.limit <= 100); 
       allow create: if isSignedIn();
-      allow update: if isAdmin();
-      allow delete: if false;
-
-      match /orderItems/{orderItemId} {
-        allow read: if isAdmin() || (isSignedIn() && get(/databases/$(database)/documents/orders/$(orderId)).data.userId == request.auth.uid);
-        allow create: if isSignedIn();
-        allow update: if isAdmin();
-      }
+      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow list: if isSignedIn() && request.query.limit <= 100; // Customer track order
     }
 
-    match /couponCodes/{couponCodeId} {
-      allow read: if true;
-      allow write: if isAdmin();
+    match /adminRoles/{uid} {
+      allow get: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
     }
 
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-    }
-
-    match /adminRoles/{uid} {
-      allow get: if isSignedIn();
-      // Allow the master email to bootstrap the admin role if they are signed in
-      allow write: if isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
+      allow update, delete: if isOwner(resource.data.userId);
     }
   }
 }
