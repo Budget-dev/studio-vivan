@@ -24,11 +24,7 @@ service cloud.firestore {
     }
 
     // --- Public Collection Rules ---
-    // These allow the website to load vital content for all visitors (including logged-out)
-
-    match /banners/{bannerId} {
-      allow read: if true;
-    }
+    // Essential for the storefront to load for visitors
 
     match /categories/{categoryId} {
       allow read: if true;
@@ -51,7 +47,6 @@ service cloud.firestore {
 
     match /userProfiles/{userId} {
       allow get, write: if isOwner(userId);
-      allow list: if false; // Only master admin can list via wildcard rule
     }
 
     match /orders/{orderId} {

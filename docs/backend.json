@@ -13,20 +13,6 @@
         "purityCoins": { "type": "number" }
       },
       "required": ["id", "email", "purityCoins"]
-    },
-    "Banner": {
-      "title": "Banner",
-      "description": "Promotional visuals for the homepage.",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "title": { "type": "string" },
-        "imageUrl": { "type": "string" },
-        "placement": { "type": "string" },
-        "isActive": { "type": "boolean" },
-        "position": { "type": "number" }
-      },
-      "required": ["id", "imageUrl", "isActive"]
     }
   },
   "auth": {
@@ -36,10 +22,6 @@
     "/userProfiles/{userId}": {
       "schema": { "$ref": "#/entities/UserProfile" },
       "description": "Customer profiles."
-    },
-    "/banners/{bannerId}": {
-      "schema": { "$ref": "#/entities/Banner" },
-      "description": "Homepage promotional banners."
     },
     "/categories/{categoryId}": {
       "schema": "object",

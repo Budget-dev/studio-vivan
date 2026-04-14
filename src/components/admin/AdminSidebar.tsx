@@ -13,7 +13,6 @@ const MENU_ITEMS = [
   { id: 'sweets', label: 'Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
   { id: 'honey', label: 'Honey', icon: 'fa-jar', href: '/admin/products/honey' },
   { id: 'orders', label: 'Orders', icon: 'fa-cart-shopping', href: '/admin/orders' },
-  { id: 'banners', label: 'Banners', icon: 'fa-image', href: '/admin/banners' },
 ];
 
 export const AdminSidebar: React.FC = () => {

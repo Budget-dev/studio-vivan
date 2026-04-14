@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -12,38 +11,29 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+
+const STATIC_BANNERS = [
+  {
+    id: 'hero-1',
+    title: 'Experience Pure Purity',
+    description: 'Traditional Bilona A2 Ghee directly from our Gujarat Farm.',
+    imageUrl: 'https://i.ibb.co/Pzmmm9j3/Chat-GPT-Image-Mar-20-2026-09-52-12-AM.png',
+  },
+  {
+    id: 'hero-2',
+    title: 'Native Gir Cow Heritage',
+    description: 'Nourishing generations with the golden gift of nature.',
+    imageUrl: 'https://picsum.photos/seed/vivaan2/1600/600',
+  },
+  {
+    id: 'hero-3',
+    title: 'Artisanal Farm Sweets',
+    description: 'Handcrafted with pure A2 Ghee and traditional recipes.',
+    imageUrl: 'https://picsum.photos/seed/vivaan3/1600/600',
+  }
+];
 
 export const Hero: React.FC = () => {
-  const db = useFirestore();
-  
-  // Robust query for active hero banners, ordered by position
-  const bannersRef = useMemoFirebase(() => 
-    query(
-      collection(db, 'banners'), 
-      where('isActive', '==', true), 
-      where('placement', '==', 'Hero'),
-      orderBy('position', 'asc')
-    ), [db]
-  );
-  
-  const { data: banners, isLoading } = useCollection(bannersRef);
-
-  if (isLoading) {
-    return <div className="w-full h-[220px] md:h-[350px] bg-primary/5 animate-pulse flex items-center justify-center border-b border-border/10"></div>;
-  }
-
-  // Fallback banners if none are in the DB yet
-  const displayBanners = (banners && banners.length > 0) ? banners : [
-    {
-      id: 'default-1',
-      title: 'Experience Pure Purity',
-      description: 'Traditional Bilona A2 Ghee directly from our Gujarat Farm.',
-      imageUrl: 'https://i.ibb.co/Pzmmm9j3/Chat-GPT-Image-Mar-20-2026-09-52-12-AM.png',
-    }
-  ];
-
   return (
     <section className="relative w-full border-b border-border/10">
       <Carousel 
@@ -51,16 +41,17 @@ export const Hero: React.FC = () => {
         className="w-full h-[220px] md:h-[350px] overflow-hidden"
       >
         <CarouselContent className="h-full ml-0">
-          {displayBanners.map((banner, index) => (
+          {STATIC_BANNERS.map((banner, index) => (
             <CarouselItem key={banner.id} className="relative h-full pl-0">
               <div className="relative w-full h-[220px] md:h-[350px]">
                 <Image
                   src={banner.imageUrl}
-                  alt={banner.title || "Promotional Banner"}
+                  alt={banner.title}
                   fill
                   className="object-cover brightness-[0.85]"
                   priority={index === 0}
                   loading={index === 0 ? "eager" : "lazy"}
+                  data-ai-hint="farm products"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent flex items-center">
                   <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">
