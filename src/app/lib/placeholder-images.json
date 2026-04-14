@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-banner-main",
+      "description": "Vivaan Farms Premium Main Banner",
+      "imageUrl": "https://vivanfa.sirv.com/Firefly_Gemini%20Flash_Use%20the%20attached%20Atta%20banner%20as%20the%20exact%20layout%20and%20mood%20reference.%20Recreate%20the%20sam%20213429.png",
+      "imageHint": "premium farm banner"
+    },
+    {
+      "id": "hero-banner-2",
+      "description": "Serene Gujarat farm with grazing Gir cows at sunrise",
+      "imageUrl": "https://picsum.photos/seed/vivaan2/1600/600",
+      "imageHint": "cow farm"
+    },
+    {
+      "id": "hero-banner-3",
+      "description": "Close up of traditional Bilona churning process",
+      "imageUrl": "https://picsum.photos/seed/vivaan3/1600/600",
+      "imageHint": "traditional churning"
+    }
+  ]
+}

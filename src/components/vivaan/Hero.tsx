@@ -5,81 +5,42 @@ import React from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-
-const STATIC_BANNERS = [
-  {
-    id: 'hero-1',
-    title: 'Experience Pure Purity',
-    description: 'Traditional Bilona A2 Ghee directly from our Gujarat Farm.',
-    imageUrl: 'https://i.ibb.co/Pzmmm9j3/Chat-GPT-Image-Mar-20-2026-09-52-12-AM.png',
-  },
-  {
-    id: 'hero-2',
-    title: 'Native Gir Cow Heritage',
-    description: 'Nourishing generations with the golden gift of nature.',
-    imageUrl: 'https://picsum.photos/seed/vivaan2/1600/600',
-  },
-  {
-    id: 'hero-3',
-    title: 'Artisanal Farm Sweets',
-    description: 'Handcrafted with pure A2 Ghee and traditional recipes.',
-    imageUrl: 'https://picsum.photos/seed/vivaan3/1600/600',
-  }
-];
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export const Hero: React.FC = () => {
+  const mainBanner = PlaceHolderImages.find(img => img.id === 'hero-banner-main');
+  const bannerUrl = mainBanner?.imageUrl || 'https://vivanfa.sirv.com/Firefly_Gemini%20Flash_Use%20the%20attached%20Atta%20banner%20as%20the%20exact%20layout%20and%20mood%20reference.%20Recreate%20the%20sam%20213429.png';
+
   return (
     <section className="relative w-full border-b border-border/10">
-      <Carousel 
-        opts={{ loop: true }} 
-        className="w-full h-[280px] md:h-[350px] overflow-hidden"
-      >
-        <CarouselContent className="h-full ml-0">
-          {STATIC_BANNERS.map((banner, index) => (
-            <CarouselItem key={banner.id} className="relative h-full pl-0">
-              <div className="relative w-full h-[280px] md:h-[350px]">
-                <Image
-                  src={banner.imageUrl}
-                  alt={banner.title}
-                  fill
-                  className="object-cover brightness-[0.85]"
-                  priority={index === 0}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  data-ai-hint="farm products"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent flex items-center">
-                  <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">
-                    <div className="max-w-2xl text-left">
-                      <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1 rounded-full text-[8px] md:text-[9px] font-black tracking-[2px] uppercase mb-3 md:mb-5">
-                        Authentic Bilona Method · Gujarat Direct
-                      </div>
-                      <h1 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 md:mb-6">
-                        {banner.title}
-                      </h1>
-                      <div className="flex gap-2.5 md:gap-4">
-                        <Button className="h-10 md:h-11 px-6 md:px-8 rounded-full bg-primary text-white font-black uppercase tracking-widest hover:bg-secondary transition-all group border-none shadow-xl text-[9px] md:text-xs">
-                          Shop Now <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <div className="relative w-full h-[300px] md:h-[500px]">
+        <Image
+          src={bannerUrl}
+          alt="Experience Pure Purity"
+          fill
+          className="object-cover brightness-[0.95]"
+          priority
+          loading="eager"
+          data-ai-hint="premium farm banner"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent flex items-center">
+          <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">
+            <div className="max-w-2xl text-left">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1 rounded-full text-[8px] md:text-[9px] font-black tracking-[2px] uppercase mb-3 md:mb-5">
+                Authentic Bilona Method · Gujarat Direct
               </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className="absolute bottom-4 right-4 hidden md:flex gap-2 z-20">
-          <CarouselPrevious className="relative translate-y-0 left-0 bg-white/10 border-white/20 text-white hover:bg-white/30 w-8 h-8 rounded-full backdrop-blur-md" />
-          <CarouselNext className="relative translate-y-0 right-0 bg-white/10 border-white/20 text-white hover:bg-white/30 w-8 h-8 rounded-full backdrop-blur-md" />
+              <h1 className="font-headline text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 md:mb-6">
+                Nature's Finest <br /> <em className="italic text-accent">Pure Goodness</em>
+              </h1>
+              <div className="flex gap-2.5 md:gap-4">
+                <Button className="h-10 md:h-12 px-6 md:px-10 rounded-full bg-primary text-white font-black uppercase tracking-widest hover:bg-secondary transition-all group border-none shadow-xl text-[9px] md:text-xs">
+                  Shop Purity <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
-      </Carousel>
+      </div>
     </section>
   );
 };
