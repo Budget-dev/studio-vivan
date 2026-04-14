@@ -29,21 +29,21 @@ export const VideoSection: React.FC = () => {
   const videos = [0, 1, 2, 3, 4];
 
   return (
-    <section className="py-10 md:py-20 bg-[#EBF5EE] overflow-hidden">
+    <section className="py-12 md:py-24 bg-[#EBF5EE] border-t border-border/50 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-        <div className="text-center mb-8 md:mb-12">
-          <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-primary mb-2">
+        <div className="text-center mb-10 md:mb-16">
+          <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary leading-tight">
             Cook with Vivaan
           </h2>
-          <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-primary/20 mx-auto mt-4 md:mt-6 rounded-full"></div>
         </div>
 
-        {/* Mobile View: Scrollable Row */}
-        <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 md:hidden -mx-5 px-5 pb-8">
+        {/* Unified Layout: Mobile Row / Desktop Carousel */}
+        <div className="flex md:hidden overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 -mx-5 px-5 pb-8">
           {videos.map((i) => (
             <div 
               key={i} 
-              className="relative min-w-[140px] aspect-square rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
+              className="relative min-w-[200px] aspect-square rounded-[24px] overflow-hidden group shadow-lg bg-white shrink-0 snap-center border-4 border-white"
             >
               <video
                 src={videoUrl}
@@ -53,42 +53,52 @@ export const VideoSection: React.FC = () => {
                 playsInline
                 autoPlay
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <div className="absolute bottom-4 left-4">
+                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-[10px]">
+                  <i className="fa-solid fa-play ml-0.5"></i>
+                </div>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Desktop View: Carousel showing 3 at a time */}
+        {/* Desktop Carousel */}
         <div className="hidden md:block">
           <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent className="-ml-4">
+            <CarouselContent className="-ml-6">
               {videos.map((i) => (
-                <CarouselItem key={i} className="pl-4 md:basis-1/3">
-                  <div className="relative aspect-square rounded-[32px] overflow-hidden shadow-xl border-[4px] border-white group">
+                <CarouselItem key={i} className="pl-6 md:basis-1/3">
+                  <div className="relative aspect-square rounded-[32px] overflow-hidden shadow-xl border-[6px] border-white group">
                     <video
                       src={videoUrl}
-                      className="w-full h-full object-cover transition-all duration-500"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                       muted
                       loop
                       playsInline
                       autoPlay
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                       <div className="w-16 h-16 rounded-full bg-white/30 backdrop-blur-xl border border-white/50 flex items-center justify-center text-white scale-75 group-hover:scale-100 transition-transform duration-500">
+                          <i className="fa-solid fa-play text-xl ml-1"></i>
+                       </div>
+                    </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
             
-            <div className="hidden md:flex justify-center gap-2.5 mt-10">
+            <div className="hidden md:flex justify-center gap-3 mt-12">
               {Array.from({ length: count }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => api?.scrollTo(i)}
                   className={cn(
-                    "h-2 rounded-full transition-all duration-500 ease-out",
+                    "h-1.5 rounded-full transition-all duration-500 ease-out",
                     current === i 
-                      ? "bg-primary w-8" 
-                      : "bg-primary/20 hover:bg-primary/40 w-2"
+                      ? "bg-primary w-10" 
+                      : "bg-primary/10 hover:bg-primary/30 w-3"
                   )}
                   aria-label={`Go to slide ${i + 1}`}
                 />
