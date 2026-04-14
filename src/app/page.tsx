@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Ticker } from '@/components/vivaan/Ticker';
@@ -69,6 +69,8 @@ export default function VivaanFarms() {
     if (!dbProducts) return [];
     return dbProducts.map((p, i) => ({
       ...p,
+      // Map categoryId from Firestore to the 'cat' property used by the UI
+      cat: p.categoryId || 'uncategorized',
       price: p.basePrice || 0,
       vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
       pi: i,
@@ -77,7 +79,7 @@ export default function VivaanFarms() {
       soldCountLabel: p.soldCountLabel || '',
       statusBadge: p.statusBadge || '',
       badges: p.badges || [],
-      vars: p.variants || [{ s: 'Standard', p: p.basePrice || 0, on: true }]
+      vars: p.vars || p.variants || [{ s: 'Standard', p: p.basePrice || 0, on: true }]
     } as Product));
   }, [dbProducts]);
 
@@ -122,7 +124,6 @@ export default function VivaanFarms() {
     router.push('/checkout');
   };
 
-  // Helper to render a category row
   const CategorySection = ({ catId, label }: { catId: string, label: string }) => {
     const sectionProducts = products.filter(p => p.cat === catId);
     if (sectionProducts.length === 0) return null;
@@ -136,7 +137,6 @@ export default function VivaanFarms() {
           </div>
         </div>
 
-        {/* Desktop Grid / Mobile Scroll */}
         <div className="relative group">
           <div className="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 px-1">
             {sectionProducts.map((p) => (
@@ -212,7 +212,6 @@ export default function VivaanFarms() {
 
           <section className="py-8 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              {/* Category Nav Bar */}
               <div className="flex justify-center mb-10 md:mb-16 overflow-x-auto no-scrollbar px-2 w-full">
                 <div className="flex gap-1.5 md:gap-4 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max md:min-w-0">
                   {CATEGORIES.map((cat) => (

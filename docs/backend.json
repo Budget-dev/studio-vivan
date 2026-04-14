@@ -14,10 +14,23 @@
         "purityCoins": { "type": "number" }
       },
       "required": ["id", "email", "purityCoins"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Farm inventory item.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "basePrice": { "type": "number" },
+        "categoryId": { "type": "string" },
+        "isLive": { "type": "boolean" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } }
+      }
     }
   },
   "auth": {
-    "providers": ["password", "google", "phone"]
+    "providers": ["password", "google"]
   },
   "firestore": {
     "/userProfiles/{userId}": {
@@ -29,16 +42,16 @@
       "description": "Product categories."
     },
     "/products/{productId}": {
-      "schema": "object",
+      "schema": { "$ref": "#/entities/Product" },
       "description": "Farm inventory."
-    },
-    "/adminRoles/{uid}": {
-      "schema": "object",
-      "description": "Admin privilege registry."
     },
     "/orders/{orderId}": {
       "schema": "object",
       "description": "Customer transactions."
+    },
+    "/adminRoles/{uid}": {
+      "schema": "object",
+      "description": "Admin privilege registry."
     }
   }
 }
