@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -5,14 +6,16 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { useAuth, useUser } from '@/firebase';
+import { useAuth, useUser, useFirestore } from '@/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { ShieldCheck, Lock, Mail, Sparkles, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 /**
  * Admin Login Page
  * Strictly hardcodes the master admin email and provides a one-time initialization flow.
+ * Also ensures admin status is synced to Firestore adminRoles collection.
  */
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
@@ -24,6 +27,7 @@ export default function AdminLoginPage() {
   
   const router = useRouter();
   const auth = useAuth();
+  const db = useFirestore();
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
 
@@ -39,16 +43,33 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
+      let userCredential;
       if (isSetupMode) {
         // One-time initialization logic
-        await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        userCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        
+        // Explicitly create the admin role document in Firestore to grant DB access
+        await setDoc(doc(db, 'adminRoles', userCredential.user.uid), {
+          email: ADMIN_EMAIL,
+          role: 'admin',
+          initializedAt: new Date().toISOString()
+        });
+
         toast({
           title: "Admin Initialized",
           description: "Your master credentials have been set. Welcome to Vivaan Farms.",
         });
       } else {
         // Standard Sign In
-        await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        userCredential = await signInWithEmailAndPassword(auth, ADMIN_EMAIL, password);
+        
+        // Ensure the admin role document exists (synchronize privileges)
+        await setDoc(doc(db, 'adminRoles', userCredential.user.uid), {
+          email: ADMIN_EMAIL,
+          role: 'admin',
+          lastLoginAt: new Date().toISOString()
+        }, { merge: true });
+
         toast({
           title: "Admin Verified",
           description: "Welcome back to the Vivaan Farms Dashboard.",
@@ -62,8 +83,10 @@ export default function AdminLoginPage() {
         setIsSetupMode(false);
       } else if (e.code === 'auth/weak-password') {
         setError("Password should be at least 6 characters.");
+      } else if (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+        setError("Invalid credentials. Please check your password.");
       } else {
-        setError("Access Denied. Invalid credentials or unauthorized attempt.");
+        setError("Access Denied. Ensure you are an authorized administrator.");
       }
     } finally {
       setIsLoading(false);

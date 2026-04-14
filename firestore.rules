@@ -20,48 +20,52 @@ service cloud.firestore {
     // --- Collection Rules ---
 
     match /banners/{bannerId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /categories/{categoryId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /products/{productId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdmin();
+      allow read: if true;
+      allow write: if isAdmin();
 
       match /variants/{variantId} {
-        allow get, list: if true;
-        allow create, update, delete: if isAdmin();
+        allow read: if true;
+        allow write: if isAdmin();
       }
     }
 
     match /userProfiles/{userId} {
-      allow get, list: if isOwner(userId) || isAdmin();
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isOwner(userId) && request.resource.data.id == userId;
       allow delete: if false;
 
       match /cartItems/{cartItemId} {
-        allow get, list, write: if isOwner(userId);
+        allow read, write: if isOwner(userId);
       }
 
       match /wishlistItems/{wishlistItemId} {
-        allow get, list, write: if isOwner(userId);
+        allow read, write: if isOwner(userId);
       }
     }
 
     match /orders/{orderId} {
-      allow get, list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      // Allow user to see their own orders, and admin to see all
+      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if isAdmin() || (isSignedIn() && request.query.limit <= 100); 
+      
       allow create: if isSignedIn();
       allow update: if isAdmin();
       allow delete: if false;
 
       match /orderItems/{orderItemId} {
-        allow get, list: if isAdmin() || (isSignedIn() && get(/databases/$(database)/documents/orders/$(orderId)).data.userId == request.auth.uid);
+        allow read: if isAdmin() || (isSignedIn() && get(/databases/$(database)/documents/orders/$(orderId)).data.userId == request.auth.uid);
         allow create: if isSignedIn();
         allow update: if isAdmin();
         allow delete: if false;
@@ -69,12 +73,12 @@ service cloud.firestore {
     }
 
     match /couponCodes/{couponCodeId} {
-      allow get, list: if true;
+      allow read: if true;
       allow write: if isAdmin();
     }
 
     match /reviews/{reviewId} {
-      allow get, list: if true;
+      allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
     }

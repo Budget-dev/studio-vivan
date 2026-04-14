@@ -651,7 +651,7 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user profiles. Accessible only by the owner (request.auth.uid matches userId)."
+          "description": "Stores user profiles. Accessible only by the owner."
         }
       },
       {
@@ -661,7 +661,7 @@
           "schema": {
             "$ref": "#/backend/entities/ProductCategory"
           },
-          "description": "Stores product categories. Publicly readable by all users. Write access restricted to administrators."
+          "description": "Stores product categories. Publicly readable."
         }
       },
       {
@@ -671,7 +671,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores main product information. Publicly readable by all users. Write access restricted to administrators."
+          "description": "Stores main product information. Publicly readable."
         }
       },
       {
@@ -681,7 +681,7 @@
           "schema": {
             "$ref": "#/backend/entities/ProductVariant"
           },
-          "description": "Stores specific product variants (e.g., sizes, volumes) nested under their parent product."
+          "description": "Stores specific product variants."
         }
       },
       {
@@ -691,7 +691,7 @@
           "schema": {
             "$ref": "#/backend/entities/CartItem"
           },
-          "description": "Stores individual items in a user's shopping cart. Accessible only by the owner."
+          "description": "Stores individual items in a user's shopping cart."
         }
       },
       {
@@ -701,7 +701,7 @@
           "schema": {
             "$ref": "#/backend/entities/WishlistItem"
           },
-          "description": "Stores products in a user's wishlist. Accessible only by the owner."
+          "description": "Stores products in a user's wishlist."
         }
       },
       {
@@ -711,7 +711,7 @@
           "schema": {
             "$ref": "#/backend/entities/CouponCode"
           },
-          "description": "Stores promotional coupon codes. Publicly readable for active coupons."
+          "description": "Stores promotional coupon codes. Publicly readable."
         }
       },
       {
@@ -721,7 +721,7 @@
           "schema": {
             "$ref": "#/backend/entities/Order"
           },
-          "description": "Stores customer orders. Accessible only by the owner or administrators."
+          "description": "Stores customer orders. Accessible by owner or admin."
         }
       },
       {
@@ -761,7 +761,7 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Special collection used for Database Access Control (DBAC). Existence grants admin privileges."
+          "description": "Special collection used for Admin privileges check."
         }
       }
     ]
