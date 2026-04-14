@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -15,7 +14,6 @@ export const TrustBar: React.FC = () => {
   return (
     <div className="bg-white border-b border-border py-6 md:py-8 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-        {/* Mobile: Horizontal flex row with "peek" scrolling | Desktop: Standard flex row */}
         <div className="flex items-center md:justify-between overflow-x-auto no-scrollbar snap-x snap-mandatory gap-6 -mx-5 px-5 md:mx-0 md:px-0">
           {trustItems.map((item, i) => (
             <React.Fragment key={i}>
@@ -28,7 +26,6 @@ export const TrustBar: React.FC = () => {
                   <div className="text-[10px] md:text-[11px] text-[#7A6A52] mt-0.5 font-medium leading-tight whitespace-nowrap md:whitespace-normal">{item.s}</div>
                 </div>
               </div>
-              {/* Desktop Only Separator */}
               {i < trustItems.length - 1 && (
                 <div className="hidden md:block w-px h-10 bg-border mx-4 shrink-0" />
               )}

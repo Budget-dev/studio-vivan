@@ -86,13 +86,13 @@
   to { transform: translateX(-50%); }
 }
 
-.ticker-vertical-animation {
-  animation: tickScrollVertical 25s linear infinite;
-}
-
 @keyframes tickScrollVertical {
   from { transform: translateY(0); }
   to { transform: translateY(-50%); }
+}
+
+.ticker-vertical-animation {
+  animation: tickScrollVertical 25s linear infinite;
 }
 
 .brand-sh {
@@ -145,7 +145,6 @@
   animation: promoShine 3s linear infinite;
 }
 
-/* Custom transitions for ambiguous classes */
 .transition-custom {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.34, 1.2, 0.64, 1);

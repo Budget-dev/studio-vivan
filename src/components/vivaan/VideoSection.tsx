@@ -38,7 +38,6 @@ export const VideoSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </div>
 
-        {/* Mobile View: Horizontal Swiper with smaller minimized cards */}
         <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 md:hidden -mx-5 px-5 pb-8">
           {videos.map((i) => (
             <div 
@@ -58,7 +57,6 @@ export const VideoSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Desktop View: Horizontal Scrollable Carousel showing more minimized items side-by-side */}
         <div className="hidden md:block">
           <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
             <CarouselContent className="-ml-4">
@@ -79,7 +77,6 @@ export const VideoSection: React.FC = () => {
               ))}
             </CarouselContent>
             
-            {/* Desktop Dots Indicator */}
             <div className="hidden md:flex justify-center gap-2.5 mt-10">
               {Array.from({ length: count }).map((_, i) => (
                 <button

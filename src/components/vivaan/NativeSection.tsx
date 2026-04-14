@@ -37,7 +37,6 @@ export const NativeSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary/20 mx-auto mt-4 md:mt-6 rounded-full"></div>
         </div>
 
-        {/* Responsive Container: Scroll on Mobile, Grid on Desktop */}
         <div className="flex md:grid md:grid-cols-4 overflow-x-auto no-scrollbar md:overflow-x-visible snap-x snap-mandatory gap-4 md:gap-6 -mx-5 px-5 md:mx-0 md:px-0 pb-8 md:pb-0">
           {NATIVE_CARDS.map((card, i) => (
             <div 

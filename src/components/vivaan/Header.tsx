@@ -7,20 +7,15 @@ import { useRouter } from 'next/navigation';
 import { 
   ShoppingCart, 
   Search, 
-  ChevronDown, 
   User, 
   X, 
   LogOut, 
   Package, 
-  ShieldCheck,
   Menu,
-  Home,
-  BookOpen,
   Info,
-  ChevronRight,
-  Phone
+  Phone,
+  ChevronRight
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -34,13 +29,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useCollection, useFirestore, useMemoFirebase, useUser, useAuth } from '@/firebase';
-import { collection } from 'firebase/firestore';
-import { signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 import { LoginModal } from './LoginModal';
-import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
 
 interface HeaderProps {
   onOpenCart: () => void;
@@ -51,7 +42,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter, onSearch }) => {
   const router = useRouter();
-  const { toast } = useToast();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
@@ -59,9 +49,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   
   const auth = useAuth();
   const { user } = useUser();
-  const db = useFirestore();
-  const categoriesRef = useMemoFirebase(() => collection(db, 'categories'), [db]);
-  const { data: categories } = useCollection(categoriesRef);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,28 +59,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
-  };
-
-  const handleLogoClick = async () => {
-    if (!user) {
-      const provider = new GoogleAuthProvider();
-      try {
-        const result = await signInWithPopup(auth, provider);
-        await setDoc(doc(db, 'userProfiles', result.user.uid), {
-          id: result.user.uid,
-          firstName: result.user.displayName?.split(' ')[0] || '',
-          lastName: result.user.displayName?.split(' ').slice(1).join(' ') || '',
-          email: result.user.email?.toLowerCase().trim(),
-          purityCoins: 500,
-          updatedAt: new Date().toISOString()
-        }, { merge: true });
-        toast({ title: "Quick Auth Success!", description: `Welcome, ${result.user.displayName}` });
-      } catch (e: any) {
-        router.push('/');
-      }
-    } else {
-      router.push('/');
-    }
   };
 
   const navItems = [
@@ -107,7 +72,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
     <header className="bg-white sticky top-0 z-[900] border-b border-primary/5">
       <div className="max-w-[1500px] mx-auto px-4 md:px-10 h-[64px] md:h-[90px] flex items-center justify-between">
         
-        {/* Left: Mobile Hamburger */}
         <div className="md:hidden w-10 flex justify-start">
           <button 
             onClick={() => setMobileMenuOpen(true)}
@@ -117,10 +81,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </button>
         </div>
 
-        {/* Center: Logo (Centered on mobile, left on desktop) */}
         <div className="flex-1 flex justify-center md:justify-start">
-          <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative text-center md:text-left">
-            {/* Desktop Logo Image */}
+          <Link href="/" className="flex items-center shrink-0 group relative text-center md:text-left">
             <div className="hidden md:block w-32 h-32 relative transition-transform duration-300 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
@@ -132,23 +94,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             
-            {/* Mobile Stylized Text Logo */}
             <div className="md:hidden flex flex-col items-center">
               <span className="font-headline text-3xl font-bold text-primary leading-none tracking-tight lowercase">vivaan</span>
               <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
             </div>
-
-            {!user && (
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div className="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-black text-white uppercase tracking-widest whitespace-nowrap shadow-xl border border-white/20">
-                  Direct Google Login
-                </div>
-              </div>
-            )}
-          </button>
+          </Link>
         </div>
 
-        {/* Center Desktop Nav */}
         <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-8">
           {navItems.map((item) => (
             <button 
@@ -167,7 +119,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </Link>
         </nav>
 
-        {/* Right Actions */}
         <div className="flex items-center justify-end gap-1 md:gap-5 w-10 md:w-auto">
           <div className="relative">
             {isSearchOpen ? (
