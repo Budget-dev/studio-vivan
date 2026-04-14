@@ -48,7 +48,6 @@ export default function VivaanFarms() {
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
   useEffect(() => {
-    // Speed up splash exit once loading is done
     if (!productsLoading) {
       const timer = setTimeout(() => {
         setShowSplash(false);
@@ -57,25 +56,35 @@ export default function VivaanFarms() {
     }
   }, [productsLoading]);
 
+  // Transform and filter products with high resilience
   const products = useMemo(() => {
     if (!dbProducts) return [];
     
     return dbProducts
-      .filter(p => p.isLive !== false)
-      .map((p, i) => ({
-        ...p,
-        cat: (p.categoryId || 'uncategorized').toLowerCase(),
-        price: Number(p.basePrice) || 0,
-        mrpPrice: Number(p.mrpPrice) || 0,
-        vol: p.volumeValue ? `${p.volumeValue}${p.volumeUnit || ''}` : 'Standard',
-        pi: i,
-        rating: Number(p.rating) || 4.9,
-        reviewCount: Number(p.reviewCount) || 0,
-        soldCountLabel: p.soldCountLabel || 'Hot',
-        statusBadge: p.statusBadge || '',
-        badges: Array.isArray(p.badges) ? p.badges : [],
-        vars: Array.isArray(p.vars) ? p.vars : (Array.isArray(p.variants) ? p.variants : [{ s: 'Standard', p: Number(p.basePrice) || 0, on: true }])
-      } as Product));
+      .filter(p => p.isLive !== false) // Allow items where isLive is true or undefined
+      .map((p, i) => {
+        const catId = (p.categoryId || 'uncategorized').toLowerCase();
+        const basePrice = Number(p.basePrice) || 0;
+        
+        return {
+          ...p,
+          cat: catId,
+          price: basePrice,
+          mrpPrice: Number(p.mrpPrice) || basePrice,
+          vol: p.volumeValue ? `${p.volumeValue}${p.volumeUnit || ''}` : 'Standard',
+          pi: i,
+          rating: Number(p.rating) || 4.9,
+          reviewCount: Number(p.reviewCount) || 0,
+          soldCountLabel: p.soldCountLabel || 'Hot',
+          statusBadge: p.statusBadge || '',
+          badges: Array.isArray(p.badges) ? p.badges : [],
+          vars: Array.isArray(p.vars) && p.vars.length > 0 
+            ? p.vars 
+            : (Array.isArray(p.variants) && p.variants.length > 0 
+                ? p.variants 
+                : [{ s: 'Standard', p: basePrice, on: true }])
+        } as Product;
+      });
   }, [dbProducts]);
 
   const handleSearch = async (queryStr: string) => {
@@ -216,11 +225,11 @@ export default function VivaanFarms() {
                       onAdd={() => addToCart(p)}
                     />
                   ))}
-                  {filteredProducts.length === 0 && (
-                    <div className="col-span-full py-20 text-center">
+                  {filteredProducts.length === 0 && !productsLoading && (
+                    <div className="col-span-full py-20 text-center bg-white/50 rounded-[40px] border-2 border-dashed border-primary/10">
                       <div className="text-4xl mb-4">🍃</div>
-                      <h3 className="font-headline text-2xl font-bold text-primary">No products found</h3>
-                      <p className="text-muted-foreground mt-2">Try selecting a different category.</p>
+                      <h3 className="font-headline text-2xl font-bold text-primary">Harvesting New Batches</h3>
+                      <p className="text-muted-foreground mt-2 font-medium">No products found in this category yet. Check back soon!</p>
                     </div>
                   )}
                 </div>

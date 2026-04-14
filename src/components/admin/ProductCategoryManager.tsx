@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, serverTimestamp, doc } from 'firebase/firestore';
+import { collection, doc } from 'firebase/firestore';
 import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -42,7 +42,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Fetch all products and filter in memory to avoid indexing issues and ensure instant updates
+  // Fetch all products and filter in memory to ensure instant updates and bypass index delays
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: allProducts, isLoading } = useCollection(productsRef);
   
@@ -62,7 +62,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [topBadge, setTopBadge] = useState('New Launch');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-  // Filter products by category AND search term in memory
+  // Filter products by category AND search term in memory for maximum reliability
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
     const targetCat = category.toLowerCase();
@@ -98,46 +98,51 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
     const catId = category.toLowerCase();
     
+    // Create a complete, robust data object to ensure persistence
     const newProduct = {
-      name,
-      basePrice: Number(price),
-      mrpPrice: Number(mrpPrice) || Number(price),
+      name: name.trim(),
+      basePrice: Number(price) || 0,
+      mrpPrice: Number(mrpPrice) || Number(price) || 0,
       stockQuantity: Number(stock) || 100,
-      description: desc || name,
+      description: desc.trim() || name.trim(),
       rating: Number(rating) || 4.9,
       reviewCount: Number(reviews) || 0,
-      soldCountLabel: soldLabel || "New",
-      statusBadge: statusBadge || "",
-      badges: topBadge ? [topBadge] : [],
+      soldCountLabel: soldLabel.trim() || "New",
+      statusBadge: statusBadge.trim() || "",
+      badges: topBadge ? [topBadge.trim()] : [],
       categoryId: catId,
       imageUrls: uploadedImages.length > 0 ? uploadedImages : [],
       isLive: true, 
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       volumeValue: catId === 'ghee' ? 500 : (catId === 'honey' ? 250 : 1),
       volumeUnit: catId === 'ghee' ? 'ml' : (catId === 'honey' ? 'g' : 'unit'),
-      vars: [{ s: 'Standard', p: Number(price), on: true }]
+      vars: [{ s: 'Standard', p: Number(price) || 0, on: true }]
     };
 
+    // Initiate non-blocking write
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
     
-    toast({ title: "Product Added", description: `${name} is now live in the ${category} collection.` });
+    toast({ 
+      title: "Success", 
+      description: `${name} has been added to the ${category} collection.` 
+    });
     
     setIsAddOpen(false);
     
-    // Reset form
+    // Reset form immediately
     setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
+    if (confirm('Are you sure you want to remove this product?')) {
       deleteDocumentNonBlocking(doc(db, 'products', id));
-      toast({ title: "Product Removed", description: "Item has been deleted from inventory." });
+      toast({ title: "Removed", description: "Item has been deleted from inventory." });
     }
   };
 
   if (isLoading) {
-    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Loading {title}...</div>;
+    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Synchronizing {title}...</div>;
   }
 
   return (
@@ -155,19 +160,19 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
         <div className="flex items-center gap-3">
           <Link href="/" target="_blank">
             <Button variant="outline" className="h-12 px-6 rounded-2xl border-[#DDD0B5] text-[#7A6848] font-bold text-xs uppercase tracking-widest hidden lg:flex items-center gap-2">
-              View Website <ExternalLink className="w-3 h-3" />
+              Storefront <ExternalLink className="w-3 h-3" />
             </Button>
           </Link>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
               <button className="h-12 px-8 bg-[#1B5E3B] text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-secondary transition-all flex items-center gap-2">
-                <i className="fa-solid fa-plus"></i> Add New {category}
+                <i className="fa-solid fa-plus"></i> Add {category}
               </button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl rounded-[40px] p-10 border-none shadow-2xl font-body overflow-y-auto max-h-[90vh]">
               <DialogHeader className="mb-8">
-                <DialogTitle className="font-headline text-3xl font-extrabold text-primary">Register {category}</DialogTitle>
-                <p className="text-xs text-[#7A6848] font-medium">Create a high-conversion product listing.</p>
+                <DialogTitle className="font-headline text-3xl font-extrabold text-primary">New {category} Listing</DialogTitle>
+                <p className="text-xs text-[#7A6848] font-medium">Add artisanal products to your farm catalog.</p>
               </DialogHeader>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -190,18 +195,18 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock</label>
-                      <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="0" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Initial Stock</label>
+                      <Input type="number" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="100" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Rating</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Rating (1-5)</label>
                       <Input value={rating} onChange={(e) => setRating(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="4.9" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Description</label>
-                    <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[100px]" placeholder="Brief story about the product..." />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Story</label>
+                    <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[100px]" placeholder="Explain why this product is pure..." />
                   </div>
                 </div>
 
@@ -225,18 +230,18 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> Status</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> High Lite</label>
                       <Input value={statusBadge} onChange={(e) => setStatusBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="Selling Fast" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Badge</label>
-                      <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="New Launch" />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Special</label>
+                      <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="Pure Harvest" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Sold Proof</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Units Sold</label>
                       <Input value={soldLabel} onChange={(e) => setSoldLabel(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="1.5k+" />
                     </div>
                     <div className="space-y-2">
@@ -248,8 +253,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
               </div>
 
               <div className="flex gap-4 mt-10">
-                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Cancel</Button>
-                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Save Product</Button>
+                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
+                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Publish Product</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -261,26 +266,26 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7A6848] w-4 h-4" />
             <Input 
-              placeholder="Search by name..." 
+              placeholder="Search managed inventory..." 
               value={searchTerm}
               onChange={(e) => setSearchValue(e.target.value)}
               className="h-12 pl-11 rounded-full bg-[#F9F6EF] border-transparent focus-visible:bg-white focus-visible:border-primary/20 transition-all font-medium"
             />
           </div>
           <div className="flex items-center gap-4 text-[#7A6848] font-bold text-xs">
-            <span className="uppercase tracking-widest">{filteredProducts.length} Items Listed</span>
+            <span className="uppercase tracking-widest">{filteredProducts.length} Items Syncing</span>
           </div>
         </div>
         
         <Table>
           <TableHeader className="bg-[#FDFBFA]">
             <TableRow className="border-b-[#F9F6EF]">
-              <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Visual</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Info</TableHead>
+              <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Details</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Price (₹)</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Performance</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stats</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right px-8">Actions</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right px-8">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -332,7 +337,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             )) : (
               <TableRow>
                 <TableCell colSpan={6} className="py-20 text-center text-[#7A6848] font-medium italic">
-                  No {category} listings yet. Start with a high-quality photo!
+                  No {category} listings found in the farm catalog.
                 </TableCell>
               </TableRow>
             )}
