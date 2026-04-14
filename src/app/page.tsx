@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -9,7 +8,6 @@ import { Hero } from '@/components/vivaan/Hero';
 import { TrustBar } from '@/components/vivaan/TrustBar';
 import { ProductCard } from '@/components/vivaan/ProductCard';
 import { FeaturedBanner } from '@/components/vivaan/FeaturedBanner';
-import { VideoSection } from '@/components/vivaan/VideoSection';
 import { WhyChoose } from '@/components/vivaan/WhyChoose';
 import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
@@ -239,7 +237,6 @@ export default function VivaanFarms() {
           <WhyChoose />
           <NativeSection />
           <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
-          <VideoSection />
         </main>
 
         <Footer />
