@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -107,7 +108,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       badges: topBadge ? [topBadge] : [],
       categoryId: catId,
       imageUrls: uploadedImages.length > 0 ? uploadedImages : [],
-      isLive: true, // Crucial for showing in storefront
+      isLive: true, 
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       volumeValue: catId === 'ghee' ? 500 : (catId === 'honey' ? 250 : 1),

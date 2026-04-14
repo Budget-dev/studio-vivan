@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -20,7 +21,7 @@ import { useCart } from '@/hooks/use-cart';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Coins } from 'lucide-react';
 
@@ -35,9 +36,9 @@ export default function VivaanFarms() {
   const router = useRouter();
   const db = useFirestore();
   
-  // Fetch all live products
-  const productsQuery = useMemoFirebase(() => query(collection(db, 'products'), where('isLive', '==', true)), [db]);
-  const { data: dbProducts, isLoading: productsLoading } = useCollection(productsQuery);
+  // Fetch all products to ensure maximum visibility and avoid index latency
+  const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
+  const { data: dbProducts, isLoading: productsLoading } = useCollection(productsRef);
 
   const [filter, setFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('home');
@@ -47,32 +48,35 @@ export default function VivaanFarms() {
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
-  // Optimized Splash Screen Logic
   useEffect(() => {
     if (!productsLoading) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 1200); // Reduced delay for better feel while still allowing animation
+      }, 800); 
       return () => clearTimeout(timer);
     }
   }, [productsLoading]);
 
-  // Robust Product Mapping
+  // Robust Product Mapping with sensible fallbacks
   const products = useMemo(() => {
     if (!dbProducts) return [];
-    return dbProducts.map((p, i) => ({
-      ...p,
-      cat: (p.categoryId || 'uncategorized').toLowerCase(),
-      price: Number(p.basePrice) || 0,
-      vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
-      pi: i,
-      rating: Number(p.rating) || 4.9,
-      reviewCount: Number(p.reviewCount) || 0,
-      soldCountLabel: p.soldCountLabel || '',
-      statusBadge: p.statusBadge || '',
-      badges: Array.isArray(p.badges) ? p.badges : [],
-      vars: Array.isArray(p.vars) ? p.vars : (Array.isArray(p.variants) ? p.variants : [{ s: 'Standard', p: Number(p.basePrice) || 0, on: true }])
-    } as Product));
+    
+    // Show all unless explicitly marked as not live
+    return dbProducts
+      .filter(p => p.isLive !== false)
+      .map((p, i) => ({
+        ...p,
+        cat: (p.categoryId || 'uncategorized').toLowerCase(),
+        price: Number(p.basePrice) || 0,
+        vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
+        pi: i,
+        rating: Number(p.rating) || 4.9,
+        reviewCount: Number(p.reviewCount) || 0,
+        soldCountLabel: p.soldCountLabel || 'Hot',
+        statusBadge: p.statusBadge || '',
+        badges: Array.isArray(p.badges) ? p.badges : [],
+        vars: Array.isArray(p.vars) ? p.vars : (Array.isArray(p.variants) ? p.variants : [{ s: 'Standard', p: Number(p.basePrice) || 0, on: true }])
+      } as Product));
   }, [dbProducts]);
 
   const handleSearch = async (queryStr: string) => {
