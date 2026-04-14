@@ -20,7 +20,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, ca
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[calc(68px+env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-xl border-t border-primary/10 flex items-start pt-2 px-2 z-[1100] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[calc(68px+env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-xl border-t border-primary/10 flex items-start pt-2 px-2 z-[1000] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
       {tabs.map((tab) => (
         <button
           key={tab.id}

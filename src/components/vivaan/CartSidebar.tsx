@@ -64,8 +64,8 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
   return (
     <>
-      {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000]" onClick={onClose}></div>}
-      <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1001] shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1100]" onClick={onClose}></div>}
+      <div className={`fixed right-0 top-0 bottom-0 w-full md:max-w-[460px] bg-[#F9F6EF] z-[1101] shadow-2xl transition-transform duration-500 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="h-[64px] md:h-[76px] bg-[#0D3520] flex items-center justify-between px-6 shrink-0 relative overflow-hidden">
           <div className="relative z-10">
             <div className="font-headline text-2xl font-extrabold text-white">My Cart</div>
@@ -122,7 +122,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           )}
         </div>
 
-        <div className="bg-white border-t border-[#DDD0B5] p-5 md:p-6 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+        <div className="bg-white border-t border-[#DDD0B5] p-5 md:p-6 shrink-0 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] pb-[calc(env(safe-area-inset-bottom)+16px)]">
           <div className="space-y-2.5 mb-5">
             <div className="flex justify-between text-xs font-semibold text-[#7A6848]">
               <span>Subtotal</span>
