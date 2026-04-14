@@ -8,17 +8,18 @@ import { Footer } from '@/components/vivaan/Footer';
 import { Ticker } from '@/components/vivaan/Ticker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth, useUser, useFirestore } from '@/firebase';
 import { 
-  RecaptchaVerifier, 
-  signInWithPhoneNumber,
-  updateProfile,
-  ConfirmationResult
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  updateProfile
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Smartphone, Mail, User as UserIcon, Info, AlertTriangle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ShieldCheck, Mail, Lock, User as UserIcon, LogIn, Sparkles } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,16 +31,13 @@ export default function LoginPage() {
   const db = useFirestore();
   const { user, isUserLoading } = useUser();
 
-  const [step, setStep] = useState<'details' | 'otp'>('details');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  
   // Form Fields
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   useEffect(() => {
     if (user && !isUserLoading) {
@@ -47,112 +45,58 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router, returnTo]);
 
-  const setupRecaptcha = () => {
-    if ((window as any).recaptchaVerifier) {
-      try {
-        (window as any).recaptchaVerifier.clear();
-      } catch (e) {}
-    }
-    try {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': () => {}
-      });
-    } catch (err) {
-      console.error("Recaptcha initialization failed", err);
-    }
-  };
-
-  const handleSendOtp = async (e: React.FormEvent) => {
+  const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || phone.length < 10) {
-      setError('Please enter a valid 10-digit phone number');
-      return;
-    }
-    if (!name || !email) {
-      setError('Please provide your name and email');
-      return;
-    }
-    
     setLoading(true);
-    setError(null);
 
     try {
-      setupRecaptcha();
-      const appVerifier = (window as any).recaptchaVerifier;
-      const formattedPhone = `+91${phone}`;
-      
-      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      setConfirmationResult(confirmation);
-      setStep('otp');
-      toast({
-        title: "OTP Sent",
-        description: `Verification code sent to +91 ${phone}`,
-      });
-    } catch (err: any) {
-      console.error("Auth Error:", err.code, err.message);
-      
-      if (err.code === 'auth/operation-not-allowed') {
-        setError("PHONE_AUTH_DISABLED");
-      } else if (err.code === 'auth/invalid-phone-number') {
-        setError("The phone number provided is invalid. Please check the format.");
-      } else if (err.code === 'auth/too-many-requests') {
-        setError("Too many attempts. Please try again later.");
-      } else {
-        setError(err.message || "Failed to send OTP. Please check your connection.");
-      }
+      if (authMode === 'register') {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(result.user, { displayName: name });
+        
+        await setDoc(doc(db, 'userProfiles', result.user.uid), {
+          id: result.user.uid,
+          firstName: name.split(' ')[0] || '',
+          lastName: name.split(' ').slice(1).join(' ') || '',
+          email: email.toLowerCase().trim(),
+          purityCoins: 500,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
 
-      if ((window as any).recaptchaVerifier) {
-        try {
-          (window as any).recaptchaVerifier.clear();
-        } catch (e) {}
-        (window as any).recaptchaVerifier = null;
+        toast({ title: "Welcome!", description: "Account created successfully." });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        toast({ title: "Welcome Back", description: "Logged in successfully." });
       }
+      router.push(returnTo);
+    } catch (err: any) {
+      toast({ variant: "destructive", title: "Auth Error", description: err.message });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!confirmationResult) {
-      setError('Verification session expired. Please request a new OTP.');
-      setStep('details');
-      return;
-    }
-    
+  const handleGoogleAuth = async () => {
     setLoading(true);
-    setError(null);
-    
+    const provider = new GoogleAuthProvider();
     try {
-      const result = await confirmationResult.confirm(otp);
-      const authenticatedUser = result.user;
+      const result = await signInWithPopup(auth, provider);
+      
+      // Sync Profile
+      await setDoc(doc(db, 'userProfiles', result.user.uid), {
+        id: result.user.uid,
+        firstName: result.user.displayName?.split(' ')[0] || '',
+        lastName: result.user.displayName?.split(' ').slice(1).join(' ') || '',
+        email: result.user.email?.toLowerCase().trim(),
+        purityCoins: 500,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
 
-      if (authenticatedUser) {
-        // Update profile display name
-        await updateProfile(authenticatedUser, { displayName: name });
-        
-        // Save/Sync profile to Firestore
-        await setDoc(doc(db, 'userProfiles', authenticatedUser.uid), {
-          id: authenticatedUser.uid,
-          firstName: name.split(' ')[0] || '',
-          lastName: name.split(' ').slice(1).join(' ') || '',
-          email: email.toLowerCase().trim(),
-          phoneNumber: phone,
-          purityCoins: 500, // Welcome coins
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }, { merge: true });
-
-        toast({
-          title: "Login Successful",
-          description: `Welcome to Vivaan Farms, ${name}!`,
-        });
-        
-        router.push(returnTo);
-      }
-    } catch (e: any) {
-      setError(e.message || 'Verification failed. Please check the OTP and try again.');
+      toast({ title: "Welcome!", description: `Logged in as ${result.user.displayName}` });
+      router.push(returnTo);
+    } catch (err: any) {
+      toast({ variant: "destructive", title: "Google Login Failed", description: err.message });
     } finally {
       setLoading(false);
     }
@@ -173,117 +117,105 @@ export default function LoginPage() {
       <Header onOpenCart={() => {}} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
       <main className="max-w-[1200px] mx-auto px-5 py-12 md:py-20 flex flex-col items-center justify-center">
-        <div id="recaptcha-container"></div>
-        
         <div className="w-full max-w-md bg-white rounded-[40px] shadow-2xl border border-primary/5 overflow-hidden">
           <div className="bg-primary p-10 text-center relative overflow-hidden">
             <div className="absolute top-[-40px] right-[-40px] w-48 h-48 rounded-full bg-white/5 pointer-events-none"></div>
             <div className="w-16 h-16 bg-white/10 rounded-[24px] flex items-center justify-center mx-auto mb-6 text-white rotate-6">
               <ShieldCheck className="w-8 h-8" />
             </div>
-            <h1 className="font-headline text-3xl font-extrabold text-white">Secure Login</h1>
-            <p className="text-white/40 text-[9px] font-black uppercase tracking-[3px] mt-2">Vivaan Farms Mobile Gateway</p>
+            <h1 className="font-headline text-3xl font-extrabold text-white">Join Vivaan Farms</h1>
+            <p className="text-white/40 text-[9px] font-black uppercase tracking-[3px] mt-2">Authentic Purity Gateway</p>
           </div>
 
           <div className="p-8 md:p-10">
-            {error === "PHONE_AUTH_DISABLED" ? (
-              <div className="space-y-6">
-                <Alert variant="destructive" className="bg-destructive/5 border-destructive/20 rounded-2xl p-6">
-                  <AlertTriangle className="h-5 w-5" />
-                  <AlertTitle className="font-bold mb-2">Setup Required</AlertTitle>
-                  <AlertDescription className="text-xs leading-relaxed opacity-90">
-                    Phone Authentication is not yet enabled in your Firebase Console. 
-                    <br /><br />
-                    Please go to <strong>Authentication &gt; Sign-in method</strong>, add <strong>Phone</strong>, and click <strong>Enable</strong>.
-                  </AlertDescription>
-                </Alert>
-                <Button onClick={() => setError(null)} variant="outline" className="w-full h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">
-                  Try Again
-                </Button>
-              </div>
-            ) : step === 'details' ? (
-              <form onSubmit={handleSendOtp} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Full Name</label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
-                    <Input 
-                      placeholder="e.g. Rahul Sharma" 
-                      className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
+            <Tabs defaultValue="email" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8 h-12 rounded-xl bg-[#F9F6EF] p-1">
+                <TabsTrigger value="email" className="rounded-lg font-bold text-xs uppercase tracking-widest">Email</TabsTrigger>
+                <TabsTrigger value="social" className="rounded-lg font-bold text-xs uppercase tracking-widest">Social</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="email">
+                <form onSubmit={handleEmailAuth} className="space-y-5">
+                  {authMode === 'register' && (
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Full Name</label>
+                      <div className="relative">
+                        <UserIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
+                        <Input 
+                          placeholder="Farmer Name" 
+                          className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required={authMode === 'register'}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Email Address</label>
+                    <div className="relative">
+                      <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
+                      <Input 
+                        type="email"
+                        placeholder="pure@farm.com" 
+                        className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
-                    <Input 
-                      type="email"
-                      placeholder="name@email.com" 
-                      className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
+                      <Input 
+                        type="password"
+                        placeholder="••••••••" 
+                        className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Mobile Number</label>
-                  <div className="relative">
-                    <Smartphone className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/40" />
-                    <Input 
-                      type="tel"
-                      placeholder="10-digit number" 
-                      className="h-14 pl-12 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      maxLength={10}
-                      required
-                    />
+
+                  <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl">
+                    {loading ? 'Processing...' : (authMode === 'login' ? 'Sign In →' : 'Create Account →')}
+                  </Button>
+
+                  <div className="text-center mt-4">
+                    <button 
+                      type="button" 
+                      onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                      className="text-[10px] font-black uppercase text-primary hover:underline"
+                    >
+                      {authMode === 'login' ? "Don't have an account? Register" : "Already have an account? Sign In"}
+                    </button>
                   </div>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="social">
+                <div className="space-y-4">
+                  <Button 
+                    onClick={handleGoogleAuth} 
+                    variant="outline" 
+                    disabled={loading}
+                    className="w-full h-16 rounded-full border-2 border-[#DDD0B5] hover:bg-primary/5 flex items-center justify-center gap-4 transition-all"
+                  >
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
+                    <span className="font-black uppercase tracking-widest text-xs">Continue with Google</span>
+                  </Button>
+                  <p className="text-[10px] text-center text-[#7A6848] font-bold uppercase tracking-widest px-10 leading-relaxed">
+                    Fast & Secure sign-in using your verified Google credentials.
+                  </p>
                 </div>
+              </TabsContent>
+            </Tabs>
 
-                {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
-
-                <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl">
-                  {loading ? 'Requesting OTP...' : 'Get SMS OTP Verification →'}
-                </Button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-6">
-                <div className="text-center mb-6">
-                  <p className="text-sm text-[#7A6848] font-medium">Verification SMS sent to <strong>+91 {phone}</strong></p>
-                  <button type="button" onClick={() => setStep('details')} className="text-xs text-primary font-black uppercase mt-2 hover:underline">Change Details</button>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Enter 6-Digit Code</label>
-                  <Input 
-                    placeholder="· · · · · ·" 
-                    className="h-18 rounded-2xl bg-[#F9F6EF] border-transparent font-headline text-4xl text-center font-extrabold focus-visible:ring-primary tracking-[8px]"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    maxLength={6}
-                    required
-                  />
-                  <div className="flex items-center gap-2 justify-center text-[10px] text-primary/60 font-bold mt-2">
-                    <Info className="w-3 h-3" /> Please check your phone messages
-                  </div>
-                </div>
-
-                {error && <div className="p-4 bg-destructive/5 text-destructive rounded-2xl text-xs font-bold text-center">{error}</div>}
-
-                <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl">
-                  {loading ? 'Verifying...' : 'Verify & Complete Login →'}
-                </Button>
-              </form>
-            )}
-
-            <p className="text-[10px] text-center text-[#7A6848] font-bold mt-10 uppercase tracking-wider leading-relaxed">
-              By continuing, you agree to our <br /><strong>Terms of Service</strong> & <strong>Privacy Policy</strong>
+            <p className="text-[9px] text-center text-[#7A6848] font-bold mt-10 uppercase tracking-wider leading-relaxed opacity-60">
+              By proceeding, you agree to our <br /><strong>Terms of Service</strong> & <strong>Privacy Policy</strong>
             </p>
           </div>
         </div>

@@ -16,9 +16,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCollection, useFirestore, useMemoFirebase, useUser, useAuth } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { signOut } from 'firebase/auth';
+import { signOut, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { LoginModal } from './LoginModal';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface HeaderProps {
   onOpenCart: () => void;
@@ -29,6 +31,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter, onSearch }) => {
   const router = useRouter();
+  const { toast } = useToast();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -50,6 +53,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
     router.push('/');
   };
 
+  const handleLogoClick = async () => {
+    if (!user) {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        await setDoc(doc(db, 'userProfiles', result.user.uid), {
+          id: result.user.uid,
+          firstName: result.user.displayName?.split(' ')[0] || '',
+          lastName: result.user.displayName?.split(' ').slice(1).join(' ') || '',
+          email: result.user.email?.toLowerCase().trim(),
+          purityCoins: 500,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+        toast({ title: "Quick Auth Success!", description: `Welcome, ${result.user.displayName}` });
+      } catch (e: any) {
+        // Fallback to home if auth fails or is cancelled
+        router.push('/');
+      }
+    } else {
+      router.push('/');
+    }
+  };
+
   const navItems = [
     { label: 'All Products', onClick: () => onFilter('all') },
     { label: 'A2 Ghee', onClick: () => onFilter('ghee') },
@@ -61,9 +87,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
     <header className="bg-white sticky top-0 z-[900] border-b border-primary/5">
       <div className="max-w-[1500px] mx-auto px-5 lg:px-10 h-[70px] md:h-[90px] flex items-center justify-between">
         
-        {/* Left: Logo */}
-        <Link href="/" className="flex items-center shrink-0">
-          <div className="w-24 h-24 md:w-32 md:h-32 relative flex items-center justify-center transition-transform duration-300 hover:scale-105">
+        {/* Left: Logo with Direct Google Auth */}
+        <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative">
+          <div className="w-24 h-24 md:w-32 md:h-32 relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
             <Image 
               src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
               alt="Vivaan Farms"
@@ -73,9 +99,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               priority
             />
           </div>
-        </Link>
+          {!user && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-black text-white uppercase tracking-widest whitespace-nowrap shadow-xl border border-white/20">
+                Direct Google Login
+              </div>
+            </div>
+          )}
+        </button>
 
-        {/* Center: Desktop Nav Items with increased spacing */}
+        {/* Center: Desktop Nav Items */}
         <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-8">
           {navItems.map((item) => (
             <button 
@@ -113,7 +146,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
         {/* Right: Actions */}
         <div className="flex items-center gap-3 md:gap-5 shrink-0">
-          {/* Search Toggle */}
           <div className="relative">
             {isSearchOpen ? (
               <form onSubmit={handleSearch} className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center animate-in slide-in-from-right-4 duration-300">
@@ -124,25 +156,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
-                <button 
-                  type="button"
-                  onClick={() => setIsSearchOpen(false)}
-                  className="absolute right-3 text-primary/40 hover:text-primary"
-                >
+                <button type="button" onClick={() => setIsSearchOpen(false)} className="absolute right-3 text-primary/40 hover:text-primary">
                   <X className="w-4 h-4" />
                 </button>
               </form>
             ) : (
-              <button 
-                onClick={() => setIsSearchOpen(true)}
-                className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all"
-              >
+              <button onClick={() => setIsSearchOpen(true)} className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
                 <Search className="w-5 h-5" />
               </button>
             )}
           </div>
 
-          {/* User Account */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
@@ -166,7 +190,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               ) : (
                 <>
                   <DropdownMenuItem onClick={() => setIsLoginOpen(true)} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
-                    <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Login
+                    <User className="w-4 h-4 mr-2 text-primary/40" /> Customer Sign In
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push('/admin/login')} className="rounded-xl py-2.5 px-3 text-xs font-bold cursor-pointer">
                     <ShieldCheck className="w-4 h-4 mr-2 text-primary/40" /> Admin Access
@@ -176,11 +200,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Cart Button */}
-          <button 
-            onClick={onOpenCart}
-            className="group relative flex items-center justify-center w-10 h-10 md:w-auto md:px-2 text-primary/80 hover:text-primary transition-all"
-          >
+          <button onClick={onOpenCart} className="group relative flex items-center justify-center w-10 h-10 md:w-auto md:px-2 text-primary/80 hover:text-primary transition-all">
             <ShoppingCart className="w-5 h-5" />
             <div className="absolute -top-1 -right-1 md:right-0 bg-primary text-white text-[9px] font-black rounded-full min-w-[16px] h-4 flex items-center justify-center border-2 border-white">
               {cartCount}
@@ -190,10 +210,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
       </div>
 
-      <LoginModal 
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-      />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </header>
   );
 };
