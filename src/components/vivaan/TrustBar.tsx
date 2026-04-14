@@ -1,35 +1,32 @@
+
 "use client";
 
 import React from 'react';
 import { Truck, ShieldCheck, Heart, Star } from 'lucide-react';
 
 const trustItems = [
-  { ico: <Truck className="w-5 h-5 md:w-6 md:h-6 text-secondary" />, t: 'Free Delivery', s: 'Orders above ₹999' },
-  { ico: <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-secondary" />, t: '30-Day Returns', s: 'No questions asked' },
-  { ico: <Heart className="w-5 h-5 md:w-6 md:h-6 text-secondary" />, t: 'Farm Direct', s: 'Zero middlemen, pure truth' },
-  { ico: <Star className="w-5 h-5 md:w-6 md:h-6 text-secondary" />, t: '4.9 Rated', s: '12,000+ verified reviews' },
+  { ico: <Truck className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: 'Free Delivery', s: '₹999+' },
+  { ico: <ShieldCheck className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: '30-Day Returns', s: 'Easy' },
+  { ico: <Heart className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: 'Farm Direct', s: 'Pure' },
+  { ico: <Star className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: '4.9 Rated', s: 'Verified' },
 ];
 
 export const TrustBar: React.FC = () => {
   return (
-    <div className="bg-white border-b border-border py-6 md:py-8 overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-        <div className="flex items-center md:justify-between overflow-x-auto no-scrollbar snap-x snap-mandatory gap-6 -mx-5 px-5 md:mx-0 md:px-0">
+    <div className="bg-white border-b border-border py-4 md:py-8 overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-2 md:px-10">
+        <div className="grid grid-cols-4 gap-1 md:flex md:items-center md:justify-between md:gap-6">
           {trustItems.map((item, i) => (
-            <React.Fragment key={i}>
-              <div className="flex items-center gap-3 md:gap-3.5 group shrink-0 snap-center min-w-[180px] md:min-w-0">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#D0EDDF]/50 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  {item.ico}
-                </div>
-                <div>
-                  <div className="text-[12px] md:text-sm font-black text-foreground leading-tight whitespace-nowrap">{item.t}</div>
-                  <div className="text-[10px] md:text-[11px] text-[#7A6A52] mt-0.5 font-medium leading-tight whitespace-nowrap md:whitespace-normal">{item.s}</div>
-                </div>
+            <div key={i} className="flex flex-col md:flex-row items-center gap-1.5 md:gap-3.5 group text-center md:text-left">
+              <div className="w-8 h-8 md:w-12 md:h-12 bg-[#D0EDDF]/50 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                {item.ico}
               </div>
-              {i < trustItems.length - 1 && (
-                <div className="hidden md:block w-px h-10 bg-border mx-4 shrink-0" />
-              )}
-            </React.Fragment>
+              <div className="flex flex-col">
+                <div className="text-[8px] md:text-sm font-black text-foreground leading-tight whitespace-nowrap">{item.t}</div>
+                <div className="hidden md:block text-[11px] text-[#7A6A52] mt-0.5 font-medium leading-tight">{item.s === '₹999+' ? 'Orders above ₹999' : item.s === 'Easy' ? 'No questions asked' : item.s === 'Pure' ? 'Zero middlemen' : '12,000+ reviews'}</div>
+                <div className="md:hidden text-[7px] text-[#7A6A52] font-medium leading-tight uppercase opacity-60 tracking-tighter">{item.s}</div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

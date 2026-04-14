@@ -7,15 +7,14 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 /**
  * Hero Banner Component
- * Updated with specific positioning and dimensions requested by the user.
- * Fixed: Removed 'fill' prop to resolve conflict with manual width/height styles.
+ * Updated with exact CSS scaling provided by the user and corrected container height to remove gaps.
  */
 export const Hero: React.FC = () => {
   const mainBanner = PlaceHolderImages.find(img => img.id === 'hero-banner-main');
   const bannerUrl = mainBanner?.imageUrl || 'https://vivanfa.sirv.com/Firefly_Gemini%20Flash_Use%20the%20attached%20Atta%20banner%20as%20the%20exact%20layout%20and%20mood%20reference.%20Recreate%20the%20sam%20213429.png';
 
   return (
-    <section className="relative w-full overflow-hidden h-[300px] md:h-[500px]">
+    <section className="relative w-full overflow-hidden h-[220px] md:h-[365px]">
       <Image
         src={bannerUrl}
         alt="Vivaan Farms Banner"
@@ -25,10 +24,12 @@ export const Hero: React.FC = () => {
         loading="eager"
         style={{
           position: 'absolute',
-          height: '73%',
+          height: '100%',
           width: '109%',
           inset: '0px',
-          color: 'transparent'
+          color: 'transparent',
+          objectFit: 'cover',
+          objectPosition: 'center'
         }}
         data-ai-hint="premium farm banner"
       />

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -160,14 +161,14 @@ export default function VivaanFarms() {
         <main>
           <Hero />
           
-          <div className="text-center py-10 md:py-16 px-5 bg-white border-b border-primary/5">
-            <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-3 leading-tight">
+          <div className="text-center py-6 md:py-16 px-5 bg-white border-b border-primary/5">
+            <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary mb-2 leading-tight">
               Welcome To Vivaan Farms!
             </h2>
-            <p className="text-[#7A6848] text-sm md:text-xl font-medium tracking-wide uppercase">
+            <p className="text-[#7A6848] text-[10px] md:text-xl font-medium tracking-wide uppercase">
               You're One Step Closer to Purity
             </p>
-            <div className="w-20 h-1 bg-primary/10 mx-auto mt-6 rounded-full"></div>
+            <div className="w-12 h-0.5 bg-primary/10 mx-auto mt-4 rounded-full"></div>
           </div>
 
           <TrustBar />
