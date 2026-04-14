@@ -33,11 +33,11 @@
   },
   "firestore": {
     "/userProfiles/{userId}": {
-      "schema": "#/entities/UserProfile",
+      "schema": { "$ref": "#/entities/UserProfile" },
       "description": "Customer profiles."
     },
     "/banners/{bannerId}": {
-      "schema": "#/entities/Banner",
+      "schema": { "$ref": "#/entities/Banner" },
       "description": "Homepage promotional banners."
     },
     "/categories/{categoryId}": {
