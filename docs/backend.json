@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "UserProfile": {
@@ -24,9 +23,9 @@
           "description": "The email address of the user.",
           "format": "email"
         },
-        "location": {
+        "phoneNumber": {
           "type": "string",
-          "description": "The geographical location of the user (e.g., city, state)."
+          "description": "The phone number of the user."
         },
         "purityCoins": {
           "type": "number",
@@ -45,8 +44,6 @@
       },
       "required": [
         "id",
-        "firstName",
-        "lastName",
         "email",
         "purityCoins",
         "createdAt",
@@ -57,7 +54,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "ProductCategory",
       "type": "object",
-      "description": "Defines broad categories for organizing products, such as 'Ghee' or 'Oils'.",
+      "description": "Defines broad categories for organizing products, such as 'Ghee' or 'Honey'.",
       "properties": {
         "id": {
           "type": "string",
@@ -65,29 +62,23 @@
         },
         "name": {
           "type": "string",
-          "description": "The name of the product category (e.g., 'Ghee', 'Oils', 'Combos', 'Superfoods')."
+          "description": "The name of the product category."
         },
         "description": {
           "type": "string",
           "description": "A brief explanation or summary of the category."
-        },
-        "iconSvg": {
-          "type": "string",
-          "description": "The SVG markup for the category's icon, used in UI elements like category tabs."
         }
       },
       "required": [
         "id",
-        "name",
-        "description",
-        "iconSvg"
+        "name"
       ]
     },
     "Product": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Product",
       "type": "object",
-      "description": "Represents a distinct product offering from Vivaan Farms, including general details applicable across all its variants.",
+      "description": "Represents a distinct product offering.",
       "properties": {
         "id": {
           "type": "string",
@@ -95,550 +86,96 @@
         },
         "name": {
           "type": "string",
-          "description": "The primary name of the product (e.g., 'A2 Gir Cow Ghee')."
+          "description": "The primary name of the product."
         },
-        "baseDescription": {
+        "description": {
           "type": "string",
-          "description": "A general description of the product, applicable to all its variants."
+          "description": "A general description of the product."
         },
-        "avgRating": {
+        "basePrice": {
           "type": "number",
-          "description": "The average customer rating for the product."
+          "description": "The starting price for the standard variant."
+        },
+        "mrpPrice": {
+          "type": "number",
+          "description": "The original price before discounts."
+        },
+        "rating": {
+          "type": "number",
+          "description": "The average customer rating."
         },
         "reviewCount": {
           "type": "number",
-          "description": "The total number of customer reviews submitted for this product."
+          "description": "Total count of customer reviews."
         },
-        "totalUnitsSold": {
-          "type": "number",
-          "description": "The cumulative count of all units of this product (across all variants) ever sold."
-        },
-        "productCategoryId": {
+        "categoryId": {
           "type": "string",
-          "description": "Reference to the category this product belongs to. (Relationship: ProductCategory 1:N Product)"
+          "description": "The ID of the category this product belongs to."
         },
-        "mainImageUrl": {
-          "type": "string",
-          "description": "URL to the main image asset for the product.",
-          "format": "uri"
-        },
-        "badges": {
+        "imageUrls": {
           "type": "array",
-          "description": "A list of promotional badges or labels associated with the product (e.g., '🔥 BESTSELLER', '🎁 COMBO').",
-          "items": {
-            "type": "string"
-          }
+          "items": { "type": "string" },
+          "description": "URLs to images of the product."
         },
-        "tags": {
-          "type": "array",
-          "description": "A list of descriptive tags highlighting key features or certifications (e.g., 'Bilona', 'A2 Certified', 'Farm Direct').",
-          "items": {
-            "type": "string"
-          }
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the product was first added to the catalog.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the product information was last updated.",
-          "format": "date-time"
+        "isLive": {
+          "type": "boolean",
+          "description": "Whether the product is visible on the storefront."
         }
       },
       "required": [
         "id",
         "name",
-        "baseDescription",
-        "avgRating",
-        "reviewCount",
-        "totalUnitsSold",
-        "productCategoryId",
-        "mainImageUrl",
-        "badges",
-        "tags",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "ProductVariant": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ProductVariant",
-      "type": "object",
-      "description": "Represents a specific variant of a product, such as a particular volume or size, with its own pricing and stock levels.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the ProductVariant entity."
-        },
-        "productId": {
-          "type": "string",
-          "description": "Reference to the parent product this variant belongs to. (Relationship: Product 1:N ProductVariant)"
-        },
-        "volumeLabel": {
-          "type": "string",
-          "description": "A descriptive label for the variant's volume or size (e.g., '500ml Glass Jar', '2.5L Dolchi')."
-        },
-        "price": {
-          "type": "number",
-          "description": "The current selling price of this specific product variant."
-        },
-        "mrp": {
-          "type": "number",
-          "description": "The Maximum Retail Price (MRP) or original price of this variant before any discounts. Set to 0 if no MRP is applicable."
-        },
-        "stockQuantity": {
-          "type": "number",
-          "description": "The current available inventory level for this specific product variant."
-        },
-        "purityCoinsEarned": {
-          "type": "number",
-          "description": "The number of Purity Coins a user earns when purchasing this specific variant."
-        },
-        "barcode": {
-          "type": "string",
-          "description": "An optional barcode identifier for inventory tracking of this variant."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the product variant was added.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the product variant information was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "productId",
-        "volumeLabel",
-        "price",
-        "mrp",
-        "stockQuantity",
-        "purityCoinsEarned",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "CartItem": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "CartItem",
-      "type": "object",
-      "description": "Represents a single item added to a user's shopping cart.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the CartItem entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the user profile who owns this cart item. (Relationship: UserProfile 1:N CartItem)"
-        },
-        "productVariantId": {
-          "type": "string",
-          "description": "Reference to the specific product variant added to the cart. (Relationship: ProductVariant 1:N CartItem)"
-        },
-        "quantity": {
-          "type": "number",
-          "description": "The number of units of the product variant in the cart."
-        },
-        "addedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the item was added to the cart.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "productVariantId",
-        "quantity",
-        "addedAt"
-      ]
-    },
-    "WishlistItem": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "WishlistItem",
-      "type": "object",
-      "description": "Represents a product that a user has added to their personal wishlist for future consideration.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the WishlistItem entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the user profile who added this item to their wishlist. (Relationship: UserProfile 1:N WishlistItem)"
-        },
-        "productId": {
-          "type": "string",
-          "description": "Reference to the product (not variant) that is in the wishlist. (Relationship: Product 1:N WishlistItem)"
-        },
-        "addedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the item was added to the wishlist.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "productId",
-        "addedAt"
-      ]
-    },
-    "CouponCode": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "CouponCode",
-      "type": "object",
-      "description": "Stores information about available promotional coupon codes that can be applied to orders.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the CouponCode entity."
-        },
-        "code": {
-          "type": "string",
-          "description": "The actual string code that users enter to apply the coupon (e.g., 'PURE15')."
-        },
-        "description": {
-          "type": "string",
-          "description": "A human-readable description of the coupon's offer (e.g., '15% OFF your order!')."
-        },
-        "discountPercentage": {
-          "type": "number",
-          "description": "The percentage discount offered by this coupon (e.g., 15 for 15%)."
-        },
-        "minOrderAmount": {
-          "type": "number",
-          "description": "The minimum order subtotal required for this coupon to be applicable."
-        },
-        "maxDiscountAmount": {
-          "type": "number",
-          "description": "The maximum monetary value of the discount that can be applied by this coupon."
-        },
-        "expirationDate": {
-          "type": "string",
-          "description": "Date and time when the coupon code will expire and become unusable.",
-          "format": "date-time"
-        },
-        "isActive": {
-          "type": "boolean",
-          "description": "A flag indicating whether the coupon code is currently active and available for use."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the coupon code was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the coupon code information was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "code",
-        "description",
-        "discountPercentage",
-        "expirationDate",
-        "isActive",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "Order": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Order",
-      "type": "object",
-      "description": "Represents a customer's placed order, containing overall transaction details.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Order entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the user profile who placed this order. (Relationship: UserProfile 1:N Order)"
-        },
-        "orderDate": {
-          "type": "string",
-          "description": "Date and time when the order was successfully placed.",
-          "format": "date-time"
-        },
-        "status": {
-          "type": "string",
-          "description": "The current fulfillment status of the order (e.g., 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')."
-        },
-        "subtotalAmount": {
-          "type": "number",
-          "description": "The sum of prices of all items in the order before any discounts or taxes."
-        },
-        "discountAmount": {
-          "type": "number",
-          "description": "The total monetary discount applied to the order."
-        },
-        "coinsRedeemedAmount": {
-          "type": "number",
-          "description": "The monetary value of Purity Coins redeemed by the user in this order."
-        },
-        "deliveryFee": {
-          "type": "number",
-          "description": "The cost charged for delivering the order."
-        },
-        "totalPaidAmount": {
-          "type": "number",
-          "description": "The final amount paid by the customer for the order."
-        },
-        "paymentMethod": {
-          "type": "string",
-          "description": "The method used by the customer for payment (e.g., 'UPI', 'Credit Card', 'Net Banking', 'COD')."
-        },
-        "couponCodeId": {
-          "type": "string",
-          "description": "Optional reference to the coupon code used for this order. (Relationship: CouponCode 1:N Order)"
-        },
-        "deliveryAddress": {
-          "type": "string",
-          "description": "The full delivery address provided by the customer for the order."
-        },
-        "orderConfirmationEmailSent": {
-          "type": "boolean",
-          "description": "A flag indicating whether the order confirmation email has been successfully sent to the customer."
-        },
-        "estimatedDeliveryDate": {
-          "type": "string",
-          "description": "The estimated date by which the order is expected to be delivered.",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the order record was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the order record was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "orderDate",
-        "status",
-        "subtotalAmount",
-        "discountAmount",
-        "coinsRedeemedAmount",
-        "deliveryFee",
-        "totalPaidAmount",
-        "paymentMethod",
-        "deliveryAddress",
-        "orderConfirmationEmailSent",
-        "createdAt",
-        "updatedAt"
-      ]
-    },
-    "OrderItem": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "OrderItem",
-      "type": "object",
-      "description": "Represents a single product variant and its quantity within a specific order.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the OrderItem entity."
-        },
-        "orderId": {
-          "type": "string",
-          "description": "Reference to the parent order this item belongs to. (Relationship: Order 1:N OrderItem)"
-        },
-        "productVariantId": {
-          "type": "string",
-          "description": "Reference to the specific product variant included in this order item. (Relationship: ProductVariant 1:N OrderItem)"
-        },
-        "quantity": {
-          "type": "number",
-          "description": "The number of units of the product variant in this order item."
-        },
-        "unitPriceAtOrder": {
-          "type": "number",
-          "description": "The price of the product variant at the exact time the order was placed, to preserve historical pricing."
-        },
-        "subtotal": {
-          "type": "number",
-          "description": "The subtotal for this specific order item (quantity * unitPriceAtOrder)."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the order item record was created.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "orderId",
-        "productVariantId",
-        "quantity",
-        "unitPriceAtOrder",
-        "subtotal",
-        "createdAt"
-      ]
-    },
-    "Review": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Review",
-      "type": "object",
-      "description": "Stores customer feedback and ratings for specific product variants.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Review entity."
-        },
-        "productVariantId": {
-          "type": "string",
-          "description": "Reference to the specific product variant that this review pertains to. (Relationship: ProductVariant 1:N Review)"
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to the user profile who submitted this review. (Relationship: UserProfile 1:N Review)"
-        },
-        "rating": {
-          "type": "number",
-          "description": "The star rating given by the user, an integer between 1 and 5."
-        },
-        "comment": {
-          "type": "string",
-          "description": "The textual content or body of the customer's review."
-        },
-        "reviewDate": {
-          "type": "string",
-          "description": "Date and time when the review was submitted.",
-          "format": "date-time"
-        },
-        "isVerifiedBuyer": {
-          "type": "boolean",
-          "description": "A flag indicating whether the reviewer is a verified purchaser of the product."
-        },
-        "location": {
-          "type": "string",
-          "description": "The location of the user at the time of submitting the review (e.g., 'Mumbai')."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the review was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the review was last updated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "productVariantId",
-        "userId",
-        "rating",
-        "comment",
-        "reviewDate",
-        "isVerifiedBuyer",
-        "location",
-        "createdAt",
-        "updatedAt"
+        "basePrice",
+        "categoryId",
+        "isLive"
       ]
     },
     "Banner": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Banner",
       "type": "object",
-      "description": "Dynamic content displayed across the application for promotional messages, hero sections, tickers, and urgency bars.",
+      "description": "Promotional banners displayed on the homepage.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the Banner entity."
-        },
-        "type": {
-          "type": "string",
-          "description": "The classification of the banner, determining its display location and style (e.g., 'ticker', 'hero', 'featured_combo', 'urgency')."
+          "description": "Unique identifier."
         },
         "title": {
           "type": "string",
-          "description": "The main title or headline for the banner, typically used in hero or featured sections."
+          "description": "Banner headline."
         },
-        "subtitle": {
+        "description": {
           "type": "string",
-          "description": "Secondary text or a tagline accompanying the main title."
-        },
-        "text": {
-          "type": "string",
-          "description": "General textual content for the banner, often used for ticker items or urgency messages."
-        },
-        "icon": {
-          "type": "string",
-          "description": "An emoji or small icon associated with the banner, particularly for ticker or urgency types."
+          "description": "Secondary text."
         },
         "imageUrl": {
           "type": "string",
-          "description": "URL to the image asset displayed on the banner, primarily for visual banners like hero or featured.",
-          "format": "uri"
+          "description": "The compressed image data or URL."
         },
-        "linkUrl": {
+        "placement": {
           "type": "string",
-          "description": "The URL to which the user is directed when interacting with the banner.",
-          "format": "uri"
-        },
-        "callToActionText": {
-          "type": "string",
-          "description": "Text for any call-to-action button or link present on the banner (e.g., 'Shop Now', 'Learn More')."
-        },
-        "startDate": {
-          "type": "string",
-          "description": "The date and time when the banner should begin to be displayed.",
-          "format": "date-time"
-        },
-        "endDate": {
-          "type": "string",
-          "description": "The date and time when the banner should cease to be displayed.",
-          "format": "date-time"
-        },
-        "displayOrder": {
-          "type": "number",
-          "description": "An integer value indicating the priority or sequence for displaying multiple banners of the same type."
+          "description": "Location (e.g. 'Hero')."
         },
         "isActive": {
           "type": "boolean",
-          "description": "A flag indicating whether the banner is currently active and eligible for display."
+          "description": "Visibility flag."
         },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the banner record was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp indicating when the banner record was last updated.",
-          "format": "date-time"
+        "position": {
+          "type": "number",
+          "description": "Order of display."
         }
       },
       "required": [
         "id",
-        "type",
-        "startDate",
-        "endDate",
-        "isActive",
-        "createdAt",
-        "updatedAt"
+        "imageUrl",
+        "isActive"
       ]
     }
   },
   "auth": {
     "providers": [
       "password",
+      "phone",
       "anonymous"
     ]
   },
@@ -651,7 +188,7 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user profiles. Accessible only by the owner."
+          "description": "Stores user profile data."
         }
       },
       {
@@ -661,7 +198,7 @@
           "schema": {
             "$ref": "#/backend/entities/ProductCategory"
           },
-          "description": "Stores product categories. Publicly readable."
+          "description": "Stores product categories."
         }
       },
       {
@@ -671,77 +208,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores main product information. Publicly readable."
-        }
-      },
-      {
-        "path": "/products/{productId}/variants/{variantId}",
-        "definition": {
-          "entityName": "ProductVariant",
-          "schema": {
-            "$ref": "#/backend/entities/ProductVariant"
-          },
-          "description": "Stores specific product variants."
-        }
-      },
-      {
-        "path": "/userProfiles/{userId}/cartItems/{cartItemId}",
-        "definition": {
-          "entityName": "CartItem",
-          "schema": {
-            "$ref": "#/backend/entities/CartItem"
-          },
-          "description": "Stores individual items in a user's shopping cart."
-        }
-      },
-      {
-        "path": "/userProfiles/{userId}/wishlistItems/{wishlistItemId}",
-        "definition": {
-          "entityName": "WishlistItem",
-          "schema": {
-            "$ref": "#/backend/entities/WishlistItem"
-          },
-          "description": "Stores products in a user's wishlist."
-        }
-      },
-      {
-        "path": "/couponCodes/{couponCodeId}",
-        "definition": {
-          "entityName": "CouponCode",
-          "schema": {
-            "$ref": "#/backend/entities/CouponCode"
-          },
-          "description": "Stores promotional coupon codes. Publicly readable."
-        }
-      },
-      {
-        "path": "/orders/{orderId}",
-        "definition": {
-          "entityName": "Order",
-          "schema": {
-            "$ref": "#/backend/entities/Order"
-          },
-          "description": "Stores customer orders. Accessible by owner or admin."
-        }
-      },
-      {
-        "path": "/orders/{orderId}/orderItems/{orderItemId}",
-        "definition": {
-          "entityName": "OrderItem",
-          "schema": {
-            "$ref": "#/backend/entities/OrderItem"
-          },
-          "description": "Stores individual items within an order."
-        }
-      },
-      {
-        "path": "/reviews/{reviewId}",
-        "definition": {
-          "entityName": "Review",
-          "schema": {
-            "$ref": "#/backend/entities/Review"
-          },
-          "description": "Stores customer reviews. Publicly readable."
+          "description": "Stores product listings."
         }
       },
       {
@@ -751,7 +218,7 @@
           "schema": {
             "$ref": "#/backend/entities/Banner"
           },
-          "description": "Stores dynamic content banners. Publicly readable."
+          "description": "Stores promotional banners."
         }
       },
       {
@@ -759,7 +226,11 @@
         "definition": {
           "entityName": "AdminRole",
           "schema": {
-            "$ref": "#/backend/entities/UserProfile"
+            "type": "object",
+            "properties": {
+              "email": { "type": "string" },
+              "role": { "type": "string" }
+            }
           },
           "description": "Special collection used for Admin privileges check."
         }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -33,9 +32,16 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      // Ensure admin role document exists upon successful landing
+      setDoc(doc(db, 'adminRoles', user.uid), {
+        email: ADMIN_EMAIL,
+        role: 'admin',
+        lastVerifiedAt: new Date().toISOString()
+      }, { merge: true });
+      
       router.push('/admin');
     }
-  }, [user, router, ADMIN_EMAIL]);
+  }, [user, router, ADMIN_EMAIL, db]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +55,7 @@ export default function AdminLoginPage() {
         userCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, password);
         
         // Explicitly create the admin role document in Firestore to grant DB access
+        // The security rules allow vivanfarmsnatural@gmail.com to self-provision
         await setDoc(doc(db, 'adminRoles', userCredential.user.uid), {
           email: ADMIN_EMAIL,
           role: 'admin',
