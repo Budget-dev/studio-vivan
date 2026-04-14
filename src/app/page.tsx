@@ -47,7 +47,7 @@ export default function VivaanFarms() {
       if (!productsLoading) {
         setShowSplash(false);
       }
-    }, 2500); // Minimum 2.5 seconds for branding impact
+    }, 2500); 
 
     return () => clearTimeout(timer);
   }, [productsLoading]);
@@ -149,10 +149,8 @@ export default function VivaanFarms() {
         )}
       </AnimatePresence>
 
-      <div className={cn(
-        "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0 transition-all duration-1000",
-        showSplash ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
-      )}>
+      {/* Persistent Ticker and Header (above scaling div) */}
+      <div className={cn("sticky top-0 z-[900] transition-opacity duration-500", showSplash ? "opacity-0" : "opacity-100")}>
         <Ticker />
         <Header 
           onOpenCart={() => setIsCartOpen(true)} 
@@ -160,7 +158,18 @@ export default function VivaanFarms() {
           onFilter={handleCategoryFilter}
           onSearch={handleSearch}
         />
-        
+      </div>
+      
+      <motion.div 
+        animate={{ 
+          opacity: showSplash ? 0 : 1,
+          scale: showSplash ? 0.98 : 1
+        }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
+          "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0"
+        )}
+      >
         <main>
           <div className="bg-[#1B3A20] py-2.5 flex items-center justify-center font-bold text-white text-[11px] tracking-wide relative overflow-hidden">
             <span className="bg-white/10 border border-white/20 text-white px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase mr-2">PURE15</span>
@@ -233,30 +242,31 @@ export default function VivaanFarms() {
         </main>
 
         <Footer />
+      </motion.div>
 
-        <CartSidebar 
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cart={cart}
-          onUpdateQty={updateQty}
-          onRemove={removeFromCart}
-          onCheckout={() => { setIsCartOpen(false); router.push('/checkout'); }}
-        />
+      {/* Truly Fixed Components (Outside transforming containers) */}
+      <BottomNav 
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        cartCount={totalQty}
+      />
 
-        <ProductModal 
-          isOpen={!!selectedProduct}
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={addToCart}
-          onBuyNow={handleBuyNow}
-        />
+      <CartSidebar 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cart={cart}
+        onUpdateQty={updateQty}
+        onRemove={removeFromCart}
+        onCheckout={() => { setIsCartOpen(false); router.push('/checkout'); }}
+      />
 
-        <BottomNav 
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          cartCount={totalQty}
-        />
-      </div>
+      <ProductModal 
+        isOpen={!!selectedProduct}
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={addToCart}
+        onBuyNow={handleBuyNow}
+      />
     </>
   );
 }

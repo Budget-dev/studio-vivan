@@ -20,13 +20,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, ca
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[68px] bg-white/95 backdrop-blur-xl border-t border-primary/10 flex items-start pt-2 px-2 z-[1000]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-[calc(68px+env(safe-area-inset-bottom))] bg-white/95 backdrop-blur-xl border-t border-primary/10 flex items-start pt-2 px-2 z-[1100] pb-[env(safe-area-inset-bottom)] shadow-[0_-10px_20px_rgba(0,0,0,0.03)]">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           className={cn(
-            "flex-1 flex flex-col items-center gap-1 transition-all active:scale-90",
+            "flex-1 flex flex-col items-center gap-1 transition-all active:scale-90 pt-1",
             activeTab === tab.id ? "text-primary" : "text-primary/40"
           )}
         >
@@ -41,7 +41,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange, ca
               </div>
             )}
           </div>
-          <span className="text-[10px] font-bold tracking-tight">{tab.label}</span>
+          <span className="text-[9px] font-bold uppercase tracking-tight">{tab.label}</span>
         </button>
       ))}
     </nav>

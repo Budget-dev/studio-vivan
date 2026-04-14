@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -87,13 +88,15 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
-      <Ticker />
-      <Header 
-        onOpenCart={() => setIsCartOpen(true)} 
-        cartCount={totalQty}
-        onFilter={() => router.push('/')}
-        onSearch={() => router.push('/')}
-      />
+      <div className="sticky top-0 z-[900]">
+        <Ticker />
+        <Header 
+          onOpenCart={() => setIsCartOpen(true)} 
+          cartCount={totalQty}
+          onFilter={() => router.push('/')}
+          onSearch={() => router.push('/')}
+        />
+      </div>
 
       <main className="py-12 md:py-20">
         <div className="max-w-[1400px] mx-auto px-5 md:px-10">
@@ -139,6 +142,7 @@ export default function BlogPage() {
       </main>
 
       <Footer />
+      
       <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={totalQty} />
 
       <CartSidebar 

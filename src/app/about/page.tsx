@@ -27,13 +27,15 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
-      <Ticker />
-      <Header 
-        onOpenCart={() => setIsCartOpen(true)} 
-        cartCount={totalQty}
-        onFilter={() => router.push('/')}
-        onSearch={() => router.push('/')}
-      />
+      <div className="sticky top-0 z-[900]">
+        <Ticker />
+        <Header 
+          onOpenCart={() => setIsCartOpen(true)} 
+          cartCount={totalQty}
+          onFilter={() => router.push('/')}
+          onSearch={() => router.push('/')}
+        />
+      </div>
 
       <main>
         <section className="relative h-[400px] md:h-[500px] flex items-center overflow-hidden">
@@ -129,6 +131,7 @@ export default function AboutPage() {
       </main>
 
       <Footer />
+      
       <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={totalQty} />
 
       <CartSidebar 

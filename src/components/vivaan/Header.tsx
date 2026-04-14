@@ -100,10 +100,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             />
           </div>
           
-          {/* Mobile Stylized Text Logo */}
+          {/* Mobile Stylized Text Logo (Anveshan style - lowercase serif) */}
           <div className="md:hidden flex flex-col items-start">
-            <span className="font-headline text-3xl font-extrabold text-primary leading-none tracking-tight">vivaan</span>
-            <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
+            <span className="font-headline text-3xl font-bold text-primary leading-none tracking-tight lowercase">vivaan</span>
+            <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5 ml-0.5">farms</span>
           </div>
 
           {!user && (
