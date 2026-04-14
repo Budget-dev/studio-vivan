@@ -94,11 +94,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           <button 
             onClick={(e) => { e.stopPropagation(); onAdd(product); }}
             className={cn(
-              "h-8 md:h-12 px-3 md:px-8 rounded-lg md:rounded-2xl flex items-center gap-1.5 md:gap-2 font-black text-[9px] md:text-[12px] uppercase tracking-widest shadow-2xl transition-all active:scale-95 border-none",
+              "h-8 md:h-12 px-3 md:px-8 rounded-lg md:rounded-2xl flex items-center gap-1.5 md:gap-2 font-black text-[8px] md:text-[12px] uppercase tracking-widest shadow-2xl transition-all active:scale-95 border-none whitespace-nowrap",
               isInCart ? "bg-accent text-white" : "bg-primary text-white hover:bg-secondary"
             )}
           >
-            {isInCart ? 'IN' : 'ADD'} <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
+            {isInCart ? 'ADD MORE' : 'ADD TO CART'} <ShoppingCart className="w-3 h-3 md:w-4 md:h-4" />
           </button>
         </div>
       </div>
