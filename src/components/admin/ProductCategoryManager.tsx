@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useRef } from 'react';
@@ -39,6 +38,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 }) => {
   const db = useFirestore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Strictly filter products by category to ensure the admin only sees relevant items
   const productsQuery = useMemoFirebase(() => 
     query(collection(db, 'products'), where('categoryId', '==', category.toLowerCase())), 
     [db, category]
@@ -86,29 +87,37 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   };
 
   const handleAdd = () => {
+    if (!name || !price) {
+      alert("Please provide at least a name and price.");
+      return;
+    }
+
+    const catId = category.toLowerCase();
+    
     const newProduct = {
       name,
       basePrice: Number(price),
-      mrpPrice: Number(mrpPrice),
-      stockQuantity: Number(stock),
-      description: desc,
-      rating: Number(rating),
-      reviewCount: Number(reviews),
-      soldCountLabel: soldLabel,
-      statusBadge: statusBadge,
+      mrpPrice: Number(mrpPrice) || Number(price),
+      stockQuantity: Number(stock) || 100,
+      description: desc || name,
+      rating: Number(rating) || 4.9,
+      reviewCount: Number(reviews) || 0,
+      soldCountLabel: soldLabel || "New",
+      statusBadge: statusBadge || "",
       badges: topBadge ? [topBadge] : [],
-      categoryId: category.toLowerCase(),
+      categoryId: catId,
       imageUrls: uploadedImages.length > 0 ? uploadedImages : [],
-      isLive: true,
+      isLive: true, // Crucial for showing in storefront
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      volumeValue: category === 'ghee' ? 500 : 250,
-      volumeUnit: category === 'ghee' ? 'ml' : 'g',
+      volumeValue: catId === 'ghee' ? 500 : (catId === 'honey' ? 250 : 1),
+      volumeUnit: catId === 'ghee' ? 'ml' : (catId === 'honey' ? 'g' : 'unit'),
       vars: [{ s: 'Standard', p: Number(price), on: true }]
     };
 
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
     setIsAddOpen(false);
+    
     // Reset form
     setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
   };
@@ -291,7 +300,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                   <div className="space-y-1">
                     <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
                     <div className="flex gap-1">
-                      {p.badges?.map((b, i) => (
+                      {p.badges?.map((b, i: number) => (
                         <span key={i} className="px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[8px] font-black uppercase">{b}</span>
                       ))}
                     </div>

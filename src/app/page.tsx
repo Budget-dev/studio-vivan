@@ -35,6 +35,7 @@ export default function VivaanFarms() {
   const router = useRouter();
   const db = useFirestore();
   
+  // Fetch all live products
   const productsQuery = useMemoFirebase(() => query(collection(db, 'products'), where('isLive', '==', true)), [db]);
   const { data: dbProducts, isLoading: productsLoading } = useCollection(productsQuery);
 
@@ -46,29 +47,31 @@ export default function VivaanFarms() {
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
 
+  // Optimized Splash Screen Logic
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!productsLoading) {
+    if (!productsLoading) {
+      const timer = setTimeout(() => {
         setShowSplash(false);
-      }
-    }, 2500); 
-    return () => clearTimeout(timer);
+      }, 1200); // Reduced delay for better feel while still allowing animation
+      return () => clearTimeout(timer);
+    }
   }, [productsLoading]);
 
+  // Robust Product Mapping
   const products = useMemo(() => {
     if (!dbProducts) return [];
     return dbProducts.map((p, i) => ({
       ...p,
       cat: (p.categoryId || 'uncategorized').toLowerCase(),
-      price: p.basePrice || 0,
+      price: Number(p.basePrice) || 0,
       vol: p.volumeValue ? `${p.volumeValue} ${p.volumeUnit}` : 'Standard',
       pi: i,
-      rating: p.rating || 4.9,
-      reviewCount: p.reviewCount || 0,
+      rating: Number(p.rating) || 4.9,
+      reviewCount: Number(p.reviewCount) || 0,
       soldCountLabel: p.soldCountLabel || '',
       statusBadge: p.statusBadge || '',
-      badges: p.badges || [],
-      vars: p.vars || p.variants || [{ s: 'Standard', p: p.basePrice || 0, on: true }]
+      badges: Array.isArray(p.badges) ? p.badges : [],
+      vars: Array.isArray(p.vars) ? p.vars : (Array.isArray(p.variants) ? p.variants : [{ s: 'Standard', p: Number(p.basePrice) || 0, on: true }])
     } as Product));
   }, [dbProducts]);
 
