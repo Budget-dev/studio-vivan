@@ -29,7 +29,7 @@ export const VideoSection: React.FC = () => {
   const videos = [0, 1, 2, 3];
 
   return (
-    <section className="py-10 md:py-20 bg-[#EBF5EE]">
+    <section className="py-10 md:py-20 bg-[#EBF5EE] overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
         <div className="text-center mb-8 md:mb-12">
           <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-primary mb-2">
@@ -38,12 +38,12 @@ export const VideoSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </div>
 
-        {/* Mobile View: 2x2 Grid, No Dots */}
-        <div className="grid grid-cols-2 gap-3 md:hidden">
+        {/* Mobile View: Horizontal Swiper with "Peek" */}
+        <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 md:hidden -mx-5 px-5 pb-8">
           {videos.map((i) => (
             <div 
               key={i} 
-              className="relative aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border-2 border-white"
+              className="relative min-w-[260px] aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
             >
               <video
                 src={videoUrl}
