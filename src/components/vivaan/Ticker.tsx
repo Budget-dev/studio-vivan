@@ -14,14 +14,14 @@ const tickerItems = [
 
 export const Ticker: React.FC = () => {
   return (
-    <div className="bg-[#0D3520] py-2.5 flex items-center text-xs font-extrabold text-white tracking-wider overflow-hidden relative z-50">
-      <div className="flex items-center ticker-animation whitespace-nowrap will-change-transform">
+    <div className="bg-[#0D3520] h-9 flex items-center justify-center text-[10px] font-black text-white tracking-[2.5px] overflow-hidden relative z-50 border-b border-white/5">
+      <div className="flex flex-col items-center ticker-vertical-animation will-change-transform">
         {[...Array(2)].map((_, idx) => (
           <React.Fragment key={idx}>
             {tickerItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-3.5 px-7">
-                <span>{item.ico}</span>
-                <strong>{item.txt}</strong>
+              <div key={i} className="h-9 flex items-center justify-center gap-3.5 px-7 whitespace-nowrap uppercase">
+                <span className="text-sm">{item.ico}</span>
+                <span>{item.txt}</span>
               </div>
             ))}
           </React.Fragment>

@@ -86,6 +86,15 @@
   to { transform: translateX(-50%); }
 }
 
+.ticker-vertical-animation {
+  animation: tickScrollVertical 25s linear infinite;
+}
+
+@keyframes tickScrollVertical {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
 .brand-sh {
   box-shadow: 0 8px 28px rgba(27, 94, 59, 0.25);
 }
