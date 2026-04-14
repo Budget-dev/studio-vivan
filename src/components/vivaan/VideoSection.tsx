@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const VideoSection: React.FC = () => {
-  const videoUrl = "https://cdn.shopify.com/videos/c/vp/8a895a0c0d5b48edad21523773790e4d/8a895a0c0d5b48edad21523773790e4d.HD-720p-1.6Mbps-51250342.mp4";
+  const videoUrl = "https://vivanfa.sirv.com/Firefly%20Create%20a%20cinematic%205-second%20square%20(1-1)%20premium%20food%20advertisement%20set%20in%20a%20warm%2C%20rustic%20ki.mp4";
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -26,7 +26,7 @@ export const VideoSection: React.FC = () => {
     });
   }, [api]);
 
-  const videos = [0, 1, 2, 3, 4, 5];
+  const videos = [0, 1, 2, 3, 4];
 
   return (
     <section className="py-10 md:py-20 bg-[#EBF5EE] overflow-hidden">
@@ -38,11 +38,12 @@ export const VideoSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
         </div>
 
+        {/* Mobile View: Scrollable Row */}
         <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 md:hidden -mx-5 px-5 pb-8">
           {videos.map((i) => (
             <div 
               key={i} 
-              className="relative min-w-[160px] aspect-[9/16] rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
+              className="relative min-w-[140px] aspect-square rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 snap-center"
             >
               <video
                 src={videoUrl}
@@ -52,26 +53,27 @@ export const VideoSection: React.FC = () => {
                 playsInline
                 autoPlay
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
             </div>
           ))}
         </div>
 
+        {/* Desktop View: Carousel showing 3 at a time */}
         <div className="hidden md:block">
           <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="w-full">
             <CarouselContent className="-ml-4">
               {videos.map((i) => (
-                <CarouselItem key={i} className="pl-4 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <div className="relative aspect-[9/16] rounded-[24px] overflow-hidden shadow-xl border-[3px] border-white group">
+                <CarouselItem key={i} className="pl-4 md:basis-1/3">
+                  <div className="relative aspect-square rounded-[32px] overflow-hidden shadow-xl border-[4px] border-white group">
                     <video
                       src={videoUrl}
-                      className="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-500"
+                      className="w-full h-full object-cover transition-all duration-500"
                       muted
                       loop
                       playsInline
                       autoPlay
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
                   </div>
                 </CarouselItem>
               ))}
