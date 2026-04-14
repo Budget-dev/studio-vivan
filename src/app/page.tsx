@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -127,7 +126,7 @@ export default function VivaanFarms() {
   };
 
   const CATEGORIES = [
-    { id: 'all', label: 'All Products', ico: '🌿' },
+    { id: 'all', label: 'All', ico: '🌿' },
     { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
     { id: 'sweets', label: 'Sweets', ico: '🎁' },
     { id: 'honey', label: 'Honey', ico: '🍯' },
@@ -182,20 +181,21 @@ export default function VivaanFarms() {
 
           <section className="py-8 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              <div className="flex justify-center mb-8 md:mb-12 overflow-x-auto no-scrollbar px-2">
-                <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm">
+              {/* Optimized Category Bar for Mobile */}
+              <div className="flex justify-center mb-8 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
+                <div className="flex gap-1.5 md:gap-4 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max md:min-w-0">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1.5 px-4 md:px-6 py-2 md:py-3 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1 md:gap-1.5 px-3 md:px-6 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
                           ? "bg-primary text-white shadow-lg scale-105" 
                           : "text-[#7A6848] hover:bg-primary/5"
                       )}
                     >
-                      <span className="text-sm md:text-base">{cat.ico}</span>
+                      <span className="text-xs md:text-base">{cat.ico}</span>
                       {cat.label}
                     </button>
                   ))}
