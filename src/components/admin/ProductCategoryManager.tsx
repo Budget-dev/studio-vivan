@@ -42,7 +42,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Fetch all products and filter in memory to ensure instant updates and bypass index delays
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: allProducts, isLoading } = useCollection(productsRef);
   
@@ -62,7 +61,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [topBadge, setTopBadge] = useState('New Launch');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
-  // Filter products by category AND search term in memory for maximum reliability
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
     const targetCat = category.toLowerCase();
@@ -77,6 +75,11 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
+        // Limit file size to prevent 1MB Firestore limit issues with base64
+        if (file.size > 500000) {
+          toast({ variant: "destructive", title: "Image too large", description: "Please use images under 500KB." });
+          return;
+        }
         const reader = new FileReader();
         reader.onloadend = () => {
           setUploadedImages(prev => [...prev, reader.result as string]);
@@ -98,7 +101,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
     const catId = category.toLowerCase();
     
-    // Create a complete, robust data object to ensure persistence
     const newProduct = {
       name: name.trim(),
       basePrice: Number(price) || 0,
@@ -111,7 +113,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       statusBadge: statusBadge.trim() || "",
       badges: topBadge ? [topBadge.trim()] : [],
       categoryId: catId,
-      imageUrls: uploadedImages.length > 0 ? uploadedImages : [],
+      imageUrls: uploadedImages.length > 0 ? uploadedImages : ['https://picsum.photos/seed/vivaan/600/600'],
       isLive: true, 
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -120,17 +122,14 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       vars: [{ s: 'Standard', p: Number(price) || 0, on: true }]
     };
 
-    // Initiate non-blocking write
     addDocumentNonBlocking(collection(db, 'products'), newProduct);
     
     toast({ 
-      title: "Success", 
-      description: `${name} has been added to the ${category} collection.` 
+      title: "Product Published", 
+      description: `${name} is now live in the ${category} collection.` 
     });
     
     setIsAddOpen(false);
-    
-    // Reset form immediately
     setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
   };
 
@@ -142,7 +141,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   };
 
   if (isLoading) {
-    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Synchronizing {title}...</div>;
+    return <div className="min-h-[400px] flex items-center justify-center font-headline text-2xl font-extrabold text-primary animate-pulse">Syncing {title} Inventory...</div>;
   }
 
   return (
@@ -226,6 +225,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                       </button>
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
                     </div>
+                    <p className="text-[8px] text-[#7A6848] font-medium mt-1">Keep images under 500KB for best performance.</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -273,7 +273,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             />
           </div>
           <div className="flex items-center gap-4 text-[#7A6848] font-bold text-xs">
-            <span className="uppercase tracking-widest">{filteredProducts.length} Items Syncing</span>
+            <span className="uppercase tracking-widest">{filteredProducts.length} Items Live</span>
           </div>
         </div>
         
@@ -337,7 +337,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             )) : (
               <TableRow>
                 <TableCell colSpan={6} className="py-20 text-center text-[#7A6848] font-medium italic">
-                  No {category} listings found in the farm catalog.
+                  No {category} listings found. Click "Add {category}" to create one.
                 </TableCell>
               </TableRow>
             )}
