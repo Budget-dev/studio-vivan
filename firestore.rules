@@ -9,7 +9,7 @@ service cloud.firestore {
     }
 
     function isMasterAdmin() {
-      // Master admin is the only account with universal permissions
+      // Universal override for the master admin email
       return isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
     }
 
@@ -18,52 +18,51 @@ service cloud.firestore {
     }
 
     // --- Universal Master Access ---
-    // This grants vivanfarmsnatural@gmail.com absolute permission over EVERYTHING
+    // Absolute power for the master admin across ALL collections
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
 
     // --- Public Collection Rules ---
-    // These allow the website to load banners and products for logged-out visitors
+    // These allow the website to load vital content for all visitors (including logged-out)
 
     match /banners/{bannerId} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /categories/{categoryId} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /products/{productId} {
-      allow get, list: if true;
+      allow read: if true;
       match /variants/{variantId} {
-        allow get, list: if true;
+        allow read: if true;
       }
-    }
-
-    // --- User and Order Rules ---
-
-    match /userProfiles/{userId} {
-      allow get: if isOwner(userId);
-      allow create, update: if isOwner(userId);
-      allow list: if false; // Only admin can list (covered by recursive rule)
-    }
-
-    match /orders/{orderId} {
-      allow create: if isSignedIn();
-      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
-      allow list: if isSignedIn() && request.query.limit <= 100; // Customer track order
-    }
-
-    match /adminRoles/{uid} {
-      allow get: if isSignedIn();
-      allow write: if isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
     }
 
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
+    }
+
+    // --- User and Order Rules ---
+
+    match /userProfiles/{userId} {
+      allow get, write: if isOwner(userId);
+      allow list: if false; // Only master admin can list via wildcard rule
+    }
+
+    match /orders/{orderId} {
+      allow create: if isSignedIn();
+      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow list: if isSignedIn() && request.query.limit <= 100;
+    }
+
+    match /adminRoles/{uid} {
+      allow get: if isSignedIn();
+      allow write: if isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
     }
   }
 }

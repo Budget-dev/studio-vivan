@@ -23,7 +23,8 @@
         "title": { "type": "string" },
         "imageUrl": { "type": "string" },
         "placement": { "type": "string" },
-        "isActive": { "type": "boolean" }
+        "isActive": { "type": "boolean" },
+        "position": { "type": "number" }
       },
       "required": ["id", "imageUrl", "isActive"]
     }

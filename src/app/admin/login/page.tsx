@@ -10,6 +10,8 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'fire
 import { doc, setDoc } from 'firebase/firestore';
 import { ShieldCheck, Lock, Mail, Sparkles, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function AdminLoginPage() {
   const ADMIN_EMAIL = 'vivanfarmsnatural@gmail.com';
@@ -28,11 +30,22 @@ export default function AdminLoginPage() {
   useEffect(() => {
     if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
       // Sync admin role document to ensure Security Rules recognize the master account
-      setDoc(doc(db, 'adminRoles', user.uid), {
+      const adminRoleData = {
         email: ADMIN_EMAIL,
         role: 'admin',
         lastVerifiedAt: new Date().toISOString()
-      }, { merge: true });
+      };
+
+      setDoc(doc(db, 'adminRoles', user.uid), adminRoleData, { merge: true })
+        .catch(async () => {
+          // If this fails, it's likely a rules block. Emit the error for debugging.
+          const permissionError = new FirestorePermissionError({
+            path: `adminRoles/${user.uid}`,
+            operation: 'write',
+            requestResourceData: adminRoleData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        });
       
       router.push('/admin');
     }
@@ -59,7 +72,7 @@ export default function AdminLoginPage() {
       } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
         setError("Incorrect password.");
       } else {
-        setError("Access denied.");
+        setError(e.message || "Access denied.");
       }
     } finally {
       setIsLoading(false);
