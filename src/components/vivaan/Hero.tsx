@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -38,12 +39,12 @@ export const Hero: React.FC = () => {
     <section className="relative w-full border-b border-border/10">
       <Carousel 
         opts={{ loop: true }} 
-        className="w-full h-[220px] md:h-[350px] overflow-hidden"
+        className="w-full h-[280px] md:h-[350px] overflow-hidden"
       >
         <CarouselContent className="h-full ml-0">
           {STATIC_BANNERS.map((banner, index) => (
             <CarouselItem key={banner.id} className="relative h-full pl-0">
-              <div className="relative w-full h-[220px] md:h-[350px]">
+              <div className="relative w-full h-[280px] md:h-[350px]">
                 <Image
                   src={banner.imageUrl}
                   alt={banner.title}
@@ -53,21 +54,18 @@ export const Hero: React.FC = () => {
                   loading={index === 0 ? "eager" : "lazy"}
                   data-ai-hint="farm products"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent flex items-center">
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent flex items-center">
                   <div className="max-w-[1400px] mx-auto px-5 md:px-10 w-full">
                     <div className="max-w-2xl text-left">
                       <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1 rounded-full text-[8px] md:text-[9px] font-black tracking-[2px] uppercase mb-3 md:mb-5">
-                        Authentic Bilona Method · Gujarat Farm Direct
+                        Authentic Bilona Method · Gujarat Direct
                       </div>
-                      <h1 className="font-headline text-2xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 md:mb-6">
+                      <h1 className="font-headline text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4 md:mb-6">
                         {banner.title}
                       </h1>
                       <div className="flex gap-2.5 md:gap-4">
-                        <Button className="h-9 md:h-11 px-5 md:px-8 rounded-full bg-primary text-white font-black uppercase tracking-widest hover:bg-secondary transition-all group border-none shadow-xl text-[9px] md:text-xs">
-                          Shop Now <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                        <Button variant="outline" className="h-9 md:h-11 px-5 md:px-8 rounded-full bg-white/5 border-white/30 text-white font-black uppercase tracking-widest hover:bg-white/10 transition-all backdrop-blur-sm text-[9px] md:text-xs">
-                          Our Story
+                        <Button className="h-10 md:h-11 px-6 md:px-8 rounded-full bg-primary text-white font-black uppercase tracking-widest hover:bg-secondary transition-all group border-none shadow-xl text-[9px] md:text-xs">
+                          Shop Now <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>
                       </div>
                     </div>

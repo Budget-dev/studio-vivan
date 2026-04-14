@@ -68,7 +68,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         }, { merge: true });
         toast({ title: "Quick Auth Success!", description: `Welcome, ${result.user.displayName}` });
       } catch (e: any) {
-        // Fallback to home if auth fails or is cancelled
         router.push('/');
       }
     } else {
@@ -85,11 +84,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
   return (
     <header className="bg-white sticky top-0 z-[900] border-b border-primary/5">
-      <div className="max-w-[1500px] mx-auto px-5 lg:px-10 h-[70px] md:h-[90px] flex items-center justify-between">
+      <div className="max-w-[1500px] mx-auto px-4 md:px-10 h-[64px] md:h-[90px] flex items-center justify-between">
         
-        {/* Left: Logo with Direct Google Auth */}
+        {/* Left: Logo Area */}
         <button onClick={handleLogoClick} className="flex items-center shrink-0 group relative">
-          <div className="w-24 h-24 md:w-32 md:h-32 relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+          {/* Desktop Logo Image */}
+          <div className="hidden md:block w-32 h-32 relative items-center justify-center transition-transform duration-300 group-hover:scale-105">
             <Image 
               src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
               alt="Vivaan Farms"
@@ -99,6 +99,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               priority
             />
           </div>
+          
+          {/* Mobile Stylized Text Logo */}
+          <div className="md:hidden flex flex-col items-start">
+            <span className="font-headline text-3xl font-extrabold text-primary leading-none tracking-tight">vivaan</span>
+            <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
+          </div>
+
           {!user && (
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               <div className="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-black text-white uppercase tracking-widest whitespace-nowrap shadow-xl border border-white/20">
@@ -145,14 +152,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </nav>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-3 md:gap-5 shrink-0">
+        <div className="flex items-center gap-2 md:gap-5 shrink-0">
           <div className="relative">
             {isSearchOpen ? (
               <form onSubmit={handleSearch} className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center animate-in slide-in-from-right-4 duration-300">
                 <Input 
                   autoFocus
-                  className="w-[200px] md:w-[300px] h-10 rounded-full border-primary/10 pl-4 pr-10 text-sm"
-                  placeholder="Search pure products..."
+                  className="w-[180px] md:w-[300px] h-10 rounded-full border-primary/10 pl-4 pr-10 text-sm"
+                  placeholder="Search pure..."
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -161,7 +168,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 </button>
               </form>
             ) : (
-              <button onClick={() => setIsSearchOpen(true)} className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
+              <button onClick={() => setIsSearchOpen(true)} className="w-9 h-9 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
                 <Search className="w-5 h-5" />
               </button>
             )}
@@ -169,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-10 h-10 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
+              <button className="w-9 h-9 flex items-center justify-center text-primary/80 hover:text-primary hover:bg-primary/5 rounded-full transition-all">
                 <User className="w-5 h-5" />
               </button>
             </DropdownMenuTrigger>
@@ -200,9 +207,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <button onClick={onOpenCart} className="group relative flex items-center justify-center w-10 h-10 md:w-auto md:px-2 text-primary/80 hover:text-primary transition-all">
+          <button onClick={onOpenCart} className="group relative flex items-center justify-center w-9 h-9 md:w-auto md:px-2 text-primary/80 hover:text-primary transition-all">
             <ShoppingCart className="w-5 h-5" />
-            <div className="absolute -top-1 -right-1 md:right-0 bg-primary text-white text-[9px] font-black rounded-full min-w-[16px] h-4 flex items-center justify-center border-2 border-white">
+            <div className="absolute -top-1 -right-1 bg-primary text-white text-[8px] font-black rounded-full min-w-[15px] h-[15px] flex items-center justify-center border border-white">
               {cartCount}
             </div>
             <span className="hidden lg:inline ml-2 text-[13px] font-bold tracking-wide">CART</span>
