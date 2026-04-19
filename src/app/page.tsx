@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Coins } from 'lucide-react';
+import { Coins, ChevronRight } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All', ico: '🌿' },
@@ -123,6 +123,11 @@ export default function VivaanFarms() {
     if (filter === 'all') return products;
     return products.filter(p => p.cat === filter);
   }, [products, filter]);
+
+  // Specific Category Sets for dedicated sections
+  const gheeProducts = useMemo(() => products.filter(p => p.cat === 'ghee').slice(0, 4), [products]);
+  const sweetsProducts = useMemo(() => products.filter(p => p.cat === 'sweets').slice(0, 4), [products]);
+  const honeyProducts = useMemo(() => products.filter(p => p.cat === 'honey').slice(0, 4), [products]);
 
   return (
     <>
@@ -240,6 +245,79 @@ export default function VivaanFarms() {
           </div>
 
           <WhyChoose />
+
+          {/* Dedicated Category Sections Under "Why Choose" */}
+          <div className="space-y-12 md:space-y-24 py-12 md:py-24 bg-[#FDFBFA]">
+            {/* Ghee Highlight */}
+            {gheeProducts.length > 0 && (
+              <section className="max-w-[1400px] mx-auto px-5 md:px-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black text-primary uppercase tracking-[3px]">Traditional Roots</span>
+                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary">Bilona Method A2 Ghee</h2>
+                  </div>
+                  <button 
+                    onClick={() => handleCategoryFilter('ghee')}
+                    className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                  >
+                    View All Ghee <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                  {gheeProducts.map((p) => (
+                    <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Sweets Highlight */}
+            {sweetsProducts.length > 0 && (
+              <section className="max-w-[1400px] mx-auto px-5 md:px-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black text-secondary uppercase tracking-[3px]">Artisanal Treats</span>
+                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-[#100C06]">Farm-Fresh Sweets</h2>
+                  </div>
+                  <button 
+                    onClick={() => handleCategoryFilter('sweets')}
+                    className="flex items-center gap-2 text-secondary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                  >
+                    View All Sweets <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                  {sweetsProducts.map((p) => (
+                    <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Honey Highlight */}
+            {honeyProducts.length > 0 && (
+              <section className="max-w-[1400px] mx-auto px-5 md:px-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-black text-accent uppercase tracking-[3px]">Wild & Raw</span>
+                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary">Forest Organic Honey</h2>
+                  </div>
+                  <button 
+                    onClick={() => handleCategoryFilter('honey')}
+                    className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                  >
+                    View All Honey <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                  {honeyProducts.map((p) => (
+                    <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
           <NativeSection />
           <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
         </main>
