@@ -11,7 +11,6 @@ import { ProductCard } from '@/components/vivaan/ProductCard';
 import { FeaturedBanner } from '@/components/vivaan/FeaturedBanner';
 import { WhyChoose } from '@/components/vivaan/WhyChoose';
 import { NativeSection } from '@/components/vivaan/NativeSection';
-import { VideoSection } from '@/components/vivaan/VideoSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { BottomNav } from '@/components/vivaan/BottomNav';
@@ -242,7 +241,6 @@ export default function VivaanFarms() {
 
           <WhyChoose />
           <NativeSection />
-          <VideoSection />
           <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
         </main>
 
