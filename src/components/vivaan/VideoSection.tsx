@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -23,11 +22,12 @@ export const VideoSection: React.FC = () => {
           <div className="w-24 h-1 bg-primary/20 mx-auto mt-4 md:mt-6 rounded-full"></div>
         </div>
 
-        <div className="flex md:grid md:grid-cols-3 overflow-x-auto no-scrollbar md:overflow-x-visible snap-x snap-mandatory gap-4 md:gap-6 -mx-5 px-5 md:mx-0 md:px-0 pb-8 md:pb-0">
+        {/* Adjusted min-w and aspect to match product card visual weight */}
+        <div className="flex md:grid md:grid-cols-3 overflow-x-auto no-scrollbar md:overflow-x-visible snap-x snap-mandatory gap-4 md:gap-8 -mx-5 px-5 md:mx-0 md:px-0 pb-8 md:pb-0">
           {videos.map((vid, i) => (
             <div 
               key={i} 
-              className="relative min-w-[240px] md:min-w-0 aspect-[4/5] rounded-[20px] md:rounded-[24px] overflow-hidden group shadow-lg bg-white shrink-0 snap-center"
+              className="relative min-w-[170px] md:min-w-0 aspect-square rounded-[24px] md:rounded-[32px] overflow-hidden group shadow-lg bg-white shrink-0 snap-center border border-white/20"
             >
               <video
                 src={videoUrl}
@@ -37,25 +37,25 @@ export const VideoSection: React.FC = () => {
                 playsInline
                 autoPlay
               />
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-500"></div>
               
-              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end md:justify-center text-center">
-                <div className="space-y-2 md:space-y-4">
-                  <div className="text-[10px] font-black uppercase tracking-[2px] text-white/90">{vid.sub}</div>
-                  <h3 className="font-headline text-lg md:text-3xl font-bold text-white leading-tight">
+              <div className="absolute inset-0 p-4 md:p-8 flex flex-col justify-end md:justify-center text-center">
+                <div className="space-y-1 md:space-y-4">
+                  <div className="text-[7px] md:text-[10px] font-black uppercase tracking-[2px] text-white/80">{vid.sub}</div>
+                  <h3 className="font-headline text-sm md:text-3xl font-bold text-white leading-tight">
                     {vid.title}
                   </h3>
                   
-                  <div className="flex justify-center mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="w-10 h-10 rounded-full bg-white/30 backdrop-blur-xl border border-white/50 flex items-center justify-center text-white">
-                      <i className="fa-solid fa-play ml-1 text-xs"></i>
+                  <div className="flex justify-center mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-white/30 backdrop-blur-xl border border-white/50 flex items-center justify-center text-white">
+                      <i className="fa-solid fa-play ml-1 text-[8px] md:text-xs"></i>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute top-4 right-4 md:hidden">
-                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-[10px]">
+              <div className="absolute top-3 right-3 md:hidden">
+                <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-[8px] border border-white/10">
                   <i className="fa-solid fa-play ml-0.5"></i>
                 </div>
               </div>
