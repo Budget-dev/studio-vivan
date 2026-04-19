@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Coins, ChevronRight, ArrowRight } from 'lucide-react';
+import { Coins, ChevronRight } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All', ico: '🌿' },
@@ -259,7 +259,7 @@ export default function VivaanFarms() {
 
           {/* Dedicated Category Sections Under "Why Choose" */}
           <div className="space-y-12 md:space-y-24 py-12 md:py-24 bg-[#FDFBFA]">
-            {/* Ghee Highlight */}
+            {/* Ghee Highlight Section */}
             {gheeProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
                 <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
@@ -282,7 +282,7 @@ export default function VivaanFarms() {
               </section>
             )}
 
-            {/* Sweets Highlight */}
+            {/* Sweets Highlight Section */}
             {sweetsProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
                 <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
@@ -305,7 +305,7 @@ export default function VivaanFarms() {
               </section>
             )}
 
-            {/* Honey Highlight */}
+            {/* Honey Highlight Section */}
             {honeyProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
                 <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
