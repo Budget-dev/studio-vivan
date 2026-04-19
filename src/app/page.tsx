@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Coins, ChevronRight } from 'lucide-react';
+import { Coins, ChevronRight, Sparkles } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All', ico: '🌿' },
@@ -220,24 +220,37 @@ export default function VivaanFarms() {
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-                  {filteredProducts.map((p) => (
-                    <ProductCard 
-                      key={p.id} 
-                      product={p} 
-                      isInCart={cart.some(c => c.id === p.id)}
-                      onOpen={() => router.push(`/product/${p.id}`)}
-                      onAdd={() => addToCart(p)}
-                    />
-                  ))}
-                  {filteredProducts.length === 0 && !productsLoading && (
-                    <div className="col-span-full py-24 text-center bg-white/50 rounded-[48px] border-2 border-dashed border-primary/10 mx-auto w-full max-w-2xl">
-                      <div className="text-5xl mb-6">🍃</div>
-                      <h3 className="font-headline text-3xl font-bold text-primary">Harvesting New Batches</h3>
-                      <p className="text-muted-foreground mt-3 font-medium">No products found in this category yet. Check back soon!</p>
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+                    {filteredProducts.map((p) => (
+                      <ProductCard 
+                        key={p.id} 
+                        product={p} 
+                        isInCart={cart.some(c => c.id === p.id)}
+                        onOpen={() => router.push(`/product/${p.id}`)}
+                        onAdd={() => addToCart(p)}
+                      />
+                    ))}
+                    {filteredProducts.length === 0 && !productsLoading && (
+                      <div className="col-span-full py-24 text-center bg-white/50 rounded-[48px] border-2 border-dashed border-primary/10 mx-auto w-full max-w-2xl">
+                        <div className="text-5xl mb-6">🍃</div>
+                        <h3 className="font-headline text-3xl font-bold text-primary">Harvesting New Batches</h3>
+                        <p className="text-muted-foreground mt-3 font-medium">No products found in this category yet. Check back soon!</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {filteredProducts.length > 0 && (
+                    <div className="mt-16 flex justify-center">
+                      <button 
+                        onClick={() => handleCategoryFilter('all')}
+                        className="h-14 md:h-16 px-10 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl flex items-center gap-3 group active:scale-95"
+                      >
+                        See All Products <Sparkles className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
+                      </button>
                     </div>
                   )}
-                </div>
+                </>
               )}
             </div>
           </section>
@@ -269,7 +282,7 @@ export default function VivaanFarms() {
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('ghee')}
-                    className="flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
+                    className="hidden md:flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
                     See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -278,6 +291,14 @@ export default function VivaanFarms() {
                   {gheeProducts.map((p) => (
                     <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
                   ))}
+                </div>
+                <div className="mt-10 flex justify-center">
+                  <button 
+                    onClick={() => handleCategoryFilter('ghee')}
+                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-primary/20 text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-primary transition-all active:scale-95"
+                  >
+                    See All A2 Ghee ✦
+                  </button>
                 </div>
               </section>
             )}
@@ -292,7 +313,7 @@ export default function VivaanFarms() {
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('sweets')}
-                    className="flex items-center gap-1.5 md:gap-2 text-secondary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-secondary/10 px-4 py-2.5 rounded-full shadow-sm"
+                    className="hidden md:flex items-center gap-1.5 md:gap-2 text-secondary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-secondary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
                     See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -301,6 +322,14 @@ export default function VivaanFarms() {
                   {sweetsProducts.map((p) => (
                     <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
                   ))}
+                </div>
+                <div className="mt-10 flex justify-center">
+                  <button 
+                    onClick={() => handleCategoryFilter('sweets')}
+                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-secondary/20 text-secondary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-secondary transition-all active:scale-95"
+                  >
+                    See All Farm Sweets ✦
+                  </button>
                 </div>
               </section>
             )}
@@ -315,7 +344,7 @@ export default function VivaanFarms() {
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('honey')}
-                    className="flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
+                    className="hidden md:flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
                     See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -324,6 +353,14 @@ export default function VivaanFarms() {
                   {honeyProducts.map((p) => (
                     <ProductCard key={p.id} product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
                   ))}
+                </div>
+                <div className="mt-10 flex justify-center">
+                  <button 
+                    onClick={() => handleCategoryFilter('honey')}
+                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-primary/20 text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-primary transition-all active:scale-95"
+                  >
+                    See All Honey ✦
+                  </button>
                 </div>
               </section>
             )}
