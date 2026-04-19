@@ -11,9 +11,9 @@ import { ProductCard } from '@/components/vivaan/ProductCard';
 import { FeaturedBanner } from '@/components/vivaan/FeaturedBanner';
 import { WhyChoose } from '@/components/vivaan/WhyChoose';
 import { NativeSection } from '@/components/vivaan/NativeSection';
+import { VideoSection } from '@/components/vivaan/VideoSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
-import { ProductModal } from '@/components/vivaan/ProductModal';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { SplashScreen } from '@/components/vivaan/SplashScreen';
 import { Product } from '@/types';
@@ -42,7 +42,6 @@ export default function VivaanFarms() {
   const [filter, setFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showSplash, setShowSplash] = useState(true);
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
@@ -51,17 +50,16 @@ export default function VivaanFarms() {
     if (!productsLoading) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 400); 
+      }, 300); 
       return () => clearTimeout(timer);
     }
   }, [productsLoading]);
 
-  // Transform and filter products with high resilience
   const products = useMemo(() => {
     if (!dbProducts) return [];
     
     return dbProducts
-      .filter(p => p.isLive !== false) // Allow items where isLive is true or undefined
+      .filter(p => p.isLive !== false)
       .map((p, i) => {
         const catId = (p.categoryId || 'uncategorized').toLowerCase();
         const basePrice = Number(p.basePrice) || 0;
@@ -80,9 +78,7 @@ export default function VivaanFarms() {
           badges: Array.isArray(p.badges) ? p.badges : [],
           vars: Array.isArray(p.vars) && p.vars.length > 0 
             ? p.vars 
-            : (Array.isArray(p.variants) && p.variants.length > 0 
-                ? p.variants 
-                : [{ s: 'Standard', p: basePrice, on: true }])
+            : [{ s: 'Standard', p: basePrice, on: true }]
         } as Product;
       });
   }, [dbProducts]);
@@ -122,12 +118,6 @@ export default function VivaanFarms() {
     } else if (tab === 'account') {
       router.push('/track');
     }
-  };
-
-  const handleBuyNow = (p: Product, q: number) => {
-    addToCart(p, q);
-    setSelectedProduct(null);
-    router.push('/checkout');
   };
 
   const filteredProducts = useMemo(() => {
@@ -174,8 +164,8 @@ export default function VivaanFarms() {
         <main>
           <Hero />
           
-          <div className="text-center py-6 md:py-16 px-5 bg-white border-b border-primary/5">
-            <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary mb-2 leading-tight">
+          <div className="text-center py-8 md:py-16 px-5 bg-white border-b border-primary/5">
+            <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-2 leading-tight">
               Welcome To Vivaan Farms!
             </h2>
             <p className="text-[#7A6848] text-[10px] md:text-xl font-medium tracking-wide uppercase">
@@ -186,22 +176,22 @@ export default function VivaanFarms() {
 
           <TrustBar />
 
-          <section className="py-8 md:py-20" id="products">
+          <section className="py-10 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
               <div className="flex justify-center mb-10 md:mb-16 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="flex gap-1.5 md:gap-4 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max md:min-w-0">
+                <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1 md:gap-1.5 px-3 md:px-6 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1.5 px-4 md:px-8 py-2.5 md:py-3.5 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
                           ? "bg-primary text-white shadow-lg scale-105" 
                           : "text-[#7A6848] hover:bg-primary/5"
                       )}
                     >
-                      <span className="text-xs md:text-base">{cat.ico}</span>
+                      <span className="text-sm md:text-lg">{cat.ico}</span>
                       {cat.label}
                     </button>
                   ))}
@@ -209,27 +199,27 @@ export default function VivaanFarms() {
               </div>
 
               {productsLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                   {[...Array(4)].map((_, i) => (
                     <div key={i} className="bg-white/50 rounded-[32px] aspect-[3/4] animate-pulse border-2 border-dashed border-[#DDD0B5]/30"></div>
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                   {filteredProducts.map((p) => (
                     <ProductCard 
                       key={p.id} 
                       product={p} 
                       isInCart={cart.some(c => c.id === p.id)}
-                      onOpen={() => setSelectedProduct(p)}
+                      onOpen={() => router.push(`/product/${p.id}`)}
                       onAdd={() => addToCart(p)}
                     />
                   ))}
                   {filteredProducts.length === 0 && !productsLoading && (
-                    <div className="col-span-full py-20 text-center bg-white/50 rounded-[40px] border-2 border-dashed border-primary/10">
-                      <div className="text-4xl mb-4">🍃</div>
-                      <h3 className="font-headline text-2xl font-bold text-primary">Harvesting New Batches</h3>
-                      <p className="text-muted-foreground mt-2 font-medium">No products found in this category yet. Check back soon!</p>
+                    <div className="col-span-full py-24 text-center bg-white/50 rounded-[48px] border-2 border-dashed border-primary/10 mx-auto w-full max-w-2xl">
+                      <div className="text-5xl mb-6">🍃</div>
+                      <h3 className="font-headline text-3xl font-bold text-primary">Harvesting New Batches</h3>
+                      <p className="text-muted-foreground mt-3 font-medium">No products found in this category yet. Check back soon!</p>
                     </div>
                   )}
                 </div>
@@ -237,20 +227,22 @@ export default function VivaanFarms() {
             </div>
           </section>
 
-          <div className="bg-[#0D3520] py-4 md:py-6 flex items-center justify-center text-white px-5 border-y border-white/5">
-            <div className="flex items-center gap-3 md:gap-6 text-center">
-              <div className="w-10 h-10 md:w-14 md:h-14 bg-white/10 rounded-full flex items-center justify-center shrink-0">
+          <div className="bg-[#0D3520] py-6 md:py-8 flex items-center justify-center text-white px-5 border-y border-white/5 relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+            <div className="flex items-center gap-4 md:gap-8 text-center relative z-10">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/20">
                 <Coins className="text-yellow-400 w-6 h-6 md:w-8 md:h-8" />
               </div>
               <div className="text-left">
-                <div className="font-headline text-lg md:text-3xl font-extrabold leading-tight">Get Upto 25% Off with Purity Coins! →</div>
-                <p className="text-[9px] md:text-xs font-bold text-white/40 uppercase tracking-widest mt-0.5">Collect coins on every order and save big on your next haul</p>
+                <div className="font-headline text-xl md:text-4xl font-extrabold leading-tight">Get Upto 25% Off with Purity Coins! →</div>
+                <p className="text-[10px] md:text-xs font-bold text-white/40 uppercase tracking-[3px] mt-1.5">Collect coins on every order and save big on your next haul</p>
               </div>
             </div>
           </div>
 
           <WhyChoose />
           <NativeSection />
+          <VideoSection />
           <FeaturedBanner onCta={() => handleCategoryFilter('all')} />
         </main>
 
@@ -270,14 +262,6 @@ export default function VivaanFarms() {
         onUpdateQty={updateQty}
         onRemove={removeFromCart}
         onCheckout={() => { setIsCartOpen(false); router.push('/checkout'); }}
-      />
-
-      <ProductModal 
-        isOpen={!!selectedProduct}
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        onAddToCart={addToCart}
-        onBuyNow={handleBuyNow}
       />
     </>
   );
