@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Coins, ChevronRight } from 'lucide-react';
+import { Coins, ChevronRight, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All', ico: '🌿' },
@@ -102,7 +102,18 @@ export default function VivaanFarms() {
   const handleCategoryFilter = (cat: string) => {
     setFilter(cat);
     const el = document.getElementById('products');
-    el?.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      const offset = 100;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const handleTabChange = (tab: string) => {
@@ -251,16 +262,16 @@ export default function VivaanFarms() {
             {/* Ghee Highlight */}
             {gheeProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
                   <div className="space-y-2">
                     <span className="text-[10px] font-black text-primary uppercase tracking-[3px]">Traditional Roots</span>
-                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary">Bilona Method A2 Ghee</h2>
+                    <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary leading-none">A2 Gir Ghee</h2>
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('ghee')}
-                    className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                    className="flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
-                    View All Ghee <ChevronRight className="w-4 h-4" />
+                    See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -274,16 +285,16 @@ export default function VivaanFarms() {
             {/* Sweets Highlight */}
             {sweetsProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
                   <div className="space-y-2">
                     <span className="text-[10px] font-black text-secondary uppercase tracking-[3px]">Artisanal Treats</span>
-                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-[#100C06]">Farm-Fresh Sweets</h2>
+                    <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-[#100C06] leading-none">Farm Sweets</h2>
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('sweets')}
-                    className="flex items-center gap-2 text-secondary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                    className="flex items-center gap-1.5 md:gap-2 text-secondary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-secondary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
-                    View All Sweets <ChevronRight className="w-4 h-4" />
+                    See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -297,16 +308,16 @@ export default function VivaanFarms() {
             {/* Honey Highlight */}
             {honeyProducts.length > 0 && (
               <section className="max-w-[1400px] mx-auto px-5 md:px-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+                <div className="flex items-end justify-between mb-8 md:mb-12 gap-4">
                   <div className="space-y-2">
                     <span className="text-[10px] font-black text-accent uppercase tracking-[3px]">Wild & Raw</span>
-                    <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary">Forest Organic Honey</h2>
+                    <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary leading-none">Forest Honey</h2>
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('honey')}
-                    className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[11px] hover:gap-3 transition-all"
+                    className="flex items-center gap-1.5 md:gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:gap-3 transition-all bg-white border border-primary/10 px-4 py-2.5 rounded-full shadow-sm"
                   >
-                    View All Honey <ChevronRight className="w-4 h-4" />
+                    See All <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
