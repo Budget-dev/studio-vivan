@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -295,9 +294,9 @@ export default function VivaanFarms() {
                 <div className="mt-10 flex justify-center">
                   <button 
                     onClick={() => handleCategoryFilter('ghee')}
-                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-primary/20 text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-primary transition-all active:scale-95 shadow-lg"
+                    className="h-12 md:h-16 px-8 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-primary hover:text-white transition-all active:scale-95 shadow-xl flex items-center gap-2"
                   >
-                    See All A2 Ghee ✦
+                    See All A2 Ghee <Sparkles className="w-4 h-4" />
                   </button>
                 </div>
               </section>
@@ -326,9 +325,9 @@ export default function VivaanFarms() {
                 <div className="mt-10 flex justify-center">
                   <button 
                     onClick={() => handleCategoryFilter('sweets')}
-                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-secondary/20 text-secondary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-secondary transition-all active:scale-95 shadow-lg"
+                    className="h-12 md:h-16 px-8 md:px-14 rounded-full border-2 border-secondary text-secondary font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-secondary hover:text-white transition-all active:scale-95 shadow-xl flex items-center gap-2"
                   >
-                    See All Farm Sweets ✦
+                    See All Farm Sweets <Sparkles className="w-4 h-4" />
                   </button>
                 </div>
               </section>
@@ -357,9 +356,9 @@ export default function VivaanFarms() {
                 <div className="mt-10 flex justify-center">
                   <button 
                     onClick={() => handleCategoryFilter('honey')}
-                    className="h-12 md:h-14 px-8 md:px-10 rounded-full border-2 border-primary/20 text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:border-primary transition-all active:scale-95 shadow-lg"
+                    className="h-12 md:h-16 px-8 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest text-[10px] md:text-xs hover:bg-primary hover:text-white transition-all active:scale-95 shadow-xl flex items-center gap-2"
                   >
-                    See All Honey ✦
+                    See All Honey <Sparkles className="w-4 h-4" />
                   </button>
                 </div>
               </section>
