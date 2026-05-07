@@ -87,9 +87,10 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           </div>
 
           {cart.length === 0 ? (
-            <div className="text-center py-24 flex flex-col items-center justify-center">
-              <div className="w-28 h-28 bg-[#FBF6E5] rounded-full flex items-center justify-center mb-8 relative shadow-inner">
-                <div className="relative w-16 h-16">
+            <div className="text-center py-16 md:py-24 flex flex-col items-center justify-center">
+              <div className="w-36 h-32 flex items-center justify-center mb-8 relative">
+                <div className="absolute inset-0 bg-[#FBF6E5] rounded-full scale-[0.85]"></div>
+                <div className="relative w-24 h-24">
                   <Image 
                     src="https://vivanfa.sirv.com/ChatGPT%20Image%20May%208%2C%202026%2C%2012_02_33%20AM.png" 
                     alt="Empty Cart" 
@@ -98,15 +99,15 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
                   />
                 </div>
               </div>
-              <h3 className="font-headline text-3xl font-extrabold text-[#100C06] mb-4">Cart is Empty</h3>
-              <p className="text-sm text-[#7A6848] max-w-[260px] leading-relaxed font-medium">
+              <h3 className="font-headline text-4xl font-extrabold text-[#100C06] mb-4">Cart is Empty</h3>
+              <p className="text-sm text-[#7A6848] max-w-[280px] leading-relaxed font-medium">
                 Add some pure farm goods from Vivaan Farms to get started!
               </p>
               <Button 
                 onClick={onClose} 
-                className="mt-10 bg-[#0D3520] hover:bg-[#1B5E3B] text-white px-10 h-14 rounded-full font-black text-xs uppercase tracking-[2px] transition-all shadow-xl active:scale-95 border-none"
+                className="mt-12 bg-[#0D3520] hover:bg-[#1B5E3B] text-white px-12 h-14 rounded-full font-black text-xs uppercase tracking-[2.5px] transition-all shadow-xl active:scale-95 border-none"
               >
-                Explore Products →
+                EXPLORE PRODUCTS →
               </Button>
             </div>
           ) : (
