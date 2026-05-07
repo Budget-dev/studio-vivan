@@ -192,14 +192,15 @@ export default function VivaanFarms() {
 
           <section className="py-10 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
+              {/* Category Pill - Refined for Android Roundness & Compactness */}
               <div className="flex justify-center mb-10 md:mb-16 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max overflow-hidden">
+                <div className="flex gap-1.5 md:gap-3 items-center bg-white p-1 md:p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm w-fit max-w-full overflow-hidden transform-gpu translate-z-0">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1.5 px-4 md:px-8 py-2.5 md:py-3.5 rounded-full text-[11px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1 md:gap-2 px-3.5 md:px-7 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
                           ? "bg-primary text-white shadow-lg scale-105" 
                           : "text-[#7A6848] hover:bg-primary/5"

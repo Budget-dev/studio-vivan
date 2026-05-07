@@ -86,8 +86,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           </div>
         )}
 
-        {/* Top Badges - Optimized for iOS Hardware Acceleration */}
-        <div className="absolute top-0 right-0 z-[30] pointer-events-none transform translate-z-0">
+        {/* Top Badges - Optimized for iOS & Android Hardware Acceleration */}
+        <div className="absolute top-0 right-0 z-[30] pointer-events-none transform-gpu translate-z-0">
           {product.badges?.slice(0, 1).map((badge, i) => (
             <div key={i} className="bg-[#D4A017] text-white px-3 md:px-6 py-1.5 md:py-2.5 rounded-bl-[16px] md:rounded-bl-[28px] text-[8px] md:text-[11px] font-black uppercase tracking-widest shadow-md">
               {badge}
