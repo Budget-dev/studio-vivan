@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -18,8 +17,13 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onOpen, onAdd }) => {
   const router = useRouter();
-  const discount = product.mrpPrice && product.mrpPrice > product.price 
-    ? Math.round(((product.mrpPrice - product.price) / product.mrpPrice) * 100)
+  
+  // Ensure we have numbers to work with
+  const price = Number(product.price) || 0;
+  const mrpPrice = Number(product.mrpPrice) || price;
+
+  const discount = mrpPrice > price 
+    ? Math.round(((mrpPrice - price) / mrpPrice) * 100)
     : 0;
 
   const getIcon = () => {
@@ -126,9 +130,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
 
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mt-auto gap-1">
           <div className="flex items-center gap-2 md:gap-3">
-            <span className="text-xl md:text-3xl font-black text-[#100C06] leading-none">₹{product.price.toLocaleString('en-IN')}</span>
-            {product.mrpPrice && product.mrpPrice > product.price && (
-              <span className="text-[11px] md:text-sm text-[#7A6848] line-through font-bold opacity-30">₹{product.mrpPrice.toLocaleString('en-IN')}</span>
+            <span className="text-xl md:text-3xl font-black text-[#100C06] leading-none">₹{price.toLocaleString('en-IN')}</span>
+            {mrpPrice > price && (
+              <span className="text-[11px] md:text-sm text-[#7A6848] line-through font-bold opacity-30">₹{mrpPrice.toLocaleString('en-IN')}</span>
             )}
           </div>
           

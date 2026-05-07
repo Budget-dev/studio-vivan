@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -51,27 +50,38 @@ export default function ProductDetailsPage() {
   const [aiData, setAiData] = useState<RecipeIdeasOutput | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // Transform DB product to app type
+  // Standardize product data
+  const mapProductData = (p: any, index: number = 0): Product => {
+    const basePrice = Number(p.basePrice) || 0;
+    return {
+      ...p,
+      price: basePrice,
+      mrpPrice: Number(p.mrpPrice) || basePrice,
+      rat: Number(p.rating) || 4.9,
+      revs: Number(p.reviewCount) || 120,
+      sold: p.soldCountLabel || 'Hot',
+      cat: (p.categoryId || 'ghee').toLowerCase(),
+      vol: p.volumeValue ? `${p.volumeValue}${p.volumeUnit || ''}` : 'Standard',
+      pi: index,
+      vars: Array.isArray(p.vars) && p.vars.length > 0 
+        ? p.vars 
+        : [{ s: 'Standard', p: basePrice, on: true }]
+    } as any;
+  };
+
+  // Transform main product
   const product = useMemo(() => {
     if (!dbProduct) return null;
-    const basePrice = Number(dbProduct.basePrice) || 0;
-    return {
-      ...dbProduct,
-      price: basePrice,
-      mrp: Number(dbProduct.mrpPrice) || basePrice,
-      off: dbProduct.statusBadge || 'BEST PRICE',
-      rat: Number(dbProduct.rating) || 4.9,
-      revs: Number(dbProduct.reviewCount) || 120,
-      sold: dbProduct.soldCountLabel || 'Hot',
-      cat: (dbProduct.categoryId || 'ghee').toLowerCase(),
-      vol: dbProduct.volumeValue ? `${dbProduct.volumeValue}${dbProduct.volumeUnit || ''}` : 'Standard',
-      vars: Array.isArray(dbProduct.vars) && dbProduct.vars.length > 0 ? dbProduct.vars : [{ s: 'Standard', p: basePrice, on: true }]
-    } as any;
+    return mapProductData(dbProduct);
   }, [dbProduct]);
 
+  // Transform and filter related products
   const relatedProducts = useMemo(() => {
     if (!allProducts || !product) return [];
-    return allProducts.filter(p => p.id !== product.id && p.categoryId === product.categoryId).slice(0, 4);
+    return allProducts
+      .filter(p => p.id !== product.id && p.categoryId === product.categoryId)
+      .map((p, i) => mapProductData(p, i))
+      .slice(0, 4);
   }, [allProducts, product]);
 
   useEffect(() => {
@@ -193,16 +203,16 @@ export default function ProductDetailsPage() {
                  <div className="flex items-center gap-1">
                    {[...Array(5)].map((_, i) => <Star key={i} className={cn("w-3.5 h-3.5", i < 4 ? "text-yellow-400 fill-current" : "text-border")} />)}
                  </div>
-                 <span className="text-[11px] font-black text-[#7A6848] uppercase tracking-widest">{product.revs} Verified Reviews</span>
+                 <span className="text-[11px] font-black text-[#7A6848] uppercase tracking-widest">{product.reviewCount} Verified Reviews</span>
               </div>
             </div>
 
             <div className="flex items-end gap-4 mb-8">
               <span className="font-headline text-5xl font-black">₹{displayPrice.toLocaleString('en-IN')}</span>
-              {product.mrp > displayPrice && (
+              {product.mrpPrice > displayPrice && (
                 <div className="flex flex-col mb-1">
-                  <span className="text-sm text-[#7A6848]/40 line-through font-bold">MRP ₹{product.mrp.toLocaleString('en-IN')}</span>
-                  <span className="text-[10px] font-black text-secondary uppercase tracking-widest">You Save ₹{product.mrp - displayPrice}</span>
+                  <span className="text-sm text-[#7A6848]/40 line-through font-bold">MRP ₹{product.mrpPrice.toLocaleString('en-IN')}</span>
+                  <span className="text-[10px] font-black text-secondary uppercase tracking-widest">You Save ₹{product.mrpPrice - displayPrice}</span>
                 </div>
               )}
             </div>
@@ -357,7 +367,7 @@ export default function ProductDetailsPage() {
                   <div className="flex justify-center gap-1 my-3">
                     {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />)}
                   </div>
-                  <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-widest">Based on {product.revs} reviews</div>
+                  <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-widest">Based on {product.reviewCount} reviews</div>
                 </div>
                 <div className="space-y-3">
                   {[5, 4, 3, 2, 1].map((star) => (
@@ -410,10 +420,10 @@ export default function ProductDetailsPage() {
                  {relatedProducts.map((p) => (
                    <ProductCard 
                     key={p.id} 
-                    product={p as any} 
+                    product={p} 
                     isInCart={cart.some(c => c.id === p.id)} 
                     onOpen={() => router.push(`/product/${p.id}`)} 
-                    onAdd={() => addToCart(p as any)} 
+                    onAdd={() => addToCart(p)} 
                    />
                  ))}
                </div>
@@ -436,4 +446,3 @@ export default function ProductDetailsPage() {
     </div>
   );
 }
-
