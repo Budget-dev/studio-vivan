@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -29,16 +28,16 @@ const NATIVE_CARDS = [
 
 export const NativeSection: React.FC = () => {
   return (
-    <section className="py-10 md:py-24 bg-[#F9F6EF] border-t border-border/50 overflow-hidden">
+    <section className="py-8 md:py-24 bg-[#F9F6EF] border-t border-border/50 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-        <div className="text-center mb-10 md:mb-16">
+        <div className="text-center mb-8 md:mb-16">
           <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary leading-tight">
             Native Ingredients. No Substitutes.
           </h2>
           <div className="w-24 h-1 bg-primary/20 mx-auto mt-4 md:mt-6 rounded-full"></div>
         </div>
 
-        <div className="flex md:grid md:grid-cols-4 overflow-x-auto no-scrollbar md:overflow-x-visible snap-x snap-mandatory gap-4 md:gap-6 -mx-5 px-5 md:mx-0 md:px-0 pb-8 md:pb-0">
+        <div className="flex md:grid md:grid-cols-4 overflow-x-auto no-scrollbar md:overflow-x-visible snap-x snap-mandatory gap-4 md:gap-6 -mx-5 px-5 md:mx-0 md:px-0 pb-4 md:pb-0">
           {NATIVE_CARDS.map((card, i) => (
             <div 
               key={i} 
