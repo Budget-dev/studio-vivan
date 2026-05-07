@@ -81,19 +81,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </button>
         </div>
 
-        <div className="flex-1 flex justify-center md:justify-start">
-          <Link href="/" className="flex items-center shrink-0 group relative text-center md:text-left">
-            <div className="hidden md:block w-32 h-32 relative transition-transform duration-300 group-hover:scale-105">
+        <div className="flex-1 flex justify-center md:justify-start h-full items-center">
+          <Link href="/" className="flex items-center shrink-0 group relative">
+            {/* Desktop Logo - Fixed height to prevent dislocation */}
+            <div className="hidden md:block w-40 h-20 relative transition-transform duration-300 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
-                width={120}
-                height={120}
-                className="object-contain"
+                fill
+                className="object-contain object-left"
                 priority
               />
             </div>
             
+            {/* Mobile Logo */}
             <div className="md:hidden flex flex-col items-center">
               <span className="font-headline text-3xl font-bold text-primary leading-none tracking-tight lowercase">vivaan</span>
               <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
@@ -101,20 +102,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </Link>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-8">
+        <nav className="hidden xl:flex items-center gap-8 2xl:gap-14 mx-8">
           {navItems.map((item) => (
             <button 
               key={item.label}
               onClick={item.onClick}
-              className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase"
+              className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase"
             >
               {item.label}
             </button>
           ))}
-          <Link href="/about" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
+          <Link href="/about" className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase">
             About Us
           </Link>
-          <Link href="/contact" className="text-[13px] font-bold text-primary/80 hover:text-primary transition-all tracking-wide uppercase">
+          <Link href="/contact" className="text-[12px] font-black text-primary/80 hover:text-primary transition-all tracking-widest uppercase">
             Contact Us
           </Link>
         </nav>
@@ -174,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <div className="absolute -top-1 -right-1 bg-primary text-white text-[8px] font-black rounded-full min-w-[15px] h-[15px] flex items-center justify-center border border-white">
               {cartCount}
             </div>
-            <span className="hidden lg:inline ml-2 text-[13px] font-bold tracking-wide">CART</span>
+            <span className="hidden lg:inline ml-2 text-[11px] font-black tracking-widest">CART</span>
           </button>
         </div>
       </div>
