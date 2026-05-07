@@ -94,10 +94,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             
-            {/* Mobile Logo - Updated to exact reference style */}
-            <div className="md:hidden flex flex-col items-center">
-              <span className="font-headline text-3xl font-extrabold text-primary leading-[0.8] tracking-tight">vivaan</span>
-              <span className="text-[7px] font-bold text-[#7A6848]/50 font-body uppercase tracking-[5px] -mt-1 pl-1">farms</span>
+            {/* Mobile Logo */}
+            <div className="md:hidden w-32 h-10 relative">
+              <Image 
+                src="https://vivanfa.sirv.com/ChatGPT%20Image%20May%207%2C%202026%2C%2011_32_34%20PM.png"
+                alt="vivaan farms"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
           </Link>
         </div>
@@ -190,9 +195,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               <div className="absolute top-[-30px] right-[-30px] w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="flex items-center gap-3 mb-6 relative z-10">
                 {/* Mobile Menu Brand Signature */}
-                <div className="flex flex-col items-start">
-                  <span className="font-headline text-4xl font-extrabold text-white leading-[0.8] tracking-tight">vivaan</span>
-                  <span className="text-[8px] font-bold text-white/40 font-body uppercase tracking-[5px] -mt-1 pl-1">farms</span>
+                <div className="w-36 h-12 relative brightness-0 invert">
+                   <Image 
+                    src="https://vivanfa.sirv.com/ChatGPT%20Image%20May%207%2C%202026%2C%2011_32_34%20PM.png"
+                    alt="vivaan farms"
+                    fill
+                    className="object-contain object-left"
+                  />
                 </div>
               </div>
               
