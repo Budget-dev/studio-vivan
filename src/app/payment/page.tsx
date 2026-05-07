@@ -9,9 +9,10 @@ import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
-import { ShieldCheck, Smartphone, CreditCard, Landmark, Banknote, ChevronLeft, Lock } from 'lucide-react';
+import { ShieldCheck, Lock, ChevronLeft } from 'lucide-react';
 import { useUser, useFirestore } from '@/firebase';
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/actions/payment-actions';
+import { createShipment } from '@/actions/shipping-actions';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 
@@ -22,6 +23,16 @@ export default function PaymentPage() {
   const { user } = useUser();
   const { cart, totalQty, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState<any>(null);
+
+  useEffect(() => {
+    const savedAddress = localStorage.getItem('vivaan_shipping');
+    if (savedAddress) {
+      setShippingAddress(JSON.parse(savedAddress));
+    } else {
+      router.push('/checkout');
+    }
+  }, [router]);
 
   const total = Math.max(0, subtotal - 200);
 
@@ -29,6 +40,12 @@ export default function PaymentPage() {
     if (!user) {
       toast({ variant: "destructive", title: "Authentication Required", description: "Please sign in to complete your purchase." });
       router.push('/login?returnTo=/payment');
+      return;
+    }
+
+    if (!shippingAddress) {
+      toast({ variant: "destructive", title: "Address Required", description: "Please provide a shipping address." });
+      router.push('/checkout');
       return;
     }
 
@@ -62,25 +79,46 @@ export default function PaymentPage() {
           );
 
           if (verificationRes.success) {
-            // 4. Save Order to Firestore
+            // 4. Create Shipping in NimbusPost
+            const shippingRes = await createShipment({
+              orderId: response.razorpay_order_id,
+              userEmail: user.email,
+              items: cart,
+              shippingAddress
+            });
+
+            // 5. Save Order to Firestore with Tracking
             const orderData = {
               userId: user.uid,
               userEmail: user.email,
               items: cart,
               totalAmount: total,
+              shippingAddress,
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
-              status: 'Pending',
+              status: 'Processing',
               paymentStatus: 'Paid',
               paymentMethod: 'Razorpay',
               orderDate: new Date().toISOString(),
               createdAt: serverTimestamp(),
+              shipmentId: shippingRes.success ? shippingRes.shipmentId : null,
+              trackingId: shippingRes.success ? shippingRes.trackingId : null,
+              courierName: shippingRes.success ? shippingRes.courierName : null,
             };
 
             await setDoc(doc(db, 'orders', response.razorpay_order_id), orderData);
             
-            toast({ title: "Payment Successful", description: "Your order has been placed." });
+            toast({ title: "Payment Successful", description: "Your order is being processed for shipping." });
+            
+            // Clear cart and local address
             clearCart();
+            localStorage.removeItem('vivaan_shipping');
+            
+            // Save tracking info for success page
+            if (shippingRes.success) {
+              localStorage.setItem('vivaan_last_tracking', shippingRes.trackingId);
+            }
+            
             router.push('/order-success');
           } else {
             toast({ variant: "destructive", title: "Verification Failed", description: "Could not verify your payment securely." });
@@ -88,8 +126,9 @@ export default function PaymentPage() {
           }
         },
         prefill: {
-          name: user.displayName || "",
+          name: user.displayName || shippingAddress.name,
           email: user.email || "",
+          contact: shippingAddress.phone || "",
         },
         theme: {
           color: "#1B5E3B",
@@ -119,13 +158,13 @@ export default function PaymentPage() {
       <main className="max-w-[1200px] mx-auto px-5 py-10 md:py-20 flex flex-col items-center">
         <div className="w-full max-w-2xl">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-primary font-bold text-sm mb-10 hover:gap-3 transition-all">
-            <ChevronLeft className="w-4 h-4" /> Back to Checkout
+            <ChevronLeft className="w-4 h-4" /> Back to Shipping Info
           </button>
 
           <div className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-primary/5">
             <div className="bg-primary p-10 text-white text-center relative overflow-hidden">
               <div className="absolute top-[-40px] right-[-40px] w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
-              <div className="text-[10px] font-black uppercase tracking-[4px] opacity-40 mb-4">Final Amount</div>
+              <div className="text-[10px] font-black uppercase tracking-[4px] opacity-40 mb-4">Total Payable</div>
               <div className="font-headline text-7xl font-extrabold leading-none">₹{total.toLocaleString('en-IN')}</div>
             </div>
 
@@ -138,8 +177,8 @@ export default function PaymentPage() {
                     <Lock className="w-8 h-8" />
                   </div>
                   <div>
-                    <div className="text-lg font-black text-foreground">Encrypted Transaction</div>
-                    <div className="text-xs text-muted-foreground font-medium">Your data is secured with 256-bit SSL encryption. We use Razorpay for processing payments.</div>
+                    <div className="text-lg font-black text-foreground">Encrypted Checkout</div>
+                    <div className="text-xs text-muted-foreground font-medium">Your data is secured with SSL. Shipping provided by NimbusPost.</div>
                   </div>
                 </div>
 
@@ -149,18 +188,18 @@ export default function PaymentPage() {
                     <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm text-secondary">
-                    <span className="font-bold">Purity Coins Applied</span>
-                    <span className="font-black">−₹200</span>
+                    <span className="font-bold">Shipping & Handling</span>
+                    <span className="font-black">FREE</span>
                   </div>
                   <div className="pt-4 border-t border-primary/5 flex justify-between items-center">
-                    <span className="text-base font-black uppercase">Payable Total</span>
+                    <span className="text-base font-black uppercase">Final Total</span>
                     <span className="text-2xl font-black text-primary">₹{total.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center justify-center gap-4 mb-10 text-primary font-bold text-[11px] uppercase tracking-widest bg-primary/5 py-4 rounded-2xl border border-primary/10">
-                <ShieldCheck className="w-5 h-5" /> RBI Approved Payment Gateway
+                <ShieldCheck className="w-5 h-5" /> Secured by Razorpay & NimbusPost
               </div>
 
               <Button 
@@ -168,7 +207,7 @@ export default function PaymentPage() {
                 disabled={loading}
                 className="w-full h-18 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-3"
               >
-                {loading ? '⏳ Initializing Secure Checkout...' : `Pay ₹${total.toLocaleString('en-IN')} Now →`}
+                {loading ? '⏳ Preparing Secure Checkout...' : `Pay ₹${total.toLocaleString('en-IN')} Now →`}
               </Button>
 
               <div className="mt-8 flex justify-center gap-6 opacity-30 grayscale contrast-125">
