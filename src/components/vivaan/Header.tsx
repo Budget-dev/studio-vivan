@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
         <div className="flex-1 flex justify-center md:justify-start h-full items-center">
           <Link href="/" className="flex items-center shrink-0 group relative">
-            {/* Desktop Logo - Fixed height to prevent dislocation */}
+            {/* Desktop Logo */}
             <div className="hidden md:block w-40 h-20 relative transition-transform duration-300 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
@@ -94,10 +94,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             
-            {/* Mobile Logo */}
+            {/* Mobile Logo - Updated to match reference */}
             <div className="md:hidden flex flex-col items-center">
-              <span className="font-headline text-3xl font-bold text-primary leading-none tracking-tight lowercase">vivaan</span>
-              <span className="text-[8px] font-black text-primary/40 uppercase tracking-[3px] -mt-0.5">farms</span>
+              <span className="font-headline text-3xl font-extrabold text-primary leading-none tracking-tight">vivaan</span>
+              <span className="text-[7px] font-black text-[#7A6848]/60 uppercase tracking-[4px] -mt-0.5">farms</span>
             </div>
           </Link>
         </div>
@@ -199,7 +199,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                   />
                 </div>
                 <div className="text-left">
-                  <div className="font-headline text-2xl font-bold tracking-tight lowercase">vivaan</div>
+                  <div className="font-headline text-2xl font-bold tracking-tight">vivaan</div>
                   <div className="text-[8px] font-black text-white/40 uppercase tracking-[3px]">farms</div>
                 </div>
               </div>
