@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -73,7 +74,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
   return (
     <div 
       onClick={handleNavigate}
-      className="bg-white rounded-[24px] md:rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full w-full mx-auto shadow-sm"
+      className="bg-white rounded-[24px] md:rounded-[32px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full w-full mx-auto shadow-sm transform-gpu translate-z-0"
     >
       {/* Top Section: Image Area */}
       <div className="relative aspect-[1/1] bg-[#F3F4F6]/50 p-3 md:p-4 flex items-center justify-center overflow-visible">
@@ -85,8 +86,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           </div>
         )}
 
-        {/* Top Badges - Optimized for iOS */}
-        <div className="absolute top-0 right-0 z-[30] pointer-events-none">
+        {/* Top Badges - Optimized for iOS Hardware Acceleration */}
+        <div className="absolute top-0 right-0 z-[30] pointer-events-none transform translate-z-0">
           {product.badges?.slice(0, 1).map((badge, i) => (
             <div key={i} className="bg-[#D4A017] text-white px-3 md:px-6 py-1.5 md:py-2.5 rounded-bl-[16px] md:rounded-bl-[28px] text-[8px] md:text-[11px] font-black uppercase tracking-widest shadow-md">
               {badge}

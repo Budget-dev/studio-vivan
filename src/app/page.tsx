@@ -193,7 +193,7 @@ export default function VivaanFarms() {
           <section className="py-10 md:py-20" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
               <div className="flex justify-center mb-10 md:mb-16 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max">
+                <div className="flex gap-2 md:gap-4 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm min-w-max overflow-hidden">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
@@ -391,4 +391,3 @@ export default function VivaanFarms() {
     </>
   );
 }
-
