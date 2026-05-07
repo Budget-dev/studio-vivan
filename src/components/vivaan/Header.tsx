@@ -94,10 +94,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             
-            {/* Mobile Logo - Updated to match reference */}
+            {/* Mobile Logo - Updated to exact reference style */}
             <div className="md:hidden flex flex-col items-center">
-              <span className="font-headline text-3xl font-extrabold text-primary leading-none tracking-tight">vivaan</span>
-              <span className="text-[7px] font-black text-[#7A6848]/60 uppercase tracking-[4px] -mt-0.5">farms</span>
+              <span className="font-headline text-3xl font-extrabold text-primary leading-[0.8] tracking-tight">vivaan</span>
+              <span className="text-[7px] font-bold text-[#7A6848]/50 font-body uppercase tracking-[5px] -mt-1 pl-1">farms</span>
             </div>
           </Link>
         </div>
@@ -189,18 +189,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <div className="p-8 bg-primary text-white relative overflow-hidden">
               <div className="absolute top-[-30px] right-[-30px] w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="flex items-center gap-3 mb-6 relative z-10">
-                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                  <Image 
-                    src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
-                    alt="Vivaan Farms"
-                    width={40}
-                    height={40}
-                    className="brightness-0 invert object-contain"
-                  />
-                </div>
-                <div className="text-left">
-                  <div className="font-headline text-2xl font-bold tracking-tight">vivaan</div>
-                  <div className="text-[8px] font-black text-white/40 uppercase tracking-[3px]">farms</div>
+                {/* Mobile Menu Brand Signature */}
+                <div className="flex flex-col items-start">
+                  <span className="font-headline text-4xl font-extrabold text-white leading-[0.8] tracking-tight">vivaan</span>
+                  <span className="text-[8px] font-bold text-white/40 font-body uppercase tracking-[5px] -mt-1 pl-1">farms</span>
                 </div>
               </div>
               
