@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -10,11 +11,12 @@ import { BottomNav } from '@/components/vivaan/BottomNav';
 import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, Lock, ChevronLeft } from 'lucide-react';
-import { useUser, useFirestore } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { createRazorpayOrder, verifyRazorpayPayment } from '@/actions/payment-actions';
 import { createShipment } from '@/actions/shipping-actions';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { UserProfile } from '@/types';
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -24,17 +26,21 @@ export default function PaymentPage() {
   const { cart, totalQty, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [shippingAddress, setShippingAddress] = useState<any>(null);
+  const [checkoutState, setCheckoutState] = useState<any>(null);
 
   useEffect(() => {
     const savedAddress = localStorage.getItem('vivaan_shipping');
-    if (savedAddress) {
+    const savedState = localStorage.getItem('vivaan_checkout_state');
+    
+    if (savedAddress && savedState) {
       setShippingAddress(JSON.parse(savedAddress));
+      setCheckoutState(JSON.parse(savedState));
     } else {
       router.push('/checkout');
     }
   }, [router]);
 
-  const total = Math.max(0, subtotal - 200);
+  const total = checkoutState?.finalTotal || subtotal;
 
   const handleRazorpayPayment = async () => {
     if (!user) {
@@ -43,25 +49,13 @@ export default function PaymentPage() {
       return;
     }
 
-    if (!shippingAddress) {
-      toast({ variant: "destructive", title: "Address Required", description: "Please provide a shipping address." });
-      router.push('/checkout');
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // 1. Create Order on Server
       const res = await createRazorpayOrder(total);
-      
-      if (!res.success || !res.order) {
-        throw new Error(res.error || 'Order creation failed');
-      }
-
+      if (!res.success || !res.order) throw new Error(res.error || 'Order creation failed');
       const order = res.order;
 
-      // 2. Open Razorpay Checkout
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
@@ -71,7 +65,6 @@ export default function PaymentPage() {
         image: "https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png",
         order_id: order.id,
         handler: async function (response: any) {
-          // 3. Verify Payment on Server
           const verificationRes = await verifyRazorpayPayment(
             response.razorpay_order_id,
             response.razorpay_payment_id,
@@ -79,7 +72,7 @@ export default function PaymentPage() {
           );
 
           if (verificationRes.success) {
-            // 4. Create Shipping in NimbusPost
+            // 1. Create Shipping
             const shippingRes = await createShipment({
               orderId: response.razorpay_order_id,
               userEmail: user.email,
@@ -87,7 +80,7 @@ export default function PaymentPage() {
               shippingAddress
             });
 
-            // 5. Save Order to Firestore with Tracking
+            // 2. Save Order to Firestore
             const orderData = {
               userId: user.uid,
               userEmail: user.email,
@@ -104,24 +97,32 @@ export default function PaymentPage() {
               shipmentId: shippingRes.success ? shippingRes.shipmentId : null,
               trackingId: shippingRes.success ? shippingRes.trackingId : null,
               courierName: shippingRes.success ? shippingRes.courierName : null,
+              coinsEarned: checkoutState.earnedCoins || 0,
+              coinsRedeemed: checkoutState.coinsRedeemed || 0,
+              couponApplied: checkoutState.appliedCoupon || null
             };
 
             await setDoc(doc(db, 'orders', response.razorpay_order_id), orderData);
             
-            toast({ title: "Payment Successful", description: "Your order is being processed for shipping." });
+            // 3. Update User Coins Ledger
+            const userProfileRef = doc(db, 'userProfiles', user.uid);
+            await setDoc(userProfileRef, {
+              purityCoins: increment((checkoutState.earnedCoins || 0) - (checkoutState.coinsRedeemed || 0)),
+              updatedAt: new Date().toISOString()
+            }, { merge: true });
+
+            toast({ title: "Payment Successful", description: "Coins credited and order processed!" });
             
-            // Clear cart and local address
             clearCart();
             localStorage.removeItem('vivaan_shipping');
+            localStorage.removeItem('vivaan_checkout_state');
             
-            // Save tracking info for success page
             if (shippingRes.success) {
               localStorage.setItem('vivaan_last_tracking', shippingRes.trackingId);
             }
             
             router.push('/order-success');
           } else {
-            toast({ variant: "destructive", title: "Verification Failed", description: "Could not verify your payment securely." });
             router.push('/order-failed');
           }
         },
@@ -130,21 +131,15 @@ export default function PaymentPage() {
           email: user.email || "",
           contact: shippingAddress.phone || "",
         },
-        theme: {
-          color: "#1B5E3B",
-        },
-        modal: {
-          ondismiss: function() {
-            setLoading(false);
-          }
-        }
+        theme: { color: "#1B5E3B" },
+        modal: { ondismiss: () => setLoading(false) }
       };
 
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
     } catch (error: any) {
       console.error('Payment Error:', error);
-      toast({ variant: "destructive", title: "Payment Error", description: error.message || "An unexpected error occurred." });
+      toast({ variant: "destructive", title: "Payment Error", description: error.message });
       setLoading(false);
     }
   };
@@ -158,7 +153,7 @@ export default function PaymentPage() {
       <main className="max-w-[1200px] mx-auto px-5 py-10 md:py-20 flex flex-col items-center">
         <div className="w-full max-w-2xl">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-primary font-bold text-sm mb-10 hover:gap-3 transition-all">
-            <ChevronLeft className="w-4 h-4" /> Back to Shipping Info
+            <ChevronLeft className="w-4 h-4" /> Back to Checkout
           </button>
 
           <div className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-primary/5">
@@ -172,25 +167,23 @@ export default function PaymentPage() {
               <h2 className="text-[11px] font-black text-muted-foreground uppercase tracking-[3px] mb-8">Secure Payment Gateway</h2>
               
               <div className="bg-[#FDFBFA] border-2 border-primary/10 rounded-[24px] p-8 mb-10">
-                <div className="flex items-center gap-6 mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <Lock className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-black text-foreground">Encrypted Checkout</div>
-                    <div className="text-xs text-muted-foreground font-medium">Your data is secured with SSL. Shipping provided by NimbusPost.</div>
-                  </div>
-                </div>
-
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground font-medium">Items ({totalQty})</span>
+                    <span className="text-muted-foreground font-medium">Items Total</span>
                     <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-secondary">
-                    <span className="font-bold">Shipping & Handling</span>
-                    <span className="font-black">FREE</span>
-                  </div>
+                  {checkoutState?.coinsRedeemed > 0 && (
+                    <div className="flex justify-between text-sm text-secondary">
+                      <span className="font-bold italic">Purity Coin Discount</span>
+                      <span className="font-black">−₹{checkoutState.coinsRedeemed}</span>
+                    </div>
+                  )}
+                  {checkoutState?.appliedCoupon && (
+                    <div className="flex justify-between text-sm text-primary">
+                      <span className="font-bold italic">Coupon Applied ({checkoutState.appliedCoupon})</span>
+                      <span className="font-black">Applied</span>
+                    </div>
+                  )}
                   <div className="pt-4 border-t border-primary/5 flex justify-between items-center">
                     <span className="text-base font-black uppercase">Final Total</span>
                     <span className="text-2xl font-black text-primary">₹{total.toLocaleString('en-IN')}</span>
@@ -205,16 +198,10 @@ export default function PaymentPage() {
               <Button 
                 onClick={handleRazorpayPayment}
                 disabled={loading}
-                className="w-full h-18 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-3"
+                className="w-full h-18 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[3px] shadow-2xl transition-all hover:scale-[1.02] flex items-center justify-center gap-3 text-base"
               >
                 {loading ? '⏳ Preparing Secure Checkout...' : `Pay ₹${total.toLocaleString('en-IN')} Now →`}
               </Button>
-
-              <div className="mt-8 flex justify-center gap-6 opacity-30 grayscale contrast-125">
-                <img src="https://vivanfa.sirv.com/pay1.png" alt="Visa" className="h-4" />
-                <img src="https://vivanfa.sirv.com/pay2.png" alt="Master" className="h-4" />
-                <img src="https://vivanfa.sirv.com/pay3.png" alt="UPI" className="h-4" />
-              </div>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@
         "lastName": { "type": "string" },
         "email": { "type": "string", "format": "email" },
         "phoneNumber": { "type": "string" },
-        "purityCoins": { "type": "number" }
+        "purityCoins": { "type": "number", "description": "Current loyalty balance." }
       },
       "required": ["id", "email", "purityCoins"]
     },
@@ -25,8 +25,26 @@
         "basePrice": { "type": "number" },
         "categoryId": { "type": "string" },
         "isLive": { "type": "boolean" },
-        "imageUrls": { "type": "array", "items": { "type": "string" } }
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "productCoupon": { "type": "string", "description": "Optional code for this product only." },
+        "rewardCoins": { "type": "number", "description": "Coins earned on purchase." }
       }
+    },
+    "UniversalCoupon": {
+      "title": "UniversalCoupon",
+      "description": "Global discount codes.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["flat", "percentage"] },
+        "value": { "type": "number" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "usageLimit": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "type", "value", "isActive"]
     }
   },
   "auth": {
@@ -44,6 +62,10 @@
     "/products/{productId}": {
       "schema": { "$ref": "#/entities/Product" },
       "description": "Farm inventory."
+    },
+    "/universalCoupons/{couponId}": {
+      "schema": { "$ref": "#/entities/UniversalCoupon" },
+      "description": "Global store coupons."
     },
     "/orders/{orderId}": {
       "schema": "object",

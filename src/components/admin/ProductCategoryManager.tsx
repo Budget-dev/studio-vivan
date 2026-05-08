@@ -21,8 +21,8 @@ import {
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
-import { addDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
-import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star } from 'lucide-react';
+import { addDocumentNonBlocking, deleteDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { Search, ExternalLink, Pen, Trash2, Camera, X, Zap, Star, Ticket, Coins } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProductCategoryManagerProps {
@@ -47,6 +47,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   
   const [searchTerm, setSearchValue] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   
   // Form State
   const [name, setName] = useState('');
@@ -60,6 +61,10 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
   const [statusBadge, setStatusBadge] = useState('Selling Fast');
   const [topBadge, setTopBadge] = useState('New Launch');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  
+  // Enhancement Fields
+  const [productCoupon, setProductCoupon] = useState('');
+  const [rewardCoins, setRewardCoins] = useState('');
 
   const filteredProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -75,7 +80,6 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
-        // Limit file size to prevent 1MB Firestore limit issues with base64
         if (file.size > 500000) {
           toast({ variant: "destructive", title: "Image too large", description: "Please use images under 500KB." });
           return;
@@ -89,8 +93,28 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     }
   };
 
-  const removeImage = (index: number) => {
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  const resetForm = () => {
+    setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
+    setProductCoupon(''); setRewardCoins(''); setEditingId(null); setRating('4.9'); setReviews('120');
+    setSoldLabel('1.5k+'); setStatusBadge('Selling Fast'); setTopBadge('New Launch');
+  };
+
+  const handleEdit = (p: any) => {
+    setEditingId(p.id);
+    setName(p.name);
+    setPrice(String(p.basePrice));
+    setMrpPrice(String(p.mrpPrice));
+    setStock(String(p.stockQuantity));
+    setDesc(p.description);
+    setRating(String(p.rating));
+    setReviews(String(p.reviewCount));
+    setSoldLabel(p.soldCountLabel);
+    setStatusBadge(p.statusBadge || '');
+    setTopBadge(p.badges?.[0] || '');
+    setUploadedImages(p.imageUrls || []);
+    setProductCoupon(p.productCoupon || '');
+    setRewardCoins(String(p.rewardCoins || ''));
+    setIsAddOpen(true);
   };
 
   const handleAdd = () => {
@@ -101,7 +125,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
 
     const catId = category.toLowerCase();
     
-    const newProduct = {
+    const productData = {
       name: name.trim(),
       basePrice: Number(price) || 0,
       mrpPrice: Number(mrpPrice) || Number(price) || 0,
@@ -115,22 +139,24 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
       categoryId: catId,
       imageUrls: uploadedImages.length > 0 ? uploadedImages : ['https://picsum.photos/seed/vivaan/600/600'],
       isLive: true, 
-      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       volumeValue: catId === 'ghee' ? 500 : (catId === 'honey' ? 250 : 1),
       volumeUnit: catId === 'ghee' ? 'ml' : (catId === 'honey' ? 'g' : 'unit'),
-      vars: [{ s: 'Standard', p: Number(price) || 0, on: true }]
+      vars: [{ s: 'Standard', p: Number(price) || 0, on: true }],
+      productCoupon: productCoupon.toUpperCase().trim(),
+      rewardCoins: Number(rewardCoins) || 0
     };
 
-    addDocumentNonBlocking(collection(db, 'products'), newProduct);
-    
-    toast({ 
-      title: "Product Published", 
-      description: `${name} is now live in the ${category} collection.` 
-    });
+    if (editingId) {
+      setDocumentNonBlocking(doc(db, 'products', editingId), productData, { merge: true });
+      toast({ title: "Updated", description: `${name} has been updated.` });
+    } else {
+      addDocumentNonBlocking(collection(db, 'products'), { ...productData, createdAt: new Date().toISOString() });
+      toast({ title: "Product Published", description: `${name} is now live.` });
+    }
     
     setIsAddOpen(false);
-    setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
+    resetForm();
   };
 
   const handleDelete = (id: string) => {
@@ -162,19 +188,19 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
               Storefront <ExternalLink className="w-3 h-3" />
             </Button>
           </Link>
-          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <Dialog open={isAddOpen} onOpenChange={(val) => { if(!val) resetForm(); setIsAddOpen(val); }}>
             <DialogTrigger asChild>
               <button className="h-12 px-8 bg-[#1B5E3B] text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl hover:bg-secondary transition-all flex items-center gap-2">
                 <i className="fa-solid fa-plus"></i> Add {category}
               </button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl rounded-[40px] p-10 border-none shadow-2xl font-body overflow-y-auto max-h-[90vh]">
+            <DialogContent className="max-w-4xl rounded-[40px] p-10 border-none shadow-2xl font-body overflow-y-auto max-h-[90vh]">
               <DialogHeader className="mb-8">
-                <DialogTitle className="font-headline text-3xl font-extrabold text-primary">New {category} Listing</DialogTitle>
-                <p className="text-xs text-[#7A6848] font-medium">Add artisanal products to your farm catalog.</p>
+                <DialogTitle className="font-headline text-3xl font-extrabold text-primary">{editingId ? 'Edit' : 'New'} {category} Listing</DialogTitle>
+                <p className="text-xs text-[#7A6848] font-medium">Configure item details, coupons, and rewards.</p>
               </DialogHeader>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Name</label>
@@ -207,6 +233,27 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                     <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product Story</label>
                     <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="rounded-xl bg-[#F9F6EF] border-transparent px-5 py-4 font-bold min-h-[100px]" placeholder="Explain why this product is pure..." />
                   </div>
+
+                  <div className="bg-primary/5 p-6 rounded-3xl border border-primary/10 space-y-5">
+                    <div className="flex items-center gap-2 text-primary">
+                      <Zap className="w-4 h-4" />
+                      <h4 className="text-[11px] font-black uppercase tracking-widest">Incentives & Coupons</h4>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase text-[#7A6848] flex items-center gap-1.5">
+                          <Ticket className="w-3 h-3" /> Exclusive Coupon
+                        </label>
+                        <Input value={productCoupon} onChange={(e) => setProductCoupon(e.target.value)} className="h-11 rounded-xl bg-white border-[#DDD0B5] font-bold text-xs" placeholder="e.g. GHEE100" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black uppercase text-[#7A6848] flex items-center gap-1.5">
+                          <Coins className="w-3 h-3" /> Reward Purity Coins
+                        </label>
+                        <Input type="number" value={rewardCoins} onChange={(e) => setRewardCoins(e.target.value)} className="h-11 rounded-xl bg-white border-[#DDD0B5] font-bold text-xs" placeholder="50" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-6">
@@ -225,27 +272,26 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                       </button>
                       <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" className="hidden" />
                     </div>
-                    <p className="text-[8px] text-[#7A6848] font-medium mt-1">Keep images under 500KB for best performance.</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Zap className="w-2.5 h-2.5" /> High Lite</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">High Lite Badge</label>
                       <Input value={statusBadge} onChange={(e) => setStatusBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="Selling Fast" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] flex items-center gap-1"><Star className="w-2.5 h-2.5" /> Special</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Special Badge</label>
                       <Input value={topBadge} onChange={(e) => setTopBadge(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="Pure Harvest" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Units Sold</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Units Sold Label</label>
                       <Input value={soldLabel} onChange={(e) => setSoldLabel(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="1.5k+" />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Reviews</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Review Count</label>
                       <Input type="number" value={reviews} onChange={(e) => setReviews(e.target.value)} className="h-12 rounded-xl bg-[#F9F6EF] border-transparent px-5 font-bold" placeholder="278" />
                     </div>
                   </div>
@@ -253,8 +299,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
               </div>
 
               <div className="flex gap-4 mt-10">
-                <Button variant="outline" onClick={() => setIsAddOpen(false)} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
-                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">Publish Product</Button>
+                <Button variant="outline" onClick={() => { setIsAddOpen(false); resetForm(); }} className="flex-1 h-14 rounded-full border-[#DDD0B5] font-black uppercase tracking-widest text-[#7A6848]">Discard</Button>
+                <Button onClick={handleAdd} className="flex-1 h-14 bg-[#1B5E3B] hover:bg-secondary rounded-full font-black uppercase tracking-widest shadow-xl text-white">{editingId ? 'Update' : 'Publish'} Listing</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -281,8 +327,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
           <TableHeader className="bg-[#FDFBFA]">
             <TableRow className="border-b-[#F9F6EF]">
               <TableHead className="py-6 px-8 text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Product</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Details</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Price (₹)</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Coins & Coupons</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stats</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848]">Stock</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest text-[#7A6848] text-right px-8">Action</TableHead>
@@ -292,22 +338,17 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
             {filteredProducts.length > 0 ? filteredProducts.map((p) => (
               <TableRow key={p.id} className="border-b-[#F9F6EF] hover:bg-[#FDFBFA] transition-colors group">
                 <TableCell className="py-4 px-8">
-                  <div className="w-14 h-14 rounded-2xl bg-[#F9F6EF] overflow-hidden relative border border-[#DDD0B5]/30">
-                    <Image 
-                      src={p.imageUrls?.[0] || 'https://picsum.photos/seed/vivaan/100/100'} 
-                      alt={p.name} 
-                      fill 
-                      className="object-cover"
-                    />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
-                    <div className="flex gap-1">
-                      {p.badges?.map((b: string, i: number) => (
-                        <span key={i} className="px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[8px] font-black uppercase">{b}</span>
-                      ))}
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-[#F9F6EF] overflow-hidden relative border border-[#DDD0B5]/30">
+                      <Image src={p.imageUrls?.[0] || 'https://picsum.photos/seed/vivaan/100/100'} alt={p.name} fill className="object-cover" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-[#100C06]">{p.name}</div>
+                      <div className="flex gap-1 mt-1">
+                        {p.badges?.map((b: string, i: number) => (
+                          <span key={i} className="px-1.5 py-0.5 rounded bg-primary/5 text-primary text-[8px] font-black uppercase">{b}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
@@ -316,6 +357,20 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                     <span className="text-xs text-[#7A6848] line-through opacity-50">₹{p.mrpPrice}</span>
                     <span className="text-sm font-black text-foreground">₹{p.basePrice?.toLocaleString('en-IN')}</span>
                   </div>
+                </TableCell>
+                <TableCell>
+                   <div className="space-y-1.5">
+                     {p.rewardCoins ? (
+                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-[#8B6E0F] border border-yellow-100 rounded-lg text-[9px] font-black">
+                         <Coins className="w-2.5 h-2.5" /> +{p.rewardCoins} COINS
+                       </div>
+                     ) : <span className="text-[9px] text-muted-foreground italic">No Rewards</span>}
+                     {p.productCoupon && (
+                       <div className="block text-[9px] font-bold text-primary uppercase tracking-tight">
+                         🏷️ {p.productCoupon}
+                       </div>
+                     )}
+                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -330,7 +385,7 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                   )}>{p.stockQuantity || 0}</span>
                 </TableCell>
                 <TableCell className="text-right px-8 space-x-2">
-                  <button className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all"><Pen className="w-4 h-4 mx-auto" /></button>
+                  <button onClick={() => handleEdit(p)} className="w-9 h-9 rounded-xl text-[#7A6848] hover:bg-primary/5 transition-all"><Pen className="w-4 h-4 mx-auto" /></button>
                   <button onClick={() => handleDelete(p.id)} className="w-9 h-9 rounded-xl text-destructive/40 hover:text-destructive hover:bg-destructive/5 transition-all"><Trash2 className="w-4 h-4 mx-auto" /></button>
                 </TableCell>
               </TableRow>
