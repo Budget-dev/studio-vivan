@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -13,7 +12,7 @@ const trustItems = [
 
 export const TrustBar: React.FC = () => {
   return (
-    <div className="bg-white border-b border-border py-4 md:py-8 overflow-hidden">
+    <div className="bg-white border-b border-border py-3 md:py-8 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-2 md:px-10">
         <div className="grid grid-cols-4 gap-1 md:flex md:items-center md:justify-between md:gap-6">
           {trustItems.map((item, i) => (

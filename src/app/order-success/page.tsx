@@ -1,22 +1,33 @@
-
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/vivaan/Header';
 import { Footer } from '@/components/vivaan/Footer';
 import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Truck, ArrowRight, Coins } from 'lucide-react';
+import { CheckCircle2, Truck, Copy, Check, Coins } from 'lucide-react';
 
 export default function OrderSuccessPage() {
   const router = useRouter();
   const { clearCart } = useCart();
+  const [trackingId, setTrackingId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // We clear the cart after successful navigation
-    // but keep it for one render if needed. Real apps would use the DB order ID.
+    const lastTracking = localStorage.getItem('vivaan_last_tracking');
+    if (lastTracking) {
+      setTrackingId(lastTracking);
+    }
   }, []);
+
+  const copyToClipboard = () => {
+    if (trackingId) {
+      navigator.clipboard.writeText(trackingId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   const handleFinish = () => {
     clearCart();
@@ -32,10 +43,29 @@ export default function OrderSuccessPage() {
           <CheckCircle2 className="w-16 h-16" />
         </div>
 
-        <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-primary mb-6">Order Placed Successfully!</h1>
+        <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-primary mb-6">Order Placed!</h1>
         <p className="text-xl text-[#7A6848] font-medium max-w-2xl mb-12">
-          Thanks for ordering! You can check your order status on the <strong className="text-primary cursor-pointer hover:underline" onClick={handleFinish}>‘Track Your Package’</strong> page.
+          Your farm-fresh goodness is being packed. You can track your delivery details below.
         </p>
+
+        {trackingId && (
+          <div className="bg-white border-2 border-primary/10 rounded-[32px] p-8 mb-12 w-full max-w-lg shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4">
+              <Truck className="w-12 h-12 text-primary/10 rotate-[-15deg]" />
+            </div>
+            <div className="text-[10px] font-black text-primary uppercase tracking-[3px] mb-4">NimbusPost Tracking ID</div>
+            <div className="flex items-center justify-center gap-4">
+              <div className="text-3xl font-headline font-black text-primary">{trackingId}</div>
+              <button 
+                onClick={copyToClipboard}
+                className="w-10 h-10 rounded-full bg-[#F9F6EF] flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all"
+              >
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <p className="text-[11px] text-[#7A6848] mt-4 font-bold uppercase tracking-wider">Tracking link will be active in 24 hours</p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mb-16">
           <div className="bg-white p-8 rounded-[32px] border border-primary/5 shadow-xl">

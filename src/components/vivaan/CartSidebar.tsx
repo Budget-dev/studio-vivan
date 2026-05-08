@@ -87,11 +87,28 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           </div>
 
           {cart.length === 0 ? (
-            <div className="text-center py-20 flex flex-col items-center">
-              <div className="w-20 h-20 bg-[#FBF3DC] rounded-full flex items-center justify-center text-3xl mb-4">🛒</div>
-              <h3 className="font-headline text-2xl font-bold text-foreground mb-2">Cart is Empty</h3>
-              <p className="text-sm text-[#7A6848] max-w-[240px] leading-relaxed">Add some pure farm goods from Vivaan Farms to get started!</p>
-              <Button onClick={onClose} className="mt-8 bg-primary text-white px-8 rounded-full">Explore Products →</Button>
+            <div className="text-center py-16 md:py-24 flex flex-col items-center justify-center">
+              <div className="w-36 h-32 flex items-center justify-center mb-8 relative">
+                <div className="absolute inset-0 bg-[#FBF6E5] rounded-full scale-[0.85]"></div>
+                <div className="relative w-24 h-24">
+                  <Image 
+                    src="https://vivanfa.sirv.com/ChatGPT%20Image%20May%208%2C%202026%2C%2012_02_33%20AM.png" 
+                    alt="Empty Cart" 
+                    fill 
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+              <h3 className="font-headline text-4xl font-extrabold text-[#100C06] mb-4">Cart is Empty</h3>
+              <p className="text-sm text-[#7A6848] max-w-[280px] leading-relaxed font-medium">
+                Add some pure farm goods from Vivaan Farms to get started!
+              </p>
+              <Button 
+                onClick={onClose} 
+                className="mt-12 bg-[#0D3520] hover:bg-[#1B5E3B] text-white px-12 h-14 rounded-full font-black text-xs uppercase tracking-[2.5px] transition-all shadow-xl active:scale-95 border-none"
+              >
+                EXPLORE PRODUCTS →
+              </Button>
             </div>
           ) : (
             <div className="space-y-3">
