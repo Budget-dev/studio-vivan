@@ -158,7 +158,7 @@ export default function ProductDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 mb-20">
           {/* Gallery Area */}
           <div className="space-y-6">
-            <div className="bg-[#F8F6F0] rounded-[32px] md:rounded-[48px] p-8 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden group border border-[#EEE0BC]/30">
+            <div className="bg-[#F8F6F0] rounded-[32px] md:rounded-[48px] p-0 aspect-square flex items-center justify-center relative overflow-hidden group border border-[#EEE0BC]/30">
               <div className="relative w-full h-full flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
                 {product.imageUrls && product.imageUrls.length > 0 ? (
                   <div className="relative w-full h-full">
@@ -166,7 +166,7 @@ export default function ProductDetailsPage() {
                       src={product.imageUrls[0]} 
                       alt={product.name} 
                       fill 
-                      className="object-contain drop-shadow-2xl"
+                      className="object-cover drop-shadow-2xl"
                       priority
                     />
                   </div>

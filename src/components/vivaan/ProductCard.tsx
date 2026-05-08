@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -30,13 +29,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
   const getIcon = () => {
     if (product.imageUrls && product.imageUrls.length > 0) {
       return (
-        <div className="relative w-full aspect-square transition-transform duration-700 group-hover:scale-105">
+        <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-105">
           <Image 
             src={product.imageUrls[0]} 
             alt={product.name} 
             fill 
             className={cn(
-              "object-contain transition-opacity duration-500",
+              "object-cover transition-opacity duration-500",
               product.imageUrls.length > 1 ? "group-hover:opacity-0" : "opacity-100"
             )}
             sizes="(max-width: 768px) 150px, 220px"
@@ -47,7 +46,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
               src={product.imageUrls[1]} 
               alt={`${product.name} alternate`} 
               fill 
-              className="object-contain absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              className="object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               sizes="(max-width: 768px) 150px, 220px"
             />
           )}
@@ -77,7 +76,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
       className="bg-white rounded-[20px] md:rounded-[28px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full w-full mx-auto shadow-sm transform-gpu translate-z-0"
     >
       {/* Top Section: Image Area */}
-      <div className="relative aspect-[1/1] bg-[#F9FAFB] p-2 md:p-3 flex items-center justify-center overflow-visible">
+      <div className="relative aspect-[1/1] bg-[#F9FAFB] p-0 flex items-center justify-center overflow-hidden">
         {/* Discount Tag - Smaller & Cleaner */}
         {discount > 0 && (
           <div className="absolute top-0 left-2 md:left-4 z-[30] bg-primary text-white px-1.5 md:px-2 py-2 md:py-3.5 rounded-b-full flex flex-col items-center justify-center shadow-lg min-w-[28px] md:min-w-[36px]">
@@ -96,12 +95,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
         </div>
 
         {/* Product Visual */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center p-1 md:p-2">
+        <div className="relative z-10 w-full h-full">
           {getIcon()}
         </div>
 
         {/* Action Button - Scaled down */}
-        <div className="absolute right-2 md:right-4 bottom-0 translate-y-1/2 z-[40]">
+        <div className="absolute right-2 md:right-4 bottom-2 z-[40]">
           <button 
             onClick={(e) => { e.stopPropagation(); onAdd(product); }}
             className={cn(
