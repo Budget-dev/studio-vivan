@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -191,20 +192,21 @@ export default function VivaanFarms() {
 
           <section className="py-4 md:py-16" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              <div className="flex justify-center mb-4 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="flex gap-1.5 md:gap-3 items-center bg-white p-1 md:p-1.5 rounded-full border border-[#DDD0B5]/50 shadow-sm w-fit max-w-full overflow-hidden transform-gpu translate-z-0">
+              {/* Ultra-Compact Category Bar */}
+              <div className="flex justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
+                <div className="flex gap-1 md:gap-3 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/40 shadow-sm w-fit max-w-full transform-gpu translate-z-0">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1 md:gap-2 px-3.5 md:px-7 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1 md:gap-2 px-3 md:px-7 py-1.5 md:py-3 rounded-full text-[9px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
                           ? "bg-primary text-white shadow-lg scale-105" 
                           : "text-[#7A6848] hover:bg-primary/5"
                       )}
                     >
-                      <span className="text-sm md:text-lg">{cat.ico}</span>
+                      <span className="text-[10px] md:text-lg">{cat.ico}</span>
                       {cat.label}
                     </button>
                   ))}
@@ -242,9 +244,9 @@ export default function VivaanFarms() {
                     <div className="mt-8 md:mt-16 flex justify-center">
                       <button 
                         onClick={() => handleCategoryFilter('all')}
-                        className="h-12 md:h-16 px-8 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl flex items-center gap-3 group active:scale-95 text-xs md:text-base"
+                        className="h-10 md:h-16 px-6 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl flex items-center gap-2 group active:scale-95 text-[9px] md:text-base"
                       >
-                        See All Products <Sparkles className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
+                        See All Products <Sparkles className="w-3.5 h-3.5 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
                       </button>
                     </div>
                   )}
