@@ -128,11 +128,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mt-auto gap-0.5">
-          <div className="flex items-center gap-1.5 md:gap-2">
-            <span className="text-lg md:text-xl font-black text-[#100C06] leading-none">₹{price.toLocaleString('en-IN')}</span>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mt-auto gap-1">
+          <div className="flex items-baseline gap-1 md:gap-1.5">
+            <span className="font-headline text-2xl md:text-3xl font-extrabold text-[#100C06] leading-none flex items-baseline">
+              <span className="text-sm md:text-lg mr-0.5 font-sans font-normal opacity-80">₹</span>
+              {price.toLocaleString('en-IN')}
+            </span>
             {mrpPrice > price && (
-              <span className="text-[9px] md:text-[11px] text-[#7A6848] line-through font-bold opacity-25">₹{mrpPrice.toLocaleString('en-IN')}</span>
+              <span className="text-[10px] md:text-xs text-[#7A6848] line-through font-medium opacity-30 italic">₹{mrpPrice.toLocaleString('en-IN')}</span>
             )}
           </div>
           
