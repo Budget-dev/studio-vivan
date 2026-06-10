@@ -5,7 +5,7 @@ import { Truck, ShieldCheck, Heart, Star } from 'lucide-react';
 
 const trustItems = [
   { ico: <Truck className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: 'Free Delivery', s: '₹999+' },
-  { ico: <ShieldCheck className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: '30-Day Returns', s: 'Easy' },
+  { ico: <ShieldCheck className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: '7-Day Returns', s: 'Easy' },
   { ico: <Heart className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: 'Farm Direct', s: 'Pure' },
   { ico: <Star className="w-4 h-4 md:w-6 md:h-6 text-secondary" />, t: '4.9 Rated', s: 'Verified' },
 ];

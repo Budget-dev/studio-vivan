@@ -279,7 +279,7 @@ export default function ProductDetailsPage() {
                  {[
                    { i: <Truck className="w-5 h-5" />, l: 'Free Shipping' },
                    { i: <MessageSquare className="w-5 h-5" />, l: '24/7 Support' },
-                   { i: <History className="w-5 h-5" />, l: '30 Day Return' },
+                   { i: <History className="w-5 h-5" />, l: '7 Day Return' },
                    { i: <ShieldCheck className="w-5 h-5" />, l: 'Lab Certified' },
                  ].map((item, i) => (
                    <div key={i} className="text-center">

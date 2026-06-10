@@ -171,7 +171,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
           <div className="grid grid-cols-4 gap-2 mb-8">
             {[
               { i: <Truck className="w-5 h-5 mx-auto mb-1" />, l: 'Free Delivery' },
-              { i: <RefreshCw className="w-5 h-5 mx-auto mb-1" />, l: '30-Day Return' },
+              { i: <RefreshCw className="w-5 h-5 mx-auto mb-1" />, l: '7-Day Return' },
               { i: <FlaskConical className="w-5 h-5 mx-auto mb-1" />, l: 'Lab Tested' },
               { i: <Home className="w-5 h-5 mx-auto mb-1" />, l: 'Farm Direct' },
             ].map((item, i) => (
