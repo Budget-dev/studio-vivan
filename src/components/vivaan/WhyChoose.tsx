@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { TreeDeciduous, ClipboardCheck, Tractor, UtensilsCrossed } from 'lucide-react';
+import { TreeDeciduous, ShieldCheck, Home, UtensilsCrossed } from 'lucide-react';
 
 const pillars = [
   {
@@ -16,18 +16,18 @@ const pillars = [
         <path d="M24 16V8M40 16V8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
       </svg>
     ),
-    title: "Traditional Processing",
-    desc: "Minimally processed using time-tested methods, made better."
+    title: "Bilona Method",
+    desc: "Ancient Vedic process that preserves vital nutrients and authentic aroma."
   },
   {
-    icon: <ClipboardCheck className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
-    title: "70+ Quality Tests",
-    desc: "Everything goes through rigorous lab tests for your safety."
+    icon: <ShieldCheck className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
+    title: "Pure & Natural",
+    desc: "100% free from preservatives, artificial colors or chemical additives."
   },
   {
-    icon: <Tractor className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
-    title: "Empowering Farmers",
-    desc: "5000+ farmer families are supported with every purchase."
+    icon: <Home className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
+    title: "Direct from Farm",
+    desc: "100% traceable, single-origin goodness from our Gujarat farm to you."
   }
 ];
 
