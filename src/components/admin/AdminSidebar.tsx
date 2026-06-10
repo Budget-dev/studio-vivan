@@ -13,6 +13,7 @@ const MENU_ITEMS = [
   { id: 'ghee', label: 'A2 Ghee', icon: 'fa-cow', href: '/admin/products/ghee' },
   { id: 'sweets', label: 'Sweets', icon: 'fa-gift', href: '/admin/products/sweets' },
   { id: 'honey', label: 'Honey', icon: 'fa-jar', href: '/admin/products/honey' },
+  { id: 'combos', label: 'Combos', icon: 'fa-layer-group', href: '/admin/combos' },
   { id: 'coupons', label: 'Coupons', icon: 'fa-ticket', href: '/admin/coupons' },
   { id: 'orders', label: 'Orders', icon: 'fa-cart-shopping', href: '/admin/orders' },
 ];

@@ -32,6 +32,22 @@ export interface Product {
   imageUrls?: string[];
 }
 
+export interface Combo {
+  id: string;
+  title: string;
+  subtitle: string;
+  offerText: string;
+  backgroundImage: string;
+  buttonText: string;
+  description: string;
+  price: number;
+  mrpPrice: number;
+  isActive: boolean;
+  order: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface UniversalCoupon {
   id: string;
   code: string;

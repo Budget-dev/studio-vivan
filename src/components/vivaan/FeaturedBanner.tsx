@@ -2,45 +2,92 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { ComboIcon } from './JarIcon';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where, orderBy, limit } from 'firebase/firestore';
+import { Combo } from '@/types';
 
 interface FeaturedBannerProps {
-  onCta: () => void;
+  onCta?: () => void;
 }
 
 export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({ onCta }) => {
+  const router = useRouter();
+  const db = useFirestore();
+
+  // Pull only the latest active combo for the homepage banner
+  const combosRef = useMemoFirebase(() => {
+    return query(
+      collection(db, 'combos'),
+      where('isActive', '==', true),
+      orderBy('order', 'asc'),
+      limit(1)
+    );
+  }, [db]);
+
+  const { data: activeCombos, isLoading } = useCollection<Combo>(combosRef);
+  const featured = activeCombos?.[0];
+
+  const handleNavigate = () => {
+    if (onCta) onCta();
+    router.push('/combos');
+  };
+
+  if (isLoading || !featured) {
+    // Return a beautiful skeleton or fallback during load
+    return (
+      <div className="max-w-[1400px] mx-auto px-0 md:px-10 mb-8 md:mb-20">
+        <div className="h-[260px] md:h-[500px] bg-[#F1EAD8] rounded-none md:rounded-[40px] animate-pulse"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[1400px] mx-auto px-0 md:px-10 mb-8 md:mb-20">
-      {/* Removed rounded corners on mobile (rounded-none), significantly reduced padding/height */}
-      <div className="bg-gradient-to-br from-primary via-[#1A5C38] to-[#3AAA60] rounded-none md:rounded-[40px] overflow-hidden relative group border-y md:border-none border-white/5">
-        <div className="absolute top-[-40px] right-[-40px] w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1),transparent_68%)] pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
-        
-        <div className="p-6 md:p-20 flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-16 items-center relative z-10">
-          <div className="flex items-center justify-center order-1 md:order-2">
-            <div className="relative group-hover:scale-110 transition-transform duration-500">
-               <div className="absolute inset-0 bg-black/20 blur-3xl rounded-full scale-125"></div>
-               {/* Smaller icon on mobile */}
-               <ComboIcon className="w-[100px] h-[100px] md:w-[320px] md:h-[320px] relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]" />
-            </div>
-          </div>
+      <div 
+        className="relative w-full h-[320px] md:h-[540px] rounded-none md:rounded-[40px] overflow-hidden group shadow-2xl"
+        onClick={handleNavigate}
+      >
+        {/* Full Bleed Background Image */}
+        <div className="absolute inset-0">
+          <Image 
+            src={featured.backgroundImage || "https://picsum.photos/seed/vivaan-combo/1600/600"} 
+            alt={featured.title} 
+            fill 
+            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+            priority
+          />
+          {/* Subtle overlay for text readability */}
+          <div className="absolute inset-0 bg-black/30 bg-gradient-to-r from-black/50 via-black/20 to-transparent"></div>
+        </div>
 
-          <div className="text-center md:text-left order-2 md:order-1">
-            <div className="text-[7px] md:text-[10px] font-black text-white/50 tracking-[3px] uppercase mb-1 md:mb-5">Limited Offer · Combo Pack</div>
-            <h2 className="font-headline text-2xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-1 md:mb-5">
-              Desi + Gir<br /><em className="italic text-white underline decoration-white/20 underline-offset-8">Combo Deal</em>
+        {/* Content Layer */}
+        <div className="relative h-full z-10 flex flex-col justify-center px-6 md:px-20 text-white">
+          <div className="max-w-2xl space-y-3 md:space-y-6">
+            <span className="inline-block bg-accent text-white px-3 py-1 rounded-full text-[9px] md:text-[11px] font-black uppercase tracking-[3px]">
+              {featured.subtitle || 'Exclusive Farm Bundles'}
+            </span>
+            
+            <h2 className="font-headline text-3xl md:text-7xl font-extrabold leading-tight text-white drop-shadow-lg">
+              {featured.title}
             </h2>
-            <p className="hidden md:block text-white/60 text-xs md:text-base leading-relaxed mb-6 md:mb-10 max-w-sm font-light mx-auto md:mx-0">
-              Two legendary jars, double the goodness. Save ₹445 on our most-loved combo.
-            </p>
-            <div className="flex flex-row items-center justify-center md:justify-start gap-4 md:gap-6 mt-3 md:mt-0">
+            
+            <div className="flex items-baseline gap-4">
+              <span className="font-headline text-2xl md:text-5xl font-black text-white">
+                {featured.offerText || 'Special Offer'}
+              </span>
+            </div>
+
+            <div className="pt-4 md:pt-8">
               <Button 
-                onClick={onCta}
-                className="h-9 md:h-14 px-6 md:px-8 rounded-full bg-white text-primary font-black uppercase tracking-widest shadow-xl hover:translate-y-[-2px] transition-all text-[9px] md:text-sm"
+                onClick={(e) => { e.stopPropagation(); handleNavigate(); }}
+                className="h-10 md:h-16 px-8 md:px-12 rounded-full bg-white text-primary font-black uppercase tracking-widest shadow-xl hover:bg-[#F9F6EF] transition-all text-[10px] md:text-sm flex items-center gap-3 group"
               >
-                Shop Combo →
+                {featured.buttonText || 'Shop All Combos'} 
+                <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
               </Button>
-              <div className="font-headline text-lg md:text-3xl font-extrabold text-white">Save 19%</div>
             </div>
           </div>
         </div>
