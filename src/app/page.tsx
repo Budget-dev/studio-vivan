@@ -25,10 +25,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Coins, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
-  { id: 'all', label: 'All', ico: '🌿' },
-  { id: 'ghee', label: 'A2 Ghee', ico: '🐄' },
-  { id: 'sweets', label: 'Sweets', ico: '🎁' },
-  { id: 'honey', label: 'Honey', ico: '🍯' },
+  { id: 'all', label: 'All Products', ico: '🌿' },
+  { id: 'ghee', label: 'A2 Gir Ghee', ico: '🐄' },
+  { id: 'sweets', label: 'Handcrafted Sweets', ico: '🎁' },
+  { id: 'honey', label: 'Raw Forest Honey', ico: '🍯' },
 ];
 
 export default function VivaanFarms() {
@@ -179,11 +179,11 @@ export default function VivaanFarms() {
           <Hero />
           
           <div className="text-center py-5 md:py-12 px-5 bg-white border-b border-primary/5">
-            <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
-              Welcome To Vivaan Farms!
-            </h2>
+            <h1 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
+              Authentic A2 Gir Cow Bilona Ghee & Farm Fresh Purity
+            </h1>
             <p className="text-[#7A6848] text-[9px] md:text-lg font-medium tracking-wide uppercase">
-              You're One Step Closer to Purity
+              Directly from Our Gujarat Farm to Your Home
             </p>
             <div className="w-10 h-0.5 bg-primary/10 mx-auto mt-3 rounded-full"></div>
           </div>
@@ -192,7 +192,11 @@ export default function VivaanFarms() {
 
           <section className="py-4 md:py-16" id="products">
             <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              {/* Ultra-Compact Category Bar */}
+              <div className="text-center mb-8">
+                <h2 className="font-headline text-2xl md:text-4xl font-extrabold text-primary">Shop Our Traditional Collections</h2>
+                <p className="text-sm text-[#7A6848] font-medium mt-1">Sustainably Sourced, Consciously Crafted.</p>
+              </div>
+
               <div className="flex justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
                 <div className="flex gap-1 md:gap-3 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/40 shadow-sm w-fit max-w-full transform-gpu translate-z-0">
                   {CATEGORIES.map((cat) => (
@@ -235,7 +239,7 @@ export default function VivaanFarms() {
                       <div className="col-span-full py-16 text-center bg-white/50 rounded-[32px] border-2 border-dashed border-primary/10 mx-auto w-full max-w-2xl">
                         <div className="text-4xl mb-4">🍃</div>
                         <h3 className="font-headline text-2xl font-bold text-primary">Harvesting New Batches</h3>
-                        <p className="text-muted-foreground mt-2 text-sm font-medium">No products found in this category yet. Check back soon!</p>
+                        <p className="text-muted-foreground mt-2 text-sm font-medium">We are currently handcrafting fresh batches of your favorites. Check back soon!</p>
                       </div>
                     )}
                   </div>
@@ -246,7 +250,7 @@ export default function VivaanFarms() {
                         onClick={() => handleCategoryFilter('all')}
                         className="h-10 md:h-16 px-6 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl flex items-center gap-2 group active:scale-95 text-[9px] md:text-base"
                       >
-                        See All Products <Sparkles className="w-3.5 h-3.5 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
+                        Explore All Pure Products <Sparkles className="w-3.5 h-3.5 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
                       </button>
                     </div>
                   )}
@@ -262,8 +266,8 @@ export default function VivaanFarms() {
                 <Coins className="text-yellow-400 w-5 h-5 md:w-8 md:h-8" />
               </div>
               <div className="text-left">
-                <div className="font-headline text-lg md:text-4xl font-extrabold leading-tight">Get Upto 25% Off with Purity Coins! →</div>
-                <p className="text-[8px] md:text-xs font-bold text-white/40 uppercase tracking-[2px] mt-1">Collect coins on every order and save big on your next haul</p>
+                <div className="font-headline text-lg md:text-4xl font-extrabold leading-tight">Join Our Loyalty Program & Save Up to 25% →</div>
+                <p className="text-[8px] md:text-xs font-bold text-white/40 uppercase tracking-[2px] mt-1">Earn Purity Coins on every order of A2 Ghee and Honey</p>
               </div>
             </div>
           </div>
@@ -276,8 +280,8 @@ export default function VivaanFarms() {
               <section className="max-w-[1400px] mx-auto">
                 <div className="px-5 md:px-10 flex items-end justify-between mb-4 md:mb-12 gap-4">
                   <div className="space-y-0.5 md:space-y-2">
-                    <span className="text-[9px] font-black text-primary uppercase tracking-[2px]">Traditional Roots</span>
-                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary leading-none">A2 Gir Ghee</h2>
+                    <span className="text-[9px] font-black text-primary uppercase tracking-[2px]">Vedic Bilona Process</span>
+                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary leading-none">A2 Gir Cow Ghee</h2>
                   </div>
                 </div>
                 
@@ -297,7 +301,7 @@ export default function VivaanFarms() {
                     onClick={() => handleCategoryFilter('ghee')}
                     className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-primary/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
                   >
-                    See All <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    View All Ghee <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </section>
@@ -308,8 +312,8 @@ export default function VivaanFarms() {
               <section className="max-w-[1400px] mx-auto">
                 <div className="px-5 md:px-10 flex items-end justify-between mb-4 md:mb-12 gap-4">
                   <div className="space-y-0.5 md:space-y-2">
-                    <span className="text-[9px] font-black text-secondary uppercase tracking-[2px]">Artisanal Treats</span>
-                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-[#100C06] leading-none">Farm Sweets</h2>
+                    <span className="text-[9px] font-black text-secondary uppercase tracking-[2px]">Artisanal Heritage</span>
+                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-[#100C06] leading-none">Healthy Desi Sweets</h2>
                   </div>
                 </div>
                 
@@ -329,7 +333,7 @@ export default function VivaanFarms() {
                     onClick={() => handleCategoryFilter('sweets')}
                     className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-secondary/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
                   >
-                    See All <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    View All Sweets <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </section>
@@ -340,8 +344,8 @@ export default function VivaanFarms() {
               <section className="max-w-[1400px] mx-auto">
                 <div className="px-5 md:px-10 flex items-end justify-between mb-4 md:mb-12 gap-4">
                   <div className="space-y-0.5 md:space-y-2">
-                    <span className="text-[9px] font-black text-accent uppercase tracking-[2px]">Wild & Raw</span>
-                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary leading-none">Forest Honey</h2>
+                    <span className="text-[9px] font-black text-accent uppercase tracking-[2px]">Wild & Raw Unfiltered</span>
+                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary leading-none">Organic Forest Honey</h2>
                   </div>
                 </div>
                 
@@ -361,7 +365,7 @@ export default function VivaanFarms() {
                     onClick={() => handleCategoryFilter('honey')}
                     className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-primary/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
                   >
-                    See All <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                    View All Honey <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </section>
@@ -392,3 +396,4 @@ export default function VivaanFarms() {
     </>
   );
 }
+

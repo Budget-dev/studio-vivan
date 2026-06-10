@@ -1,33 +1,29 @@
+
 "use client";
 
 import React from 'react';
-import { TreeDeciduous, ShieldCheck, Home, UtensilsCrossed } from 'lucide-react';
+import { TreeDeciduous, ShieldCheck, Home, History, Sparkles, Heart } from 'lucide-react';
 
 const pillars = [
   {
     icon: <TreeDeciduous className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
-    title: "Native Sourcing",
-    desc: "Highest quality raw material from native regions of Gujarat."
+    title: "Sourced from Gujarat",
+    desc: "Highest quality raw materials directly from native regions of Gujarat."
   },
   {
-    icon: (
-      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary w-10 h-10 md:w-16 md:h-16">
-        <path d="M32 8V56M16 24C16 24 20 52 32 52C44 52 48 24 48 24M12 16H52" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M24 16V8M40 16V8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: "Bilona Method",
-    desc: "Ancient Vedic process that preserves vital nutrients and authentic aroma."
+    icon: <History className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
+    title: "Vedic Bilona Method",
+    desc: "Ancient slow-churning process that preserves vital nutrients and aroma."
   },
   {
     icon: <ShieldCheck className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
-    title: "Pure & Natural",
-    desc: "100% free from preservatives, artificial colors or chemical additives."
+    title: "100% Pure & Natural",
+    desc: "Zero preservatives, artificial colors, or chemical additives. Just nature."
   },
   {
-    icon: <Home className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
-    title: "Direct from Farm",
-    desc: "100% traceable, single-origin goodness from our Gujarat farm to you."
+    icon: <Heart className="w-10 h-10 md:w-16 md:h-16 text-primary" />,
+    title: "Traceable Farm-to-Fork",
+    desc: "Single-origin goodness from our family-run farms directly to your doorstep."
   }
 ];
 
@@ -37,7 +33,7 @@ export const WhyChoose: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
         <div className="text-center mb-10 md:mb-24">
           <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-primary">
-            Why Choose Vivaan Farms?
+            Why Discerning Families Choose Vivaan Farms
           </h2>
           <div className="w-20 h-1 bg-primary/20 mx-auto mt-3 md:mt-4 rounded-full"></div>
         </div>

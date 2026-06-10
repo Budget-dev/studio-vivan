@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -5,24 +6,24 @@ import Image from 'next/image';
 
 const NATIVE_CARDS = [
   {
-    title: "From Native Geographies",
-    subtitle: "to Ideal Growing Seasons",
-    desc: "We take care of every factor when sourcing local ingredients.",
+    title: "Native Gujarat Geographies",
+    subtitle: "Ideal Sourcing Regions",
+    desc: "We map every ingredient to its native soil in Gujarat for maximum nutrient density.",
   },
   {
-    title: "What Do We Look For?",
-    subtitle: "Nutrition over Cost",
-    desc: "Not high yield. Not lower cost. Just flavour, nutrition, and soul.",
+    title: "Purity over Profits",
+    subtitle: "Nutrition-First Philosophy",
+    desc: "We don't focus on high-yield farming. We focus on soul-nourishing flavor and tradition.",
   },
   {
-    title: "Impurities, Out.",
-    subtitle: "Goodness, In.",
-    desc: "Only the best seeds & purest milk make the cut from our Gujarat farms.",
+    title: "Zero Middlemen Supply",
+    subtitle: "Goodness, Directly Delivered",
+    desc: "Only the purest Gir cow milk and hand-picked seeds make it from our farm to you.",
   },
   {
-    title: "Native Heritage",
-    subtitle: "A2 Gir Milk & Seeds",
-    desc: "We dare you to find better native ingredients than our farm direct goods.",
+    title: "Heritage A2 Breeding",
+    subtitle: "Ethical Gir Cow Sourcing",
+    desc: "Pure A2 Gir milk is the foundation of our Bilona ghee, sourced from freely grazing cows.",
   }
 ];
 
@@ -32,7 +33,7 @@ export const NativeSection: React.FC = () => {
       <div className="max-w-[1400px] mx-auto px-5 md:px-10">
         <div className="text-center mb-8 md:mb-16">
           <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-primary leading-tight">
-            Native Ingredients. No Substitutes.
+            Single-Origin Ingredients. No Compromises.
           </h2>
           <div className="w-24 h-1 bg-primary/20 mx-auto mt-4 md:mt-6 rounded-full"></div>
         </div>
