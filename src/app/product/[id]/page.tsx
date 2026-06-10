@@ -17,7 +17,7 @@ import {
   FlaskConical,
   ChefHat
 } from 'lucide-react';
-import { useDoc, useFirestore, useMemoFirebase, useCollection } from '@/firebase';
+import { useDoc, useFirestore, useMemoFirebase, useCollection, useUser } from '@/firebase';
 import { doc, collection, limit, query, where } from 'firebase/firestore';
 import { Product } from '@/types';
 import { Header } from '@/components/vivaan/Header';
@@ -36,6 +36,7 @@ export default function ProductDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
   const db = useFirestore();
+  const { user } = useUser();
   const productRef = useMemoFirebase(() => id ? doc(db, 'products', id as string) : null, [db, id]);
   const { data: dbProduct, isLoading: productLoading } = useDoc(productRef);
   
@@ -130,8 +131,21 @@ export default function ProductDetailsPage() {
   const displayPrice = currentVar.p;
 
   const handleBuyNow = () => {
+    if (!user) {
+      router.push(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
     addToCart({ ...product, price: displayPrice, vol: selectedSize } as any, qty);
     router.push('/checkout');
+  };
+
+  const handleAddToCart = () => {
+    if (!user) {
+      router.push(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    addToCart({ ...product, price: displayPrice, vol: selectedSize } as any, qty);
+    setIsCartOpen(true);
   };
 
   return (
@@ -254,7 +268,7 @@ export default function ProductDetailsPage() {
                    <button onClick={() => setQty(q => Math.min(99, q+1))} className="flex-1 h-full hover:bg-primary/5 flex items-center justify-center"><Plus className="w-4 h-4" /></button>
                 </div>
                 <Button 
-                  onClick={() => { addToCart({ ...product, price: displayPrice, vol: selectedSize } as any, qty); setIsCartOpen(true); }}
+                  onClick={handleAddToCart}
                   className="flex-1 h-14 bg-white border-2 border-primary text-primary hover:bg-primary/5 rounded-xl font-black uppercase tracking-widest text-xs"
                 >
                   Add to Cart
@@ -426,7 +440,7 @@ export default function ProductDetailsPage() {
                     product={p} 
                     isInCart={cart.some(c => c.id === p.id)} 
                     onOpen={() => router.push(`/product/${p.id}`)} 
-                    onAdd={() => addToCart(p)} 
+                    onAdd={() => handleAddToCart()} 
                    />
                  ))}
                </div>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -19,7 +18,7 @@ import { Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Coins, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
@@ -34,6 +33,7 @@ const CATEGORIES = [
 export default function VivaanFarms() {
   const router = useRouter();
   const db = useFirestore();
+  const { user } = useUser();
   
   const productsRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: dbProducts, isLoading: productsLoading } = useCollection(productsRef);
@@ -128,6 +128,14 @@ export default function VivaanFarms() {
     } else if (tab === 'account') {
       router.push('/track');
     }
+  };
+
+  const handleAddAction = (p: Product) => {
+    if (!user) {
+      router.push(`/login?returnTo=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    addToCart(p);
   };
 
   const filteredProducts = useMemo(() => {
@@ -232,7 +240,7 @@ export default function VivaanFarms() {
                         product={p} 
                         isInCart={cart.some(c => c.id === p.id)}
                         onOpen={() => router.push(`/product/${p.id}`)}
-                        onAdd={() => addToCart(p)}
+                        onAdd={() => handleAddAction(p)}
                       />
                     ))}
                     {filteredProducts.length === 0 && !productsLoading && (
@@ -288,7 +296,7 @@ export default function VivaanFarms() {
                 <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
                   {gheeProducts.map((p) => (
                     <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
-                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
                     </div>
                   ))}
                 </div>
@@ -320,7 +328,7 @@ export default function VivaanFarms() {
                 <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
                   {sweetsProducts.map((p) => (
                     <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
-                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
                     </div>
                   ))}
                 </div>
@@ -352,7 +360,7 @@ export default function VivaanFarms() {
                 <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
                   {honeyProducts.map((p) => (
                     <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
-                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => addToCart(p)} />
+                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
                     </div>
                   ))}
                 </div>
@@ -396,4 +404,3 @@ export default function VivaanFarms() {
     </>
   );
 }
-
