@@ -18,30 +18,30 @@ service cloud.firestore {
     }
 
     // --- 1. Public Storefront Access (Read-Only for Everyone) ---
-    // These rules allow guests to browse the catalog without login.
+    // Explicitly allow guests to browse the catalog without login.
 
     match /categories/{categoryId} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /products/{productId} {
-      allow get, list: if true;
+      allow read: if true;
       
       match /variants/{variantId} {
-        allow get, list: if true;
+        allow read: if true;
       }
     }
 
     match /combos/{comboId} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /universalCoupons/{couponId} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /reviews/{reviewId} {
-      allow get, list: if true;
+      allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
     }
@@ -49,7 +49,7 @@ service cloud.firestore {
     // --- 2. Private User and Order Rules (Authenticated Only) ---
 
     match /userProfiles/{userId} {
-      allow get, write: if isOwner(userId);
+      allow read, write: if isOwner(userId);
     }
 
     match /orders/{orderId} {
