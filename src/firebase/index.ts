@@ -9,15 +9,11 @@ import { getFirestore } from 'firebase/firestore'
 export function initializeFirebase() {
   let app: FirebaseApp;
   if (!getApps().length) {
-    // Important! initializeApp() is called without any arguments because Firebase App Hosting
-    // integrates with the initializeApp() function to provide the environment variables needed to
-    // populate the FirebaseOptions in production. It is critical that we attempt to call initializeApp()
-    // without arguments.
+    // Attempt to initialize via Firebase App Hosting environment variables
     try {
-      // Attempt to initialize via Firebase App Hosting environment variables
       app = initializeApp();
     } catch (e) {
-      // Fallback to config object if automatic discovery fails (common on Vercel/Local)
+      // Fallback to config object if automatic discovery fails
       app = initializeApp(firebaseConfig);
     }
   } else {
@@ -28,12 +24,15 @@ export function initializeFirebase() {
 
   // Diagnostic Logs for Investigation
   if (typeof window !== 'undefined') {
-    console.log('[Firebase Init] Project ID:', app.options.projectId);
-    console.log('[Firebase Init] Current Auth State:', sdks.auth.currentUser ? `User: ${sdks.auth.currentUser.uid}` : 'Guest');
+    console.log('--- FIREBASE DIAGNOSTICS ---');
+    console.log('[Init] Project ID:', app.options.projectId);
+    console.log('[Init] Config API Key:', app.options.apiKey?.substring(0, 6) + '...');
+    console.log('[Init] Current Auth:', sdks.auth.currentUser ? `UID: ${sdks.auth.currentUser.uid}` : 'Guest/Null');
     
     // Check for Emulator
     const isEmulator = (sdks.firestore as any)._settings?.host?.includes('localhost') || false;
-    console.log('[Firebase Init] Firestore Emulator Active:', isEmulator);
+    console.log('[Init] Firestore Emulator Active:', isEmulator);
+    console.log('---------------------------');
   }
 
   return sdks;

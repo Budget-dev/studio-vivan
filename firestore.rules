@@ -9,7 +9,6 @@ service cloud.firestore {
     }
 
     function isMasterAdmin() {
-      // Universal override for the master admin email
       return isSignedIn() && request.auth.token.email == 'vivanfarmsnatural@gmail.com';
     }
 
@@ -17,32 +16,32 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // --- 1. Public Storefront Access (Read-Only for Everyone) ---
-    // These paths are open for public viewing to support SEO and browsing.
+    // --- 1. Public Storefront Access (Read-Only) ---
+    // Moved to the top and made more explicit to avoid evaluation conflicts
 
     match /categories/{id} {
-      allow read: if true;
+      allow get, list: if true;
     }
 
     match /products/{id} {
-      allow read: if true;
+      allow get, list: if true;
     }
 
-    match /combos/{id} {
-      allow read: if true;
+    match /combos/{id=**} {
+      allow get, list: if true;
     }
 
     match /universalCoupons/{id} {
-      allow read: if true;
+      allow get, list: if true;
     }
 
     match /reviews/{id} {
-      allow read: if true;
+      allow get, list: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
     }
 
-    // --- 2. Private User and Order Rules (Authenticated Only) ---
+    // --- 2. Private User and Order Rules ---
 
     match /userProfiles/{userId} {
       allow read, write: if isOwner(userId);
@@ -60,7 +59,6 @@ service cloud.firestore {
     }
 
     // --- 3. Universal Master Access ---
-    // Grants absolute power to the master admin across ALL collections as a fallback
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
