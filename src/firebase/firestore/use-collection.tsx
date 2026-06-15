@@ -78,13 +78,6 @@ export function useCollection<T = any>(
             ? (memoizedTargetRefOrQuery as CollectionReference).path
             : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString();
 
-        // LOG RAW ERROR FOR DEBUGGING
-        console.error(`[Firestore Error] Path: ${path}`, {
-          code: error.code,
-          message: error.message,
-          stack: error.stack
-        });
-
         const contextualError = new FirestorePermissionError({
           operation: 'list',
           path,

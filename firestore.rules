@@ -17,26 +17,26 @@ service cloud.firestore {
     }
 
     // --- 1. Public Storefront Access (Read-Only) ---
-    // Moved to the top and made more explicit to avoid evaluation conflicts
+    // Explicitly allow reading these collections for all users (guests and logged-in)
 
     match /categories/{id} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /products/{id} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
-    match /combos/{id=**} {
-      allow get, list: if true;
+    match /combos/{id} {
+      allow read: if true;
     }
 
     match /universalCoupons/{id} {
-      allow get, list: if true;
+      allow read: if true;
     }
 
     match /reviews/{id} {
-      allow get, list: if true;
+      allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
     }
