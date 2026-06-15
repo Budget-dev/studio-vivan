@@ -91,6 +91,13 @@ export function useCollection<T = any>(
             ? (memoizedTargetRefOrQuery as CollectionReference).path
             : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString()
 
+        // Audit Log for the denied path
+        console.error('[Firestore Permission] Access Denied on collection:', {
+          path,
+          error: error.message,
+          code: error.code
+        });
+
         const contextualError = new FirestorePermissionError({
           operation: 'list',
           path,

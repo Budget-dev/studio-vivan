@@ -19,28 +19,25 @@ service cloud.firestore {
 
     // --- 1. Public Storefront Access (Read-Only for Everyone) ---
     // Explicitly allow guests to browse the catalog without login.
+    // We use {id=**} to ensure recursive read access for all listing operations.
 
-    match /categories/{categoryId} {
+    match /categories/{id=**} {
       allow read: if true;
     }
 
-    match /products/{productId} {
-      allow read: if true;
-      
-      match /variants/{variantId} {
-        allow read: if true;
-      }
-    }
-
-    match /combos/{comboId} {
+    match /products/{id=**} {
       allow read: if true;
     }
 
-    match /universalCoupons/{couponId} {
+    match /combos/{id=**} {
       allow read: if true;
     }
 
-    match /reviews/{reviewId} {
+    match /universalCoupons/{id=**} {
+      allow read: if true;
+    }
+
+    match /reviews/{id=**} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
