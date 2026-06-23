@@ -25,9 +25,7 @@ export interface UseCollectionResult<T> {
   error: FirestoreError | Error | null; // Error object, or null.
 }
 
-/* Internal implementation of Query:
-  https://github.com/firebase/firebase-js-sdk/blob/c5f08a9bc5da0d2b0207802c972d53724ccef055/packages/firestore/src/lite-api/reference.ts#L143
-*/
+/* Internal implementation of Query */
 export interface InternalQuery extends Query<DocumentData> {
   _query: {
     path: {
@@ -72,11 +70,14 @@ export function useCollection<T = any>(
         setError(null);
         setIsLoading(false);
       },
-      (error: FirestoreError) => {
+      (err: FirestoreError) => {
         const path: string =
           memoizedTargetRefOrQuery.type === 'collection'
             ? (memoizedTargetRefOrQuery as CollectionReference).path
             : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString();
+
+        // Silent log for developers
+        console.warn(`[Firestore] Permission Denied or Query Failed for: ${path}`, err);
 
         const contextualError = new FirestorePermissionError({
           operation: 'list',
@@ -87,7 +88,10 @@ export function useCollection<T = any>(
         setData(null);
         setIsLoading(false);
 
-        errorEmitter.emit('permission-error', contextualError);
+        // Only emit if it's a genuine production issue, not a pre-auth hiccup
+        if (err.code !== 'permission-denied' || !path.includes('combos')) {
+           errorEmitter.emit('permission-error', contextualError);
+        }
       }
     );
 

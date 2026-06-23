@@ -17,25 +17,25 @@ service cloud.firestore {
     }
 
     // --- 1. Public Storefront Access (Read-Only) ---
-    // Explicitly allow reading these collections for all users (guests and logged-in)
-
-    match /categories/{id} {
+    // These must be explicitly allowed for anonymous users (auth == null)
+    
+    match /categories/{id=**} {
       allow read: if true;
     }
 
-    match /products/{id} {
+    match /products/{id=**} {
       allow read: if true;
     }
 
-    match /combos/{id} {
+    match /combos/{id=**} {
       allow read: if true;
     }
 
-    match /universalCoupons/{id} {
+    match /universalCoupons/{id=**} {
       allow read: if true;
     }
 
-    match /reviews/{id} {
+    match /reviews/{id=**} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
@@ -59,6 +59,7 @@ service cloud.firestore {
     }
 
     // --- 3. Universal Master Access ---
+    // This acts as a fallback for the admin account
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }

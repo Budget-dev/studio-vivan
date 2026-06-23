@@ -9,11 +9,9 @@ import { getFirestore } from 'firebase/firestore'
 export function initializeFirebase() {
   let app: FirebaseApp;
   if (!getApps().length) {
-    // Attempt to initialize via Firebase App Hosting environment variables
     try {
-      app = initializeApp();
+      app = initializeApp(firebaseConfig);
     } catch (e) {
-      // Fallback to config object if automatic discovery fails
       app = initializeApp(firebaseConfig);
     }
   } else {
@@ -22,17 +20,20 @@ export function initializeFirebase() {
 
   const sdks = getSdks(app);
 
-  // Diagnostic Logs for Investigation
+  // CRITICAL DIAGNOSTICS: Check these in your browser console
   if (typeof window !== 'undefined') {
-    console.log('--- FIREBASE DIAGNOSTICS ---');
-    console.log('[Init] Project ID:', app.options.projectId);
-    console.log('[Init] Config API Key:', app.options.apiKey?.substring(0, 6) + '...');
-    console.log('[Init] Current Auth:', sdks.auth.currentUser ? `UID: ${sdks.auth.currentUser.uid}` : 'Guest/Null');
+    console.log('%c--- FIREBASE INIT DIAGNOSTICS ---', 'background: #0D3520; color: #fff; padding: 2px 5px;');
+    console.log('Project ID:', app.options.projectId);
+    console.log('API Key:', app.options.apiKey?.substring(0, 6) + '...');
     
-    // Check for Emulator
+    // Check if emulator is being triggered by env vars
     const isEmulator = (sdks.firestore as any)._settings?.host?.includes('localhost') || false;
-    console.log('[Init] Firestore Emulator Active:', isEmulator);
-    console.log('---------------------------');
+    console.log('Firestore Emulator:', isEmulator ? 'ACTIVE' : 'OFF (Production)');
+    
+    sdks.auth.onAuthStateChanged(user => {
+      console.log('Auth State Change:', user ? `Logged in as ${user.email}` : 'Anonymous / Guest');
+    });
+    console.log('---------------------------------');
   }
 
   return sdks;
