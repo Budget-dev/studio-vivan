@@ -17,8 +17,8 @@ service cloud.firestore {
     }
 
     // --- 1. Public Storefront Access ---
-    // Explicitly allow reading these collections for all visitors (guests and logged-in)
-    // Using recursive wildcards {id=**} ensures all queries on these paths are permitted.
+    // Using {id=**} ensures that both individual documents (get) 
+    // and collection listings (list) are permitted even for anonymous users.
 
     match /categories/{id=**} {
       allow read: if true;
@@ -60,7 +60,7 @@ service cloud.firestore {
     }
 
     // --- 3. Universal Master Admin Access ---
-    // This serves as a catch-all for administrative operations
+    // Catch-all for administrative operations
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
