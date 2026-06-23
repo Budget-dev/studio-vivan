@@ -16,9 +16,10 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // --- 1. Public Storefront Access (Read-Only) ---
-    // These must be explicitly allowed for anonymous users (auth == null)
-    
+    // --- 1. Public Storefront Access ---
+    // Explicitly allow reading these collections for all visitors (guests and logged-in)
+    // Using recursive wildcards {id=**} ensures all queries on these paths are permitted.
+
     match /categories/{id=**} {
       allow read: if true;
     }
@@ -49,7 +50,7 @@ service cloud.firestore {
 
     match /orders/{orderId} {
       allow create: if isSignedIn();
-      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow read: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
       allow list: if isSignedIn() && request.query.limit <= 100;
     }
 
@@ -58,8 +59,8 @@ service cloud.firestore {
       allow write: if isMasterAdmin();
     }
 
-    // --- 3. Universal Master Access ---
-    // This acts as a fallback for the admin account
+    // --- 3. Universal Master Admin Access ---
+    // This serves as a catch-all for administrative operations
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
