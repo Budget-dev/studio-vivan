@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -130,8 +131,7 @@ export default function VivaanFarms() {
     } else if (tab === 'home') {
       router.push('/');
     } else if (tab === 'wishlist') {
-      // Placeholder or wishlist logic
-      router.push('/');
+      router.push('/wishlist');
     }
   };
 

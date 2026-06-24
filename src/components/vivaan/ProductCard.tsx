@@ -1,12 +1,14 @@
+
 "use client";
 
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Star, Plus } from 'lucide-react';
+import { Star, Plus, Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
 import { cn } from '@/lib/utils';
+import { useWishlist } from '@/hooks/use-wishlist';
 
 interface ProductCardProps {
   product: Product;
@@ -17,9 +19,11 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onOpen, onAdd }) => {
   const router = useRouter();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   
   const price = Number(product.price) || 0;
   const mrpPrice = Number(product.mrpPrice) || price;
+  const isWishlisted = isInWishlist(product.id);
 
   const discount = mrpPrice > price 
     ? Math.round(((mrpPrice - price) / mrpPrice) * 100)
@@ -64,6 +68,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
             <span className="text-[10px] font-black leading-none">{discount}% OFF</span>
           </div>
         )}
+
+        {/* Wishlist Toggle */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+          className="absolute top-3 right-3 z-[40] w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-primary shadow-sm hover:scale-110 active:scale-90 transition-all border-none"
+        >
+          <Heart className={cn("w-4 h-4 transition-colors", isWishlisted ? "fill-primary text-primary" : "text-primary/40")} />
+        </button>
 
         <div className="relative z-10 w-full h-full">
           {getIcon()}

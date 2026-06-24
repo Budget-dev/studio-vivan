@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -15,7 +16,8 @@ import {
   MessageSquare,
   History,
   FlaskConical,
-  ChefHat
+  ChefHat,
+  Heart
 } from 'lucide-react';
 import { useDoc, useFirestore, useMemoFirebase, useCollection, useUser } from '@/firebase';
 import { doc, collection, limit, query, where } from 'firebase/firestore';
@@ -26,6 +28,7 @@ import { Ticker } from '@/components/vivaan/Ticker';
 import { BottomNav } from '@/components/vivaan/BottomNav';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { useCart } from '@/hooks/use-cart';
+import { useWishlist } from '@/hooks/use-wishlist';
 import { JarIcon, ComboIcon } from '@/components/vivaan/JarIcon';
 import { aiProductUsageAndRecipeIdeas, RecipeIdeasOutput } from '@/ai/flows/ai-product-usage-and-recipe-ideas';
 import { Button } from '@/components/ui/button';
@@ -37,10 +40,10 @@ export default function ProductDetailsPage() {
   const router = useRouter();
   const db = useFirestore();
   const { user } = useUser();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const productRef = useMemoFirebase(() => id ? doc(db, 'products', id as string) : null, [db, id]);
   const { data: dbProduct, isLoading: productLoading } = useDoc(productRef);
   
-  // Related products query
   const relatedRef = useMemoFirebase(() => collection(db, 'products'), [db]);
   const { data: allProducts } = useCollection(relatedRef);
   
@@ -51,7 +54,8 @@ export default function ProductDetailsPage() {
   const [aiData, setAiData] = useState<RecipeIdeasOutput | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
 
-  // Standardize product data
+  const isWishlisted = isInWishlist(id as string);
+
   const mapProductData = (p: any, index: number = 0): Product => {
     const basePrice = Number(p.basePrice) || 0;
     return {
@@ -70,13 +74,11 @@ export default function ProductDetailsPage() {
     } as any;
   };
 
-  // Transform main product
   const product = useMemo(() => {
     if (!dbProduct) return null;
     return mapProductData(dbProduct);
   }, [dbProduct]);
 
-  // Transform and filter related products
   const relatedProducts = useMemo(() => {
     if (!allProducts || !product) return [];
     return allProducts
@@ -109,6 +111,18 @@ export default function ProductDetailsPage() {
       fetchAi();
     }
   }, [product]);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === 'home' || tab === 'shop') {
+      router.push('/');
+    } else if (tab === 'cart') {
+      setIsCartOpen(true);
+    } else if (tab === 'account') {
+      router.push('/track');
+    } else if (tab === 'wishlist') {
+      router.push('/wishlist');
+    }
+  };
 
   if (productLoading) {
     return (
@@ -159,7 +173,6 @@ export default function ProductDetailsPage() {
       />
 
       <main className="max-w-[1400px] mx-auto px-4 md:px-10 py-4 md:py-8">
-        {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-[#7A6848] uppercase tracking-widest mb-6 md:mb-10 overflow-x-auto whitespace-nowrap no-scrollbar">
           <span className="cursor-pointer hover:text-primary" onClick={() => router.push('/')}>Home</span>
           <ChevronRight className="w-3 h-3" />
@@ -168,9 +181,7 @@ export default function ProductDetailsPage() {
           <span className="text-primary truncate">{product.name}</span>
         </div>
 
-        {/* TOP SECTION: Visuals & Buy Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 mb-20">
-          {/* Gallery Area */}
           <div className="space-y-6">
             <div className="bg-[#F8F6F0] rounded-[32px] md:rounded-[48px] p-0 aspect-square flex items-center justify-center relative overflow-hidden group border border-[#EEE0BC]/30">
               <div className="relative w-full h-full flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
@@ -188,9 +199,14 @@ export default function ProductDetailsPage() {
                   product.cat === 'combo' ? <ComboIcon className="scale-[1.8]" /> : <JarIcon c1="#D4EDE0" c2="#1B5E3B" sub="" idSuffix="page" className="scale-[2.2]" />
                 )}
               </div>
+              <button 
+                onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
+                className="absolute top-6 right-6 z-[40] w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-primary shadow-lg hover:scale-110 active:scale-90 transition-all border-none"
+              >
+                <Heart className={cn("w-6 h-6 transition-colors", isWishlisted ? "fill-primary text-primary" : "text-primary/40")} />
+              </button>
             </div>
             
-            {/* Thumbnails */}
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className={cn(
@@ -209,7 +225,6 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
-          {/* Details Pane */}
           <div className="flex flex-col">
             <div className="space-y-2 mb-4">
               <h1 className="font-headline text-4xl md:text-6xl font-extrabold text-primary leading-tight">{product.name}</h1>
@@ -306,7 +321,6 @@ export default function ProductDetailsPage() {
           </div>
         </div>
 
-        {/* MIDDLE SECTION: Storytelling Grid */}
         <div className="py-20 border-t border-[#EEE0BC]/30">
           <div className="text-center mb-16">
             <h2 className="font-headline text-4xl md:text-6xl font-extrabold text-primary mb-4">The Purity Standard</h2>
@@ -373,7 +387,6 @@ export default function ProductDetailsPage() {
           </div>
         </div>
 
-        {/* BOTTOM SECTION: Reviews & Related */}
         <div className="py-20 border-t border-[#EEE0BC]/30">
           <div className="flex flex-col md:flex-row items-start justify-between gap-10 mb-20">
             <div className="md:w-1/3">
@@ -450,7 +463,7 @@ export default function ProductDetailsPage() {
       </main>
 
       <Footer />
-      <BottomNav activeTab="shop" onTabChange={(tab) => router.push(tab === 'home' ? '/' : `/${tab}`)} cartCount={totalQty} />
+      <BottomNav activeTab="shop" onTabChange={handleTabChange} cartCount={totalQty} />
       
       <CartSidebar 
         isOpen={isCartOpen}
