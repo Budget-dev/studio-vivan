@@ -21,7 +21,7 @@ import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Coins, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
+import { Coins, Sparkles, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'all', label: 'All Products', ico: '🌿' },
@@ -127,6 +127,11 @@ export default function VivaanFarms() {
       setActiveTab('home');
     } else if (tab === 'account') {
       router.push('/track');
+    } else if (tab === 'home') {
+      router.push('/');
+    } else if (tab === 'wishlist') {
+      // Placeholder or wishlist logic
+      router.push('/');
     }
   };
 
@@ -180,14 +185,14 @@ export default function VivaanFarms() {
         }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-[68px] md:pb-0"
+          "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-24 md:pb-0"
         )}
       >
         <main>
           <Hero />
           
           <div className="text-center py-5 md:py-12 px-5 bg-white border-b border-primary/5">
-            <h1 className="font-headline text-3xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
+            <h1 className="font-headline text-2xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
               Authentic A2 Gir Cow Bilona Ghee & Farm Fresh Purity
             </h1>
             <p className="text-[#7A6848] text-[9px] md:text-lg font-medium tracking-wide uppercase">
@@ -198,11 +203,11 @@ export default function VivaanFarms() {
 
           <TrustBar />
 
-          <section className="py-4 md:py-16" id="products">
-            <div className="max-w-[1400px] mx-auto px-5 md:px-10">
-              <div className="text-center mb-8">
+          <section className="py-8 md:py-16" id="products">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-10">
+              <div className="text-center mb-6 md:mb-12">
                 <h2 className="font-headline text-2xl md:text-4xl font-extrabold text-primary">Shop Our Traditional Collections</h2>
-                <p className="text-sm text-[#7A6848] font-medium mt-1">Sustainably Sourced, Consciously Crafted.</p>
+                <p className="text-[11px] md:text-sm text-[#7A6848] font-medium mt-1">Sustainably Sourced, Consciously Crafted.</p>
               </div>
 
               <div className="flex justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
@@ -212,13 +217,13 @@ export default function VivaanFarms() {
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1 md:gap-2 px-3 md:px-7 py-1.5 md:py-3 rounded-full text-[9px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1 md:gap-2 px-4 md:px-7 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
                           ? "bg-primary text-white shadow-lg scale-105" 
                           : "text-[#7A6848] hover:bg-primary/5"
                       )}
                     >
-                      <span className="text-[10px] md:text-lg">{cat.ico}</span>
+                      <span className="text-xs md:text-lg">{cat.ico}</span>
                       {cat.label}
                     </button>
                   ))}
@@ -226,14 +231,14 @@ export default function VivaanFarms() {
               </div>
 
               {productsLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white/50 rounded-[32px] aspect-[3/4] animate-pulse border-2 border-dashed border-[#DDD0B5]/30"></div>
+                    <div key={i} className="bg-white/50 rounded-[20px] aspect-[4/5] animate-pulse border border-[#E5E7EB]/50"></div>
                   ))}
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                     {filteredProducts.map((p) => (
                       <ProductCard 
                         key={p.id} 
@@ -267,11 +272,11 @@ export default function VivaanFarms() {
             </div>
           </section>
 
-          <div className="bg-[#0D3520] py-4 md:py-8 flex items-center justify-center text-white px-5 border-y border-white/5 relative overflow-hidden">
+          <div className="bg-[#163A24] py-6 md:py-8 flex items-center justify-center text-white px-5 border-y border-white/5 relative overflow-hidden">
              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
             <div className="flex items-center gap-4 md:gap-8 text-center relative z-10">
               <div className="w-10 h-10 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center shrink-0 border border-white/20">
-                <Coins className="text-yellow-400 w-5 h-5 md:w-8 md:h-8" />
+                <Coins className="text-[#D4A94D] w-5 h-5 md:w-8 md:h-8" />
               </div>
               <div className="text-left">
                 <div className="font-headline text-lg md:text-4xl font-extrabold leading-tight">Join Our Loyalty Program & Save Up to 25% →</div>
@@ -293,9 +298,9 @@ export default function VivaanFarms() {
                   </div>
                 </div>
                 
-                <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
+                <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 px-4 md:grid md:grid-cols-4 md:px-10 md:gap-8">
                   {gheeProducts.map((p) => (
-                    <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
+                    <div key={p.id} className="min-w-[46%] sm:min-w-[45%] md:min-w-0 snap-start">
                       <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
                     </div>
                   ))}
@@ -320,14 +325,14 @@ export default function VivaanFarms() {
               <section className="max-w-[1400px] mx-auto">
                 <div className="px-5 md:px-10 flex items-end justify-between mb-4 md:mb-12 gap-4">
                   <div className="space-y-0.5 md:space-y-2">
-                    <span className="text-[9px] font-black text-secondary uppercase tracking-[2px]">Artisanal Heritage</span>
+                    <span className="text-[9px] font-black text-[#163A24]/60 uppercase tracking-[2px]">Artisanal Heritage</span>
                     <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-[#100C06] leading-none">Healthy Desi Sweets</h2>
                   </div>
                 </div>
                 
-                <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
+                <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-4 px-4 md:grid md:grid-cols-4 md:px-10 md:gap-8">
                   {sweetsProducts.map((p) => (
-                    <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
+                    <div key={p.id} className="min-w-[46%] sm:min-w-[45%] md:min-w-0 snap-start">
                       <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
                     </div>
                   ))}
@@ -335,45 +340,13 @@ export default function VivaanFarms() {
 
                 <div className="mt-4 md:mt-12 px-5 md:px-10 flex items-center justify-between">
                   <div className="flex-1 max-w-[100px] md:max-w-xs h-1 bg-[#F9F6EF] rounded-full overflow-hidden">
-                    <div className="h-full w-1/3 bg-secondary rounded-full"></div>
+                    <div className="h-full w-1/3 bg-[#163A24] rounded-full"></div>
                   </div>
                   <button 
                     onClick={() => handleCategoryFilter('sweets')}
-                    className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-secondary/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
+                    className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-[#163A24]/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
                   >
                     View All Sweets <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </section>
-            )}
-
-            {/* Forest Honey Peek Section */}
-            {honeyProducts.length > 0 && (
-              <section className="max-w-[1400px] mx-auto">
-                <div className="px-5 md:px-10 flex items-end justify-between mb-4 md:mb-12 gap-4">
-                  <div className="space-y-0.5 md:space-y-2">
-                    <span className="text-[9px] font-black text-accent uppercase tracking-[2px]">Wild & Raw Unfiltered</span>
-                    <h2 className="font-headline text-2xl md:text-6xl font-extrabold text-primary leading-none">Organic Forest Honey</h2>
-                  </div>
-                </div>
-                
-                <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 px-5 md:grid md:grid-cols-4 md:px-10 md:gap-8">
-                  {honeyProducts.map((p) => (
-                    <div key={p.id} className="min-w-[72%] sm:min-w-[45%] md:min-w-0 snap-start">
-                      <ProductCard product={p} isInCart={cart.some(c => c.id === p.id)} onOpen={() => router.push(`/product/${p.id}`)} onAdd={() => handleAddAction(p)} />
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 md:mt-12 px-5 md:px-10 flex items-center justify-between">
-                  <div className="flex-1 max-w-[100px] md:max-w-xs h-1 bg-[#F9F6EF] rounded-full overflow-hidden">
-                    <div className="h-full w-1/3 bg-primary rounded-full"></div>
-                  </div>
-                  <button 
-                    onClick={() => handleCategoryFilter('honey')}
-                    className="h-8 md:h-12 px-5 md:px-8 rounded-full border-2 border-[#100C06]/5 hover:border-primary/20 text-[#100C06] font-black uppercase tracking-widest text-[8px] md:text-[11px] flex items-center gap-2 group transition-all"
-                  >
-                    View All Honey <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </section>

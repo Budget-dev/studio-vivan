@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Star, ShoppingCart } from 'lucide-react';
+import { Star, Plus } from 'lucide-react';
 import { Product } from '@/types';
 import { JarIcon, ComboIcon } from './JarIcon';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,6 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onOpen, onAdd }) => {
   const router = useRouter();
   
-  // Ensure we have numbers to work with
   const price = Number(product.price) || 0;
   const mrpPrice = Number(product.mrpPrice) || price;
 
@@ -34,125 +33,73 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
             src={product.imageUrls[0]} 
             alt={product.name} 
             fill 
-            className={cn(
-              "object-cover transition-opacity duration-500",
-              product.imageUrls.length > 1 ? "group-hover:opacity-0" : "opacity-100"
-            )}
+            className="object-cover"
             sizes="(max-width: 768px) 150px, 220px"
           />
-          
-          {product.imageUrls.length > 1 && (
-            <Image 
-              src={product.imageUrls[1]} 
-              alt={`${product.name} alternate`} 
-              fill 
-              className="object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              sizes="(max-width: 768px) 150px, 220px"
-            />
-          )}
         </div>
       );
     }
     
-    if (product.cat === 'combo') return <ComboIcon className="scale-75 md:scale-90" />;
+    if (product.cat === 'combo') return <ComboIcon className="scale-[0.65]" />;
     return (
       <JarIcon 
         c1={product.pi % 2 === 0 ? '#D4EDE0' : '#EBF5EE'} 
         c2={product.pi % 2 === 0 ? '#1B5E3B' : '#0D3520'} 
         sub="" 
         idSuffix={product.id} 
-        className="scale-75 md:scale-90" 
+        className="scale-[0.65]" 
       />
     );
   };
 
-  const handleNavigate = () => {
-    router.push(`/product/${product.id}`);
-  };
-
   return (
     <div 
-      onClick={handleNavigate}
-      className="bg-white rounded-[20px] md:rounded-[28px] overflow-hidden border border-[#E5E7EB] cursor-pointer transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full w-full mx-auto shadow-sm transform-gpu translate-z-0"
+      onClick={() => router.push(`/product/${product.id}`)}
+      className="bg-white rounded-[20px] overflow-hidden border border-[#E5E7EB]/50 cursor-pointer transition-all duration-300 hover:shadow-lg group relative flex flex-col h-full w-full shadow-sm"
     >
-      {/* Top Section: Image Area */}
-      <div className="relative aspect-[1/1] bg-[#F9FAFB] p-0 flex items-center justify-center overflow-hidden">
-        {/* Discount Tag - Smaller & Cleaner */}
+      {/* 60% Image Area */}
+      <div className="relative aspect-[5/4] bg-[#F9FAFB] flex items-center justify-center overflow-hidden">
         {discount > 0 && (
-          <div className="absolute top-0 left-2 md:left-4 z-[30] bg-primary text-white px-1.5 md:px-2 py-2 md:py-3.5 rounded-b-full flex flex-col items-center justify-center shadow-lg min-w-[28px] md:min-w-[36px]">
-            <span className="text-[9px] md:text-[11px] font-black leading-none">{discount}%</span>
-            <span className="text-[6px] md:text-[7px] font-black uppercase mt-0.5 tracking-tighter">OFF</span>
+          <div className="absolute top-0 left-3 z-[30] bg-[#163A24] text-white px-1.5 py-2 rounded-b-lg shadow-sm">
+            <span className="text-[10px] font-black leading-none">{discount}% OFF</span>
           </div>
         )}
 
-        {/* Top Badges - Refined */}
-        <div className="absolute top-0 right-0 z-[30] pointer-events-none transform-gpu translate-z-0">
-          {product.badges?.slice(0, 1).map((badge, i) => (
-            <div key={i} className="bg-[#D4A017] text-white px-2 md:px-4 py-1 md:py-1.5 rounded-bl-[12px] md:rounded-bl-[20px] text-[7px] md:text-[9px] font-black uppercase tracking-widest shadow-sm">
-              {badge}
-            </div>
-          ))}
-        </div>
-
-        {/* Product Visual */}
         <div className="relative z-10 w-full h-full">
           {getIcon()}
         </div>
 
-        {/* Action Button - Scaled down */}
-        <div className="absolute right-2 md:right-4 bottom-2 z-[40]">
-          <button 
-            onClick={(e) => { e.stopPropagation(); onAdd(product); }}
-            className={cn(
-              "h-8 md:h-10 px-3 md:px-5 rounded-lg md:rounded-xl flex items-center gap-1.5 font-black text-[8px] md:text-[10px] uppercase tracking-widest shadow-xl transition-all active:scale-95 border-none whitespace-nowrap",
-              isInCart ? "bg-accent text-white" : "bg-primary text-white hover:bg-secondary"
-            )}
-          >
-            {isInCart ? 'ADD MORE' : 'ADD'} <ShoppingCart className="w-3 md:w-3.5" />
-          </button>
-        </div>
+        {/* Floating Add Button */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); onAdd(product); }}
+          className={cn(
+            "absolute right-2 bottom-2 z-[40] w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-90 border-none",
+            isInCart ? "bg-[#D4A94D] text-white" : "bg-[#163A24] text-white hover:bg-[#214F32]"
+          )}
+        >
+          <Plus className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* Info Section - Tighter Padding */}
-      <div className="p-3 md:p-4 bg-white flex flex-col flex-1 pt-4 md:pt-6">
-        <div className="space-y-0.5 md:space-y-1 mb-2 md:mb-3">
-          <h3 className="font-headline text-sm md:text-lg font-bold text-[#100C06] leading-tight line-clamp-2 min-h-[2.4em]">
+      {/* Info Section - Compact */}
+      <div className="p-3 flex flex-col flex-1 justify-between">
+        <div>
+          <h3 className="font-body text-xs md:text-sm font-bold text-[#100C06] leading-tight line-clamp-2 mb-1">
             {product.name}
           </h3>
-          <div className="flex items-center gap-1">
-            <div className="flex items-center gap-0.5">
-              <Star className="w-2.5 md:w-3 text-[#F5D110] fill-current" />
-              <span className="text-[9px] md:text-[11px] font-black text-[#100C06]">{product.rating || '4.9'}</span>
-            </div>
-            <span className="text-[8px] md:text-[10px] text-[#7A6848] font-bold opacity-30">({product.reviewCount || 0})</span>
+          <div className="flex items-center gap-1 mb-1">
+            <Star className="w-2.5 h-2.5 text-[#D4A94D] fill-current" />
+            <span className="text-[9px] font-black text-[#100C06]">{product.rating || '4.9'}</span>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mt-auto gap-1">
-          <div className="flex items-baseline gap-1 md:gap-1.5">
-            <span className="font-headline text-2xl md:text-3xl font-extrabold text-[#100C06] leading-none flex items-baseline">
-              <span className="text-sm md:text-lg mr-0.5 font-sans font-normal opacity-80">₹</span>
-              {price.toLocaleString('en-IN')}
-            </span>
-            {mrpPrice > price && (
-              <span className="text-[10px] md:text-xs text-[#7A6848] line-through font-medium opacity-30 italic">₹{mrpPrice.toLocaleString('en-IN')}</span>
-            )}
-          </div>
-          
-          {product.soldCountLabel && (
-            <div className="bg-[#FFF8E7] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 border border-[#F5D110]/10 w-fit">
-              <span className="text-[8px] md:text-[9px] font-black text-[#8B6E0F]">🔥 {product.soldCountLabel} sold</span>
-            </div>
-          )}
-        </div>
-
-        {/* Purity Indicator - Ultra-Compact */}
-        <div className="mt-3 md:mt-4 pt-2 md:pt-3 border-t border-[#F3F4F6] flex items-center justify-between">
-          <span className="text-[7px] md:text-[9px] font-black text-primary uppercase tracking-tight truncate flex items-center gap-1.5">
-            <div className="w-1 h-1 rounded-full bg-primary animate-pulse"></div>
-            Best Price Guarantee
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-headline text-lg md:text-xl font-extrabold text-[#163A24]">
+            ₹{price.toLocaleString('en-IN')}
           </span>
-          <i className="fa-solid fa-shield-check text-[8px] text-primary/20"></i>
+          {mrpPrice > price && (
+            <span className="text-[9px] text-[#7A6848] line-through opacity-40 font-medium">₹{mrpPrice.toLocaleString('en-IN')}</span>
+          )}
         </div>
       </div>
     </div>
