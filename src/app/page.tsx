@@ -191,16 +191,6 @@ export default function VivaanFarms() {
         <main>
           <Hero />
           
-          <div className="text-center py-5 md:py-12 px-5 bg-white border-b border-primary/5">
-            <h1 className="font-headline text-2xl md:text-6xl font-extrabold text-primary mb-1 leading-tight">
-              Authentic A2 Gir Cow Bilona Ghee & Farm Fresh Purity
-            </h1>
-            <p className="text-[#7A6848] text-[9px] md:text-lg font-medium tracking-wide uppercase">
-              Directly from Our Gujarat Farm to Your Home
-            </p>
-            <div className="w-10 h-0.5 bg-primary/10 mx-auto mt-3 rounded-full"></div>
-          </div>
-
           <TrustBar />
 
           <section className="py-8 md:py-16" id="products">
