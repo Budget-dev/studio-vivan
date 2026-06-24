@@ -17,18 +17,12 @@ service cloud.firestore {
     }
 
     // --- 1. Public Storefront Access (Top Priority) ---
-    // These rules allow anyone (guest or logged-in) to browse the catalog.
-    // We use explicit get/list to ensure filtered queries match correctly.
-
+    
     match /categories/{docId=**} {
       allow get, list: if true;
     }
 
     match /products/{docId=**} {
-      allow get, list: if true;
-    }
-
-    match /combos/{docId=**} {
       allow get, list: if true;
     }
 

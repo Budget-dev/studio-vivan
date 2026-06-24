@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "UserProfile": {
@@ -28,24 +27,6 @@
         "imageUrls": { "type": "array", "items": { "type": "string" } },
         "productCoupon": { "type": "string", "description": "Optional code for this product only." },
         "rewardCoins": { "type": "number", "description": "Coins earned on purchase." }
-      }
-    },
-    "Combo": {
-      "title": "Combo",
-      "description": "Dynamic promotional bundles.",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "title": { "type": "string" },
-        "subtitle": { "type": "string" },
-        "offerText": { "type": "string" },
-        "backgroundImage": { "type": "string" },
-        "buttonText": { "type": "string" },
-        "description": { "type": "string" },
-        "price": { "type": "number" },
-        "mrpPrice": { "type": "number" },
-        "isActive": { "type": "boolean" },
-        "order": { "type": "number" }
       }
     },
     "UniversalCoupon": {
@@ -80,10 +61,6 @@
     "/products/{productId}": {
       "schema": { "$ref": "#/entities/Product" },
       "description": "Farm inventory."
-    },
-    "/combos/{comboId}": {
-      "schema": { "$ref": "#/entities/Combo" },
-      "description": "Bundled offers."
     },
     "/universalCoupons/{couponId}": {
       "schema": { "$ref": "#/entities/UniversalCoupon" },
