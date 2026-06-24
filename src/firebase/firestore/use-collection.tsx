@@ -78,6 +78,12 @@ export function useCollection<T = any>(
             ? (memoizedTargetRefOrQuery as CollectionReference).path
             : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString();
 
+        // LOG RAW ERROR TO CONSOLE FOR DEBUGGING (Won't trigger overlay if caught by emitter)
+        console.warn(`[Firestore useCollection] Denied: ${path}`, {
+          code: error.code,
+          message: error.message
+        });
+
         const contextualError = new FirestorePermissionError({
           operation: 'list',
           path,

@@ -24,7 +24,7 @@ export function initializeFirebase() {
   if (typeof window !== 'undefined') {
     console.log('%c--- FIREBASE INIT DIAGNOSTICS ---', 'background: #0D3520; color: #fff; padding: 2px 5px;');
     console.log('Project ID:', app.options.projectId);
-    console.log('API Key:', app.options.apiKey?.substring(0, 6) + '...');
+    console.log('App ID:', app.options.appId);
     
     // Check if emulator is being triggered by env vars
     const isEmulator = (sdks.firestore as any)._settings?.host?.includes('localhost') || false;

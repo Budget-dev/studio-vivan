@@ -16,28 +16,28 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // --- 1. Public Storefront Access ---
-    // Using {id=**} ensures that both individual documents (get) 
-    // and collection listings (list) are permitted even for anonymous users.
+    // --- 1. Public Storefront Access (Top Priority) ---
+    // These rules allow anyone (guest or logged-in) to browse the catalog.
+    // We use explicit get/list to ensure filtered queries match correctly.
 
-    match /categories/{id=**} {
-      allow read: if true;
+    match /categories/{docId=**} {
+      allow get, list: if true;
     }
 
-    match /products/{id=**} {
-      allow read: if true;
+    match /products/{docId=**} {
+      allow get, list: if true;
     }
 
-    match /combos/{id=**} {
-      allow read: if true;
+    match /combos/{docId=**} {
+      allow get, list: if true;
     }
 
-    match /universalCoupons/{id=**} {
-      allow read: if true;
+    match /universalCoupons/{docId=**} {
+      allow get, list: if true;
     }
 
-    match /reviews/{id=**} {
-      allow read: if true;
+    match /reviews/{docId=**} {
+      allow get, list: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isOwner(resource.data.userId);
     }
@@ -50,7 +50,7 @@ service cloud.firestore {
 
     match /orders/{orderId} {
       allow create: if isSignedIn();
-      allow read: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
+      allow get: if isSignedIn() && (resource == null || resource.data.userId == request.auth.uid);
       allow list: if isSignedIn() && request.query.limit <= 100;
     }
 
@@ -60,7 +60,6 @@ service cloud.firestore {
     }
 
     // --- 3. Universal Master Admin Access ---
-    // Catch-all for administrative operations
     match /{document=**} {
       allow read, write: if isMasterAdmin();
     }
