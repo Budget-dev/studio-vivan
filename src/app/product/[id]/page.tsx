@@ -395,7 +395,7 @@ export default function ProductDetailsPage() {
                 <div className="text-center mb-8">
                   <div className="text-6xl font-headline font-black text-primary">4.9</div>
                   <div className="flex justify-center gap-1 my-3">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />)}
+                    {[...Array(5)].map((StarIcon, i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />)}
                   </div>
                   <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-widest">Based on {product.reviewCount} reviews</div>
                 </div>
@@ -462,7 +462,9 @@ export default function ProductDetailsPage() {
         </div>
       </main>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       <BottomNav activeTab="shop" onTabChange={handleTabChange} cartCount={totalQty} />
       
       <CartSidebar 

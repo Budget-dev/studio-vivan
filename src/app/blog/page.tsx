@@ -141,7 +141,9 @@ export default function BlogPage() {
         </div>
       </main>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       
       <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={totalQty} />
 

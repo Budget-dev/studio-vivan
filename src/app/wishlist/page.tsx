@@ -119,7 +119,9 @@ export default function WishlistPage() {
         </div>
       </main>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       <BottomNav activeTab="wishlist" onTabChange={handleTabChange} cartCount={totalQty} />
       <CartSidebar 
         isOpen={isCartOpen}

@@ -112,7 +112,9 @@ export default function TrackOrderPage() {
         )}
       </main>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
       <BottomNav activeTab="account" onTabChange={(tab) => router.push(tab === 'home' ? '/' : `/${tab}`)} cartCount={0} />
       
       <LoginModal 
