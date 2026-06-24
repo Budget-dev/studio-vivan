@@ -14,7 +14,8 @@ import {
   Menu,
   ChevronRight,
   Sparkles,
-  Phone
+  Phone,
+  ArrowRight
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
@@ -63,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   };
 
   const navItems = [
-    { label: 'The Collection', sub: 'Explore', onClick: () => { onFilter('all'); setMobileMenuOpen(false); } },
+    { label: 'Explore Collection', sub: 'The Collection', onClick: () => { onFilter('all'); setMobileMenuOpen(false); } },
     { label: 'A2 Gir Ghee', sub: 'Traditional', onClick: () => { onFilter('ghee'); setMobileMenuOpen(false); } },
     { label: 'Farm Sweets', sub: 'Handcrafted', onClick: () => { onFilter('sweets'); setMobileMenuOpen(false); } },
     { label: 'Wild Honey', sub: 'Raw', onClick: () => { onFilter('honey'); setMobileMenuOpen(false); } },
@@ -209,95 +210,106 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
       </div>
 
-      {/* Enhanced Mobile Menu Sidebar */}
+      {/* Premium Luxury Mobile Drawer */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="w-[300px] p-0 border-none bg-[#FDFBFA]">
+        <SheetContent 
+          side="left" 
+          className="w-[86vw] max-w-[320px] p-0 border-none bg-[#FCFBF8] shadow-[0_0_40px_rgba(0,0,0,0.08)] rounded-tr-[24px] rounded-br-[24px] z-[1000] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        >
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation Menu</SheetTitle>
           </SheetHeader>
-          <div className="h-full flex flex-col">
-            <div className="p-8 bg-primary text-white relative overflow-hidden">
-              <div className="absolute top-[-30px] right-[-30px] w-48 h-48 rounded-full bg-white/5 pointer-events-none"></div>
-              <div className="flex items-center gap-3 mb-8 relative z-10">
-                <div className="w-32 h-10 relative brightness-0 invert">
-                   <Image 
-                    src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
-                    alt="vivaan farms"
-                    fill
-                    className="object-contain object-left"
-                  />
+          
+          <div className="h-full flex flex-col pt-safe">
+            {/* Header with Centered Logo and Close */}
+            <div className="relative h-[70px] flex items-center justify-center border-b border-[#F1EAD8]/40 px-6">
+              <div className="w-32 h-10 relative">
+                <Image 
+                  src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
+                  alt="vivaan farms"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-primary/40 hover:text-primary transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-8">
+              {/* Collections Section */}
+              <div className="space-y-8 mb-8">
+                <div>
+                  <div className="text-[11px] font-black uppercase tracking-[3px] text-[#AFA18B] mb-3">Collections</div>
+                  <div className="space-y-5">
+                    {navItems.map((item) => (
+                      <button 
+                        key={item.label}
+                        onClick={item.onClick}
+                        className="w-full flex items-center justify-between group py-1 active:bg-primary/[0.04] transition-all rounded-xl"
+                      >
+                        <span className="font-headline text-[24px] font-medium text-[#1F3D2B] transition-transform duration-300 group-active:translate-x-1">
+                          {item.label}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-[#AFA18B]/30 group-active:translate-x-1 transition-transform" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact & Legacy Section */}
+                <div className="pt-8 border-t border-[#F1EAD8]/40">
+                  <div className="text-[11px] font-black uppercase tracking-[3px] text-[#AFA18B] mb-3">Heritage & Care</div>
+                  <div className="space-y-5">
+                    <Link 
+                      href="/about" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 group active:bg-primary/[0.04] transition-all rounded-xl py-1"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-[#1F3D2B]/40 transition-colors group-active:bg-primary group-active:text-white">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <span className="font-headline text-[24px] font-medium text-[#1F3D2B]">Our Legacy</span>
+                    </Link>
+                    <Link 
+                      href="/contact" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-4 group active:bg-primary/[0.04] transition-all rounded-xl py-1"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center text-[#1F3D2B]/40 transition-colors group-active:bg-primary group-active:text-white">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <span className="font-headline text-[24px] font-medium text-[#1F3D2B]">Support</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              
+            </div>
+
+            {/* Footer Area for Mobile Drawer */}
+            <div className="p-6 bg-[#FCFBF8] border-t border-[#F1EAD8]/40 pb-safe-offset-4">
               {user ? (
-                <div className="relative z-10">
-                  <div className="text-[9px] font-black uppercase tracking-[3px] text-white/30 mb-1">Farmer Account</div>
-                  <div className="text-2xl font-headline font-extrabold italic">{user.displayName || 'Farmer'}</div>
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-[#AFA18B] uppercase tracking-wider mb-0.5">Welcome</span>
+                    <span className="font-bold text-primary text-sm truncate max-w-[140px]">{user.displayName || 'Farmer'}</span>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 text-destructive font-black text-[10px] uppercase tracking-widest"
+                  >
+                    Logout <LogOut className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ) : (
                 <button 
                   onClick={() => { setLoginOpen(true); setMobileMenuOpen(false); }}
-                  className="relative z-10 h-12 px-7 rounded-full bg-white text-primary text-[10px] font-black uppercase tracking-widest shadow-2xl"
+                  className="w-full h-13 flex items-center justify-center bg-primary text-white font-black text-[10px] uppercase tracking-[2px] rounded-2xl shadow-xl active:scale-95 transition-all"
                 >
-                  Enter Purity Portal ✦
-                </button>
-              )}
-            </div>
-
-            <div className="flex-1 overflow-y-auto py-8">
-              <div className="px-6 mb-10">
-                <div className="text-[9px] font-black text-[#7A6848]/40 uppercase tracking-[4px] mb-6 px-4">Collections</div>
-                <div className="space-y-1">
-                  {navItems.map((item) => (
-                    <button 
-                      key={item.label}
-                      onClick={item.onClick}
-                      className="w-full flex items-center justify-between py-4 px-5 rounded-2xl hover:bg-primary/5 transition-all group"
-                    >
-                      <div className="text-left">
-                        <div className="text-[8px] font-black text-[#7A6848]/30 uppercase tracking-widest leading-none mb-1">{item.sub}</div>
-                        <div className="text-xl font-headline font-bold italic text-primary group-hover:translate-x-1 transition-transform">{item.label}</div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-primary/10 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="px-6">
-                <div className="text-[9px] font-black text-[#7A6848]/40 uppercase tracking-[4px] mb-6 px-4">Contact & Legacy</div>
-                <div className="space-y-1">
-                  <Link 
-                    href="/about" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center gap-4 py-4 px-5 rounded-2xl hover:bg-primary/5 transition-all group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-[#F9F6EF] flex items-center justify-center text-primary/40">
-                      <Sparkles className="w-5 h-5" />
-                    </div>
-                    <span className="text-xl font-headline font-bold italic text-primary">Our Legacy</span>
-                  </Link>
-                  <Link 
-                    href="/contact" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full flex items-center gap-4 py-4 px-5 rounded-2xl hover:bg-primary/5 transition-all group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-[#F9F6EF] flex items-center justify-center text-primary/40">
-                      <Phone className="w-5 h-5" />
-                    </div>
-                    <span className="text-xl font-headline font-bold italic text-primary">Support</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-8 bg-white border-t border-[#F1EAD8]/40">
-              {user && (
-                <button 
-                  onClick={handleLogout}
-                  className="w-full h-14 flex items-center justify-center gap-3 text-destructive font-black text-[10px] uppercase tracking-widest border-2 border-destructive/10 rounded-2xl hover:bg-destructive hover:text-white transition-all"
-                >
-                  <LogOut className="w-4 h-4" /> End Session
+                  Enter Portal ✦
                 </button>
               )}
             </div>

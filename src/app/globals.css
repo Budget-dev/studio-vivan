@@ -150,3 +150,17 @@
   transition-timing-function: cubic-bezier(0.34, 1.2, 0.64, 1);
   transition-duration: 400ms;
 }
+
+/* Luxury Drawer Fixes */
+body:has([role="dialog"][data-state="open"]) .bottom-nav-element,
+body:has([role="dialog"][data-state="open"]) .whatsapp-button-element {
+  display: none !important;
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+.pb-safe-offset-4 {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+}

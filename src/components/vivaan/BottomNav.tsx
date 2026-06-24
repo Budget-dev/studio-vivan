@@ -20,7 +20,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
   ];
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center px-4 md:hidden pointer-events-none">
+    <div className="fixed bottom-6 left-0 right-0 z-[1000] flex justify-center px-4 md:hidden pointer-events-none bottom-nav-element">
       <nav className="w-full max-w-[400px] h-[68px] bg-gradient-to-r from-[#102B1A] via-[#173823] to-[#102B1A] rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] flex items-center px-2 pointer-events-auto border border-white/10 backdrop-blur-md">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id || (tab.id === 'account' && activeTab === 'account');

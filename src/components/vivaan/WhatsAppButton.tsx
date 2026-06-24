@@ -17,7 +17,7 @@ export const WhatsAppButton: React.FC = () => {
       href={whatsappUrl} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="fixed bottom-[84px] right-4 md:bottom-10 md:right-10 z-[1000] group flex items-center justify-start w-[45px] h-[45px] bg-[#00d757] rounded-full cursor-pointer overflow-hidden transition-all duration-300 shadow-[2px_2px_10px_rgba(0,0,0,0.2)] hover:w-[150px] hover:rounded-[40px] active:translate-x-[2px] active:translate-y-[2px]"
+      className="fixed bottom-[84px] right-4 md:bottom-10 md:right-10 z-[1000] group flex items-center justify-start w-[45px] h-[45px] bg-[#00d757] rounded-full cursor-pointer overflow-hidden transition-all duration-300 shadow-[2px_2px_10px_rgba(0,0,0,0.2)] hover:w-[150px] hover:rounded-[40px] active:translate-x-[2px] active:translate-y-[2px] whatsapp-button-element"
       aria-label="Contact us on WhatsApp"
     >
       <div className="w-full h-[45px] flex items-center justify-center transition-all duration-300 group-hover:w-[30%] group-hover:pl-2.5 shrink-0">
