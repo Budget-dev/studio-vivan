@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -72,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
   return (
     <header className="bg-white/95 backdrop-blur-md sticky top-0 z-[900] border-b border-[#F1EAD8] shadow-[0_2px_15px_-1px_rgba(0,0,0,0.02)]">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[70px] md:h-[110px] flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[64px] md:h-[84px] flex items-center justify-between">
         
         {/* Mobile Left Menu */}
         <div className="md:hidden w-10 flex justify-start">
@@ -87,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         {/* Desktop Logo - Left Aligned */}
         <div className="flex-1 md:flex-initial flex justify-center md:justify-start h-full items-center">
           <Link href="/" className="flex items-center shrink-0 group relative py-2">
-            <div className="hidden md:block w-44 h-20 relative transition-all duration-500 group-hover:scale-105">
+            <div className="hidden md:block w-36 h-10 relative transition-all duration-500 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -97,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               />
             </div>
             {/* Mobile Logo */}
-            <div className="md:hidden w-32 h-10 relative">
+            <div className="md:hidden w-28 h-8 relative">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="vivaan farms"
@@ -110,52 +109,52 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
 
         {/* Centered Main Navigation (Desktop) */}
-        <nav className="hidden xl:flex items-center gap-10 2xl:gap-14 mx-auto h-full">
+        <nav className="hidden xl:flex items-center gap-8 2xl:gap-12 mx-auto h-full">
           {navItems.map((item) => (
             <button 
               key={item.label}
               onClick={item.onClick}
-              className="group flex flex-col items-center relative py-2"
+              className="group flex flex-col items-center relative py-1"
             >
-              <span className="text-[8px] font-black text-[#7A6848]/40 uppercase tracking-[2.5px] mb-1 transition-all group-hover:text-primary/60">
+              <span className="text-[7px] font-black text-[#7A6848]/40 uppercase tracking-[2.5px] mb-0.5 transition-all group-hover:text-primary/60">
                 {item.sub}
               </span>
-              <span className="font-headline text-2xl font-semibold italic text-primary/80 group-hover:text-primary transition-all tracking-tight relative">
+              <span className="font-headline text-xl font-semibold italic text-primary/80 group-hover:text-primary transition-all tracking-tight relative">
                 {item.label}
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-primary transition-all duration-500 group-hover:w-full opacity-30"></span>
+                <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-primary transition-all duration-500 group-hover:w-full opacity-30"></span>
               </span>
             </button>
           ))}
           
-          <div className="w-[1px] h-6 bg-[#DDD0B5]/30 mx-2"></div>
+          <div className="w-[1px] h-5 bg-[#DDD0B5]/30 mx-2"></div>
 
-          <Link href="/about" className="group flex flex-col items-center relative py-2">
-            <span className="text-[8px] font-black text-[#7A6848]/40 uppercase tracking-[2.5px] mb-1">Legacy</span>
-            <span className="font-headline text-2xl font-semibold italic text-primary/80 group-hover:text-primary transition-all tracking-tight">Our Story</span>
+          <Link href="/about" className="group flex flex-col items-center relative py-1">
+            <span className="text-[7px] font-black text-[#7A6848]/40 uppercase tracking-[2.5px] mb-0.5">Legacy</span>
+            <span className="font-headline text-xl font-semibold italic text-primary/80 group-hover:text-primary transition-all tracking-tight">Our Story</span>
           </Link>
         </nav>
 
         {/* Utility Actions - Right Aligned */}
-        <div className="flex items-center justify-end gap-2 md:gap-4 w-10 md:w-auto">
+        <div className="flex items-center justify-end gap-1.5 md:gap-3 w-10 md:w-auto">
           {/* Search Action */}
           <div className="relative">
             {isSearchOpen ? (
               <form onSubmit={handleSearch} className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center animate-in slide-in-from-right-4 duration-500">
                 <Input 
                   autoFocus
-                  className="w-[220px] md:w-[350px] h-11 rounded-full border-primary/10 pl-6 pr-12 text-sm bg-white shadow-xl focus-visible:ring-primary/20"
+                  className="w-[200px] md:w-[320px] h-10 rounded-full border-primary/10 pl-5 pr-10 text-sm bg-white shadow-xl focus-visible:ring-primary/20"
                   placeholder="What are you looking for?"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                 />
-                <button type="button" onClick={() => setSearchOpen(false)} className="absolute right-4 text-primary/40 hover:text-primary">
-                  <X className="w-5 h-5" />
+                <button type="button" onClick={() => setSearchOpen(false)} className="absolute right-3.5 text-primary/40 hover:text-primary">
+                  <X className="w-4.5 h-4.5" />
                 </button>
               </form>
             ) : (
               <button 
                 onClick={() => setSearchOpen(true)} 
-                className="w-11 h-11 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all group"
+                className="w-10 h-10 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all group"
               >
                 <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
               </button>
@@ -165,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           {/* User/Account Action */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-11 h-11 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all group">
+              <button className="w-10 h-10 flex items-center justify-center text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all group">
                 <User className="w-5 h-5 group-hover:scale-110 transition-transform" />
               </button>
             </DropdownMenuTrigger>
@@ -195,15 +194,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           {/* Premium Cart Button */}
           <button 
             onClick={onOpenCart} 
-            className="group relative flex items-center bg-primary text-white h-11 md:h-13 px-4 md:px-7 rounded-full transition-all hover:bg-secondary hover:shadow-xl active:scale-95"
+            className="group relative flex items-center bg-primary text-white h-10 md:h-11 px-4 md:px-6 rounded-full transition-all hover:bg-secondary hover:shadow-xl active:scale-95"
           >
             <div className="relative">
-              <ShoppingCart className="w-5 h-5" />
-              <div className="absolute -top-3.5 -right-3.5 bg-accent text-white text-[9px] font-black rounded-full min-w-[20px] h-[20px] flex items-center justify-center border-2 border-primary shadow-sm">
+              <ShoppingCart className="w-4.5 h-4.5" />
+              <div className="absolute -top-3 -right-3.5 bg-accent text-white text-[8px] font-black rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-primary shadow-sm">
                 {cartCount}
               </div>
             </div>
-            <span className="hidden lg:inline ml-3.5 text-[11px] font-black tracking-[2px] uppercase">
+            <span className="hidden lg:inline ml-3 text-[10px] font-black tracking-[2px] uppercase">
               Bag
             </span>
           </button>
@@ -222,8 +221,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           
           <div className="h-full flex flex-col">
             {/* Header with Centered Logo and Close */}
-            <div className="relative pt-12 pb-6 flex items-center justify-center border-b border-[#F1EAD8]/30 px-6 shrink-0">
-              <div className="w-32 h-10 relative">
+            <div className="relative pt-10 pb-6 flex items-center justify-center border-b border-[#F1EAD8]/30 px-6 shrink-0">
+              <div className="w-28 h-8 relative">
                 <Image 
                   src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                   alt="vivaan farms"
@@ -233,14 +232,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               </div>
               <button 
                 onClick={() => setMobileMenuOpen(false)}
-                className="absolute right-4 bottom-6 w-9 h-9 flex items-center justify-center text-primary/40 hover:text-primary transition-colors"
+                className="absolute right-4 bottom-5 w-9 h-9 flex items-center justify-center text-primary/40 hover:text-primary transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-10">
-              <div className="space-y-12">
+            <div className="flex-1 overflow-y-auto px-6 py-8">
+              <div className="space-y-10">
                 {/* Collections Section */}
                 <section>
                   <div className="text-[11px] font-black uppercase tracking-[3px] text-[#AFA18B] mb-3.5">Collections</div>
@@ -261,7 +260,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 </section>
 
                 {/* Heritage & Care Section */}
-                <section className="pt-10 border-t border-[#F1EAD8]/30">
+                <section className="pt-8 border-t border-[#F1EAD8]/30">
                   <div className="text-[11px] font-black uppercase tracking-[3px] text-[#AFA18B] mb-3.5">Heritage & Care</div>
                   <div className="space-y-5">
                     <Link 
