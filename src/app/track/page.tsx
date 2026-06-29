@@ -38,8 +38,15 @@ export default function TrackOrderPage() {
     }
   };
 
+  const handleTabChange = (tab: string) => {
+    if (tab === 'home') router.push('/');
+    else if (tab === 'wishlist') router.push('/wishlist');
+    else if (tab === 'account') router.push('/track');
+    else if (tab === 'profile') router.push('/profile');
+  };
+
   return (
-    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[68px] md:pb-0">
+    <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] pb-[100px] md:pb-0">
       <Ticker />
       <Header onOpenCart={() => router.push('/checkout')} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
@@ -115,7 +122,7 @@ export default function TrackOrderPage() {
       <div className="hidden md:block">
         <Footer />
       </div>
-      <BottomNav activeTab="account" onTabChange={(tab) => router.push(tab === 'home' ? '/' : `/${tab}`)} cartCount={0} />
+      <BottomNav activeTab="account" onTabChange={handleTabChange} cartCount={0} />
       
       <LoginModal 
         isOpen={isLoginOpen}

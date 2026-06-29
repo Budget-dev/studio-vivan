@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -176,6 +177,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                     <div className="text-sm font-bold text-primary truncate">{user.displayName || 'Farmer'}</div>
                     <div className="text-[10px] text-muted-foreground truncate">{user.email}</div>
                   </div>
+                  <DropdownMenuItem onClick={() => router.push('/profile')} className="rounded-xl py-3 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
+                    <User className="w-4 h-4 mr-3 text-primary/40" /> My Profile
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push('/track')} className="rounded-xl py-3 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
                     <Package className="w-4 h-4 mr-3 text-primary/40" /> Order History
                   </DropdownMenuItem>

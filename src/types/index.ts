@@ -43,6 +43,17 @@ export interface UniversalCoupon {
   isActive: boolean;
 }
 
+export interface Address {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  isDefault?: boolean;
+}
+
 export interface UserProfile {
   id: string;
   firstName: string;
@@ -50,6 +61,7 @@ export interface UserProfile {
   email: string;
   phoneNumber?: string;
   purityCoins: number;
+  addresses?: Address[];
   createdAt?: string;
   updatedAt?: string;
 }

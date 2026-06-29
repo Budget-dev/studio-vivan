@@ -132,6 +132,8 @@ export default function VivaanFarms() {
       router.push('/');
     } else if (tab === 'wishlist') {
       router.push('/wishlist');
+    } else if (tab === 'profile') {
+      router.push('/profile');
     }
   };
 
