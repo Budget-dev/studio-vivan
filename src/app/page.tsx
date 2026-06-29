@@ -202,16 +202,16 @@ export default function VivaanFarms() {
                 <p className="text-[11px] md:text-sm text-[#7A6848] font-medium mt-1">Sustainably Sourced, Consciously Crafted.</p>
               </div>
 
-              <div className="flex justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
-                <div className="flex gap-1 md:gap-3 items-center bg-white p-1 rounded-full border border-[#DDD0B5]/40 shadow-sm w-fit max-w-full transform-gpu translate-z-0">
+              <div className="flex justify-start md:justify-center mb-6 md:mb-12 overflow-x-auto no-scrollbar px-2 w-full">
+                <div className="flex gap-1.5 md:gap-3 items-center bg-white p-1.5 rounded-full border border-[#DDD0B5]/40 shadow-sm w-fit shrink-0">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => handleCategoryFilter(cat.id)}
                       className={cn(
-                        "flex items-center gap-1 md:gap-2 px-4 md:px-7 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
+                        "flex items-center gap-1.5 md:gap-2 px-4 md:px-7 py-2 md:py-3 rounded-full text-[10px] md:text-sm font-black transition-all whitespace-nowrap",
                         filter === cat.id 
-                          ? "bg-primary text-white shadow-lg scale-105" 
+                          ? "bg-primary text-white shadow-md" 
                           : "text-[#7A6848] hover:bg-primary/5"
                       )}
                     >
