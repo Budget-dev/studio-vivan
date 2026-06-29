@@ -121,6 +121,8 @@ export default function ProductDetailsPage() {
       router.push('/track');
     } else if (tab === 'wishlist') {
       router.push('/wishlist');
+    } else if (tab === 'profile') {
+      router.push('/profile');
     }
   };
 
@@ -243,7 +245,7 @@ export default function ProductDetailsPage() {
               </span>
               {product.mrpPrice > displayPrice && (
                 <div className="flex flex-col mb-2">
-                  <span className="text-base text-[#7A6848]/40 line-through font-bold">MRP ₹{product.mrpPrice.toLocaleString('en-IN')}</span>
+                  <span className="text-base text-[#7A6848] line-through font-bold opacity-70">MRP ₹{product.mrpPrice.toLocaleString('en-IN')}</span>
                   <span className="text-[10px] font-black text-secondary uppercase tracking-widest">You Save ₹{product.mrpPrice - displayPrice}</span>
                 </div>
               )}

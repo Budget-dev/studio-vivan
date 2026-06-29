@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -143,7 +144,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onC
             <div className="absolute top-[-20px] right-[-20px] w-[100px] h-[100px] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1),transparent_68%)] pointer-events-none"></div>
             <div className="font-headline text-5xl font-extrabold mb-2 relative z-1">₹{price.toLocaleString('en-IN')}</div>
             <div className="flex items-center gap-3 relative z-1 mb-4">
-              {product.mrp && <span className="text-sm text-white/30 line-through">₹{product.mrp.toLocaleString('en-IN')}</span>}
+              {product.mrp && <span className="text-sm text-white/50 line-through">₹{product.mrp.toLocaleString('en-IN')}</span>}
               <span className="bg-white/20 text-white border border-white/30 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">{product.off || 'BEST PRICE'}</span>
             </div>
             <div className="pt-4 border-t border-white/10 flex items-center gap-3">
