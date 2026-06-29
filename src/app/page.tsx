@@ -27,8 +27,8 @@ import { Coins, Sparkles, ArrowRight } from 'lucide-react';
 const CATEGORIES = [
   { id: 'all', label: 'All Products', ico: '🌿' },
   { id: 'ghee', label: 'A2 Gir Ghee', ico: '🐄' },
-  { id: 'sweets', label: 'Handcrafted Sweets', ico: '🎁' },
-  { id: 'honey', label: 'Raw Forest Honey', ico: '🍯' },
+  { id: 'sweets', label: 'Sweets', ico: '🎁' },
+  { id: 'honey', label: 'Honey', ico: '🍯' },
 ];
 
 export default function VivaanFarms() {
