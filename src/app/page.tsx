@@ -14,14 +14,12 @@ import { NativeSection } from '@/components/vivaan/NativeSection';
 import { Footer } from '@/components/vivaan/Footer';
 import { CartSidebar } from '@/components/vivaan/CartSidebar';
 import { BottomNav } from '@/components/vivaan/BottomNav';
-import { SplashScreen } from '@/components/vivaan/SplashScreen';
 import { Product } from '@/types';
 import { useCart } from '@/hooks/use-cart';
 import { naturalLanguageProductSearch } from '@/ai/flows/natural-language-product-search';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Coins, Sparkles, ArrowRight } from 'lucide-react';
 
 const CATEGORIES = [
@@ -42,18 +40,8 @@ export default function VivaanFarms() {
   const [filter, setFilter] = useState<string>('all');
   const [activeTab, setActiveTab] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
 
   const { cart, addToCart, updateQty, removeFromCart, totalQty } = useCart();
-
-  useEffect(() => {
-    if (!productsLoading) {
-      const timer = setTimeout(() => {
-        setShowSplash(false);
-      }, 300); 
-      return () => clearTimeout(timer);
-    }
-  }, [productsLoading]);
 
   const products = useMemo(() => {
     if (!dbProducts) return [];
@@ -156,21 +144,7 @@ export default function VivaanFarms() {
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {showSplash && (
-          <motion.div
-            key="splash"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[9999]"
-          >
-            <SplashScreen />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className={cn("sticky top-0 z-[900] transition-opacity duration-500", showSplash ? "opacity-0" : "opacity-100")}>
+      <div className="sticky top-0 z-[900]">
         <Ticker />
         <Header 
           onOpenCart={() => setIsCartOpen(true)} 
@@ -180,16 +154,7 @@ export default function VivaanFarms() {
         />
       </div>
       
-      <motion.div 
-        animate={{ 
-          opacity: showSplash ? 0 : 1,
-          scale: showSplash ? 0.98 : 1
-        }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className={cn(
-          "min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-24 md:pb-0"
-        )}
-      >
+      <div className="min-h-screen bg-[#F9F6EF] text-[#100C06] overflow-x-hidden pb-24 md:pb-0">
         <main>
           <Hero />
           
@@ -350,7 +315,7 @@ export default function VivaanFarms() {
         </main>
 
         <Footer />
-      </motion.div>
+      </div>
 
       <BottomNav 
         activeTab={activeTab}
