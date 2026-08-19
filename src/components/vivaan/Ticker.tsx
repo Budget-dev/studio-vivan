@@ -1,31 +1,29 @@
 import React from 'react';
+import { Truck } from 'lucide-react';
 
-const tickerItems = [
-  { ico: '🌿', txt: 'CODE PURE15 → 15% OFF' },
-  { ico: '🐄', txt: 'A2 Gir Bilona Ghee' },
-  { ico: '🚚', txt: 'Free Delivery ₹999+' },
-  { ico: '🧈', txt: 'Farm-Direct · Gujarat' },
-  { ico: '🔬', txt: '70+ NABL Lab Tests' },
-  { ico: '🪙', txt: 'Earn Purity Coins' },
-  { ico: '🎁', txt: 'Combo Packs · Save 19%' },
-  { ico: '🌾', txt: 'Bilona Method · Ancient' },
-  { ico: '⭐', txt: '4.9★ · 12,000+ Reviews' },
-];
-
+/**
+ * Ticker component redesigned to match the reference image.
+ * Features a static bar with left-aligned delivery info and right-aligned quality pillars.
+ */
 export const Ticker: React.FC = () => {
   return (
-    <div className="bg-[#0D3520] h-9 flex items-center justify-center text-[10px] font-black text-white tracking-[2.5px] overflow-hidden relative z-50 border-b border-white/5">
-      <div className="flex flex-col items-center ticker-vertical-animation will-change-transform">
-        {[...Array(2)].map((_, idx) => (
-          <React.Fragment key={idx}>
-            {tickerItems.map((item, i) => (
-              <div key={i} className="h-9 flex items-center justify-center gap-3.5 px-7 whitespace-nowrap uppercase">
-                <span className="text-sm">{item.ico}</span>
-                <span>{item.txt}</span>
-              </div>
-            ))}
-          </React.Fragment>
-        ))}
+    <div className="bg-[#0D3520] h-10 flex items-center justify-center text-[10px] md:text-[11px] font-bold text-white/90 tracking-wide overflow-hidden relative z-[950] border-b border-white/5 px-4 md:px-10">
+      <div className="max-w-[1600px] w-full flex items-center justify-between">
+        {/* Left Aligned - Delivery Info */}
+        <div className="flex items-center gap-2">
+          <Truck className="w-3.5 h-3.5 text-white/60" />
+          <span className="uppercase tracking-widest hidden sm:inline">Free delivery on orders over ₹999</span>
+          <span className="uppercase tracking-widest sm:hidden">Free delivery ₹999+</span>
+        </div>
+
+        {/* Right Aligned - Quality Pillars */}
+        <div className="hidden md:flex items-center gap-6 text-white/60 font-black uppercase tracking-[2px]">
+          <span>100% Organic</span>
+          <span className="text-white/20">|</span>
+          <span>Lab Tested</span>
+          <span className="text-white/20">|</span>
+          <span>Farm Direct</span>
+        </div>
       </div>
     </div>
   );
