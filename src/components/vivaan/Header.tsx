@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -83,22 +84,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
   return (
     <header className="bg-white sticky top-0 z-[900] border-b border-[#F1EAD8] shadow-sm">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[72px] md:h-[90px] flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[60px] md:h-[76px] flex items-center justify-between">
         
         {/* Mobile Left Menu */}
         <div className="md:hidden">
           <button 
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 text-primary hover:bg-primary/5 rounded-lg transition-all"
+            className="p-1.5 text-primary hover:bg-primary/5 rounded-lg transition-all"
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5" />
           </button>
         </div>
 
         {/* Logo (Left) */}
         <div className="flex items-center">
-          <Link href="/" className="flex items-center shrink-0 group py-2">
-            <div className="hidden md:block w-44 h-12 relative transition-all duration-500 group-hover:scale-105">
+          <Link href="/" className="flex items-center shrink-0 group py-1.5">
+            <div className="hidden md:block w-36 h-10 relative transition-all duration-500 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -107,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 priority
               />
             </div>
-            <div className="md:hidden w-32 h-10 relative">
+            <div className="md:hidden w-28 h-8 relative">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -120,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
 
         {/* Navigation Links (Center) */}
-        <nav className="hidden lg:flex items-center gap-10">
+        <nav className="hidden lg:flex items-center gap-6 lg:gap-8">
           {navLinks.slice(0, 2).map((link) => {
             const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
             return (
@@ -129,8 +130,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 href={link.href} 
                 onClick={link.onClick}
                 className={cn(
-                  "relative py-1 text-sm font-bold uppercase tracking-[1.5px] transition-colors hover:text-primary",
-                  isActive ? "text-primary after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-primary" : "text-[#7A6848]"
+                  "relative py-1 text-[11px] font-black uppercase tracking-[2px] transition-colors hover:text-primary",
+                  isActive ? "text-primary after:absolute after:bottom-[-2px] after:left-0 after:w-full after:h-[1.5px] after:bg-primary" : "text-[#7A6848]"
                 )}
               >
                 {link.label}
@@ -141,8 +142,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           {/* Categories Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 py-1 text-sm font-bold uppercase tracking-[1.5px] text-[#7A6848] hover:text-primary outline-none">
-                Categories <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+              <button className="flex items-center gap-1 py-1 text-[11px] font-black uppercase tracking-[2px] text-[#7A6848] hover:text-primary outline-none">
+                Categories <ChevronDown className="w-3 h-3 opacity-50" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="rounded-xl p-2 min-w-[180px] shadow-2xl border-[#F1EAD8] font-body mt-2">
@@ -165,8 +166,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 key={link.label} 
                 href={link.href}
                 className={cn(
-                  "relative py-1 text-sm font-bold uppercase tracking-[1.5px] transition-colors hover:text-primary",
-                  isActive ? "text-primary after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-primary" : "text-[#7A6848]"
+                  "relative py-1 text-[11px] font-black uppercase tracking-[2px] transition-colors hover:text-primary",
+                  isActive ? "text-primary after:absolute after:bottom-[-2px] after:left-0 after:w-full after:h-[1.5px] after:bg-primary" : "text-[#7A6848]"
                 )}
               >
                 {link.label}
@@ -176,14 +177,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </nav>
 
         {/* Utility Icons (Right) */}
-        <div className="flex items-center gap-1 md:gap-4">
+        <div className="flex items-center gap-1 md:gap-3">
           {/* Search */}
           <div className="relative flex items-center">
             {isSearchOpen ? (
               <form onSubmit={handleSearch} className="absolute right-0 flex items-center animate-in slide-in-from-right-4 duration-300">
                 <Input 
                   autoFocus
-                  className="w-[200px] md:w-[280px] h-10 rounded-full border-primary/10 pl-5 pr-10 text-sm bg-white shadow-lg"
+                  className="w-[180px] md:w-[240px] h-9 rounded-full border-primary/10 pl-4 pr-10 text-sm bg-white shadow-lg"
                   placeholder="Search products..."
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
@@ -197,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 onClick={() => setSearchOpen(true)} 
                 className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full"
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-4.5 h-4.5" />
               </button>
             )}
           </div>
@@ -206,7 +207,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full">
-                <User className="w-5 h-5" />
+                <User className="w-4.5 h-4.5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-xl p-2 min-w-[200px] shadow-2xl border-[#F1EAD8]">
@@ -239,9 +240,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             onClick={onOpenCart} 
             className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full relative"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="w-4.5 h-4.5" />
             {cartCount > 0 && (
-              <span className="absolute top-0 right-0 bg-primary text-white text-[8px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white">
+              <span className="absolute top-0.5 right-0.5 bg-primary text-white text-[7px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
                 {cartCount}
               </span>
             )}
