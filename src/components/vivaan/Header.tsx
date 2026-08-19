@@ -14,8 +14,6 @@ import {
   Package, 
   Menu,
   ChevronDown,
-  ChevronRight,
-  Phone
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,8 +25,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sheet";
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
@@ -84,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
 
   return (
     <header className="bg-white sticky top-0 z-[900] border-b border-[#F1EAD8] shadow-sm">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[60px] md:h-[76px] flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-10 h-[56px] md:h-[68px] flex items-center justify-between relative">
         
         {/* Mobile Left Menu */}
         <div className="md:hidden">
@@ -97,9 +93,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         </div>
 
         {/* Logo (Left) */}
-        <div className="flex items-center">
-          <Link href="/" className="flex items-center shrink-0 group py-1.5">
-            <div className="hidden md:block w-36 h-10 relative transition-all duration-500 group-hover:scale-105">
+        <div className={cn("flex items-center transition-opacity duration-300", isSearchOpen ? "md:opacity-100 opacity-0" : "opacity-100")}>
+          <Link href="/" className="flex items-center shrink-0 group py-1">
+            <div className="hidden md:block w-28 h-7 relative transition-all duration-500 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -108,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 priority
               />
             </div>
-            <div className="md:hidden w-28 h-8 relative">
+            <div className="md:hidden w-24 h-6 relative">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -120,8 +116,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           </Link>
         </div>
 
-        {/* Navigation Links (Center) */}
-        <nav className="hidden lg:flex items-center gap-6 lg:gap-8">
+        {/* Navigation Links (Center) - Hidden when search is active */}
+        <nav className={cn(
+          "hidden lg:flex items-center gap-6 transition-all duration-300",
+          isSearchOpen ? "opacity-0 pointer-events-none translate-y-[-10px]" : "opacity-100 translate-y-0"
+        )}>
           {navLinks.slice(0, 2).map((link) => {
             const isActive = link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
             return (
@@ -176,77 +175,85 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
           })}
         </nav>
 
-        {/* Utility Icons (Right) */}
-        <div className="flex items-center gap-1 md:gap-3">
-          {/* Search */}
-          <div className="relative flex items-center">
-            {isSearchOpen ? (
-              <form onSubmit={handleSearch} className="absolute right-0 flex items-center animate-in slide-in-from-right-4 duration-300">
-                <Input 
-                  autoFocus
-                  className="w-[180px] md:w-[240px] h-9 rounded-full border-primary/10 pl-4 pr-10 text-sm bg-white shadow-lg"
-                  placeholder="Search products..."
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                />
-                <button type="button" onClick={() => setSearchOpen(false)} className="absolute right-3 text-primary/40">
-                  <X className="w-4 h-4" />
-                </button>
-              </form>
-            ) : (
+        {/* Search Overlay (Absolute centered-right) */}
+        {isSearchOpen && (
+          <div className="absolute inset-x-4 md:left-[160px] md:right-32 lg:left-[300px] lg:right-40 flex items-center animate-in fade-in zoom-in-95 duration-300">
+            <form onSubmit={handleSearch} className="w-full relative">
+              <Input 
+                autoFocus
+                className="w-full h-9 rounded-full border-primary/20 pl-5 pr-10 text-sm bg-white shadow-lg focus-visible:ring-primary focus-visible:border-primary"
+                placeholder="Search products..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
               <button 
-                onClick={() => setSearchOpen(true)} 
-                className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full"
+                type="button" 
+                onClick={() => setSearchOpen(false)} 
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-primary/40 hover:text-primary transition-colors"
               >
-                <Search className="w-4.5 h-4.5" />
+                <X className="w-4 h-4" />
               </button>
-            )}
+            </form>
           </div>
+        )}
 
-          {/* User */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full">
-                <User className="w-4.5 h-4.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="rounded-xl p-2 min-w-[200px] shadow-2xl border-[#F1EAD8]">
-              {user ? (
-                <>
-                  <div className="px-3 py-3 border-b border-[#F9F6EF] mb-1">
-                    <div className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Logged in as</div>
-                    <div className="text-xs font-bold truncate">{user.displayName || user.email}</div>
-                  </div>
-                  <DropdownMenuItem onClick={() => router.push('/profile')} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
-                    <User className="w-3.5 h-3.5 mr-2" /> My Profile
+        {/* Utility Icons (Right) */}
+        <div className="flex items-center gap-1 md:gap-2">
+          {/* Search Toggle Button */}
+          {!isSearchOpen && (
+            <button 
+              onClick={() => setSearchOpen(true)} 
+              className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all"
+            >
+              <Search className="w-4.5 h-4.5" />
+            </button>
+          )}
+
+          {/* User & Cart - Stay visible on desktop, hidden on mobile during search */}
+          <div className={cn("flex items-center gap-1 md:gap-2 transition-opacity duration-300", isSearchOpen ? "md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto" : "opacity-100")}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full">
+                  <User className="w-4.5 h-4.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-xl p-2 min-w-[200px] shadow-2xl border-[#F1EAD8]">
+                {user ? (
+                  <>
+                    <div className="px-3 py-3 border-b border-[#F9F6EF] mb-1">
+                      <div className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Logged in as</div>
+                      <div className="text-xs font-bold truncate">{user.displayName || user.email}</div>
+                    </div>
+                    <DropdownMenuItem onClick={() => router.push('/profile')} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
+                      <User className="w-3.5 h-3.5 mr-2" /> My Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/track')} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
+                      <Package className="w-3.5 h-3.5 mr-2" /> My Orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer text-destructive">
+                      <LogOut className="w-3.5 h-3.5 mr-2" /> Sign Out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer">
+                    <User className="w-3.5 h-3.5 mr-2" /> Login / Register
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push('/track')} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-primary/5">
-                    <Package className="w-3.5 h-3.5 mr-2" /> My Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer text-destructive">
-                    <LogOut className="w-3.5 h-3.5 mr-2" /> Sign Out
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <DropdownMenuItem onClick={() => setLoginOpen(true)} className="rounded-lg py-2.5 px-3 text-[10px] font-black uppercase tracking-widest cursor-pointer">
-                  <User className="w-3.5 h-3.5 mr-2" /> Login / Register
-                </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <button 
+              onClick={onOpenCart} 
+              className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full relative"
+            >
+              <ShoppingCart className="w-4.5 h-4.5" />
+              {cartCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-primary text-white text-[7px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
+                  {cartCount}
+                </span>
               )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Cart */}
-          <button 
-            onClick={onOpenCart} 
-            className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full relative"
-          >
-            <ShoppingCart className="w-4.5 h-4.5" />
-            {cartCount > 0 && (
-              <span className="absolute top-0.5 right-0.5 bg-primary text-white text-[7px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
-                {cartCount}
-              </span>
-            )}
-          </button>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -254,7 +261,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
       <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="w-[300px] p-0 border-none bg-white">
           <div className="h-full flex flex-col p-6">
-            <div className="mb-10 w-32 h-10 relative">
+            <div className="mb-10 w-32 h-8 relative">
                <Image src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png" alt="Vivaan" fill className="object-contain" />
             </div>
 
