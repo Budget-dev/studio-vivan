@@ -6,7 +6,7 @@ import { ImageSlider } from './ImageSlider';
 
 /**
  * Hero Banner Component
- * Updated: Uses a Framer Motion ImageSlider for desktop and a single banner for mobile.
+ * Optimized for Desktop (Slider) and Mobile (Static Image) as requested.
  */
 export const Hero: React.FC = () => {
   const banners = [
@@ -17,12 +17,12 @@ export const Hero: React.FC = () => {
 
   return (
     <section className="w-full bg-[#F9F6EF] px-0">
-      {/* Desktop Version: Full Motion Slider */}
+      {/* Desktop Version: Uses the exact ImageSlider logic provided */}
       <div className="hidden md:block relative w-full aspect-[2.8/1] overflow-hidden shadow-sm">
-        <ImageSlider images={banners} interval={6000} />
+        <ImageSlider images={banners} interval={5000} />
       </div>
 
-      {/* Mobile Version: Single Static Banner for Performance */}
+      {/* Mobile Version: Maintained as a high-performance static banner */}
       <div className="md:hidden relative w-full aspect-[16/7] overflow-hidden shadow-sm">
         <Image
           src={banners[0]}

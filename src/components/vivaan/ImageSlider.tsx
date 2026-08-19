@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"; // Assuming you have a `cn` utility for classnames
 
 interface ImageSliderProps extends React.HTMLAttributes<HTMLDivElement> {
   images: string[];
@@ -34,7 +34,7 @@ const ImageSlider = React.forwardRef<HTMLDivElement, ImageSliderProps>(
         )}
         {...props}
       >
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false}>
           <motion.img
             key={currentIndex}
             src={images[currentIndex]}
@@ -46,20 +46,18 @@ const ImageSlider = React.forwardRef<HTMLDivElement, ImageSliderProps>(
             className="absolute top-0 left-0 w-full h-full object-cover"
           />
         </AnimatePresence>
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={cn(
-                "w-2.5 h-2.5 rounded-full transition-all duration-300",
-                currentIndex === index 
-                  ? "bg-white scale-125 shadow-[0_0_8px_rgba(255,255,255,0.8)]" 
-                  : "bg-white/40 hover:bg-white/60"
-              )}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {images.map((_, index) => (
+                <button
+                    key={index}
+                    onClick={() => setCurrentIndex(index)}
+                    className={cn(
+                        "w-2 h-2 rounded-full transition-colors duration-300",
+                        currentIndex === index ? "bg-white" : "bg-white/50 hover:bg-white"
+                    )}
+                    aria-label={`Go to slide ${index + 1}`}
+                />
+            ))}
         </div>
       </div>
     );
