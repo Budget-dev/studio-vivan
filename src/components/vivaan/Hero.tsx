@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -12,7 +11,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
  */
 export const Hero: React.FC = () => {
   const mainBanner = PlaceHolderImages.find(img => img.id === 'hero-banner-main');
-  const bannerUrl = mainBanner?.imageUrl || 'https://vivanfa.sirv.com/Firefly_Gemini%20Flash_Use%20the%20attached%20Atta%20banner%20as%20the%20exact%20layout%20and%20mood%20reference.%20Recreate%20the%20sam%20213429.png';
+  const bannerUrl = mainBanner?.imageUrl || 'https://vivanfa.sirv.com/ChatGPT%20Image%20Jul%2031%2C%202026%2C%2011_49_21%20PM.png';
 
   return (
     <section className="w-full bg-[#F9F6EF] px-0">
