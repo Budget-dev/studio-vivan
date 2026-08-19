@@ -174,7 +174,7 @@ export default function CheckoutPage() {
                       <p className="text-xs text-muted-foreground font-black uppercase tracking-widest">{item.vol} · {item.rewardCoins || 0} Coins Reward</p>
                       <div className="flex items-center justify-between mt-4">
                         <span className="text-sm font-bold text-muted-foreground">Qty: {item.qty}</span>
-                        <span className="text-lg font-black">₹{(item.price * item.qty).toLocaleString('en-IN')}</span>
+                        <span className="text-lg font-black no-underline leading-tight">₹{(item.price * item.qty).toLocaleString('en-IN')}</span>
                       </div>
                     </div>
                   </div>
@@ -235,18 +235,18 @@ export default function CheckoutPage() {
                 <div className="space-y-4 pt-6 border-t border-[#F9F6EF]">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground font-medium">Subtotal</span>
-                    <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span className="font-bold no-underline leading-tight">₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   {calculations.couponDiscount > 0 && (
                     <div className="flex justify-between text-sm text-primary">
                       <span className="font-bold">Coupon Savings</span>
-                      <span className="font-black">−₹{calculations.couponDiscount.toLocaleString('en-IN')}</span>
+                      <span className="font-black no-underline leading-tight">−₹{calculations.couponDiscount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
                   {calculations.coinsDiscount > 0 && (
                     <div className="flex justify-between text-sm text-secondary">
                       <span className="font-bold">Coins Redeemed</span>
-                      <span className="font-black">−₹{calculations.coinsDiscount.toLocaleString('en-IN')}</span>
+                      <span className="font-black no-underline leading-tight">−₹{calculations.coinsDiscount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm text-secondary">
@@ -255,7 +255,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="pt-4 border-t-2 border-[#F9F6EF] flex justify-between items-center">
                     <span className="text-lg font-black uppercase tracking-tight">Total</span>
-                    <span className="font-headline text-4xl font-extrabold text-primary">₹{calculations.finalTotal.toLocaleString('en-IN')}</span>
+                    <span className="font-headline text-4xl font-extrabold text-primary no-underline leading-tight">₹{calculations.finalTotal.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>

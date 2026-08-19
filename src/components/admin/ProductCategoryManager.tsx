@@ -93,6 +93,10 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
     }
   };
 
+  const removeImage = (idx: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== idx));
+  };
+
   const resetForm = () => {
     setName(''); setPrice(''); setMrpPrice(''); setStock(''); setDesc(''); setUploadedImages([]);
     setProductCoupon(''); setRewardCoins(''); setEditingId(null); setRating('4.9'); setReviews('120');
@@ -354,8 +358,8 @@ export const ProductCategoryManager: React.FC<ProductCategoryManagerProps> = ({
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="text-xs text-[#7A6848] line-through opacity-50">₹{p.mrpPrice}</span>
-                    <span className="text-sm font-black text-foreground">₹{p.basePrice?.toLocaleString('en-IN')}</span>
+                    <span className="text-xs text-[#7A6848] line-through decoration-1 opacity-50">₹{p.mrpPrice}</span>
+                    <span className="text-sm font-black text-foreground no-underline leading-tight">₹{p.basePrice?.toLocaleString('en-IN')}</span>
                   </div>
                 </TableCell>
                 <TableCell>

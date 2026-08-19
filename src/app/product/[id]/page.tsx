@@ -239,13 +239,13 @@ export default function ProductDetailsPage() {
             </div>
 
             <div className="flex items-baseline gap-4 mb-8">
-              <span className="font-headline text-5xl md:text-7xl font-black text-primary flex items-baseline">
+              <span className="font-headline text-5xl md:text-7xl font-black text-primary flex items-baseline no-underline leading-tight">
                 <span className="text-2xl md:text-3xl font-sans font-normal opacity-70 mr-1">₹</span>
                 {displayPrice.toLocaleString('en-IN')}
               </span>
               {product.mrpPrice > displayPrice && (
                 <div className="flex flex-col mb-2">
-                  <span className="text-base text-[#7A6848] line-through font-bold opacity-70">MRP ₹{product.mrpPrice.toLocaleString('en-IN')}</span>
+                  <span className="text-base text-[#7A6848] line-through decoration-1 font-bold opacity-70">MRP ₹{product.mrpPrice.toLocaleString('en-IN')}</span>
                   <span className="text-[10px] font-black text-secondary uppercase tracking-widest">You Save ₹{product.mrpPrice - displayPrice}</span>
                 </div>
               )}

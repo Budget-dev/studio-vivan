@@ -160,7 +160,7 @@ export default function PaymentPage() {
             <div className="bg-primary p-10 text-white text-center relative overflow-hidden">
               <div className="absolute top-[-40px] right-[-40px] w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="text-[10px] font-black uppercase tracking-[4px] opacity-40 mb-4">Total Payable</div>
-              <div className="font-headline text-7xl font-extrabold leading-none">₹{total.toLocaleString('en-IN')}</div>
+              <div className="font-headline text-7xl font-extrabold leading-none no-underline leading-tight">₹{total.toLocaleString('en-IN')}</div>
             </div>
 
             <div className="p-10">
@@ -170,12 +170,12 @@ export default function PaymentPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground font-medium">Items Total</span>
-                    <span className="font-bold">₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span className="font-bold no-underline leading-tight">₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   {checkoutState?.coinsRedeemed > 0 && (
                     <div className="flex justify-between text-sm text-secondary">
                       <span className="font-bold italic">Purity Coin Discount</span>
-                      <span className="font-black">−₹{checkoutState.coinsRedeemed}</span>
+                      <span className="font-black no-underline leading-tight">−₹{checkoutState.coinsRedeemed}</span>
                     </div>
                   )}
                   {checkoutState?.appliedCoupon && (
@@ -186,7 +186,7 @@ export default function PaymentPage() {
                   )}
                   <div className="pt-4 border-t border-primary/5 flex justify-between items-center">
                     <span className="text-base font-black uppercase">Final Total</span>
-                    <span className="text-2xl font-black text-primary">₹{total.toLocaleString('en-IN')}</span>
+                    <span className="text-2xl font-black text-primary no-underline leading-tight">₹{total.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>

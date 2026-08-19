@@ -114,7 +114,7 @@ export default function AdminOrdersPage() {
                       </span>
                     </TableCell>
                     <TableCell className="text-xs font-medium text-[#7A6848]">{order.paymentMethod}</TableCell>
-                    <TableCell className="text-sm font-black text-foreground">₹{(order.totalAmount || 0).toLocaleString('en-IN')}</TableCell>
+                    <TableCell className="text-sm font-black text-foreground no-underline leading-tight">₹{(order.totalAmount || 0).toLocaleString('en-IN')}</TableCell>
                     <TableCell className="text-sm font-medium text-[#7A6848]">{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'}</TableCell>
                     <TableCell className="text-right pr-8">
                       <DropdownMenu>
@@ -175,7 +175,7 @@ export default function AdminOrdersPage() {
             </div>
             <div className="mt-10 p-6 bg-[#F9F6EF] rounded-3xl text-center">
               <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-2">Total Revenue</div>
-              <div className="font-headline text-3xl font-extrabold text-primary">
+              <div className="font-headline text-3xl font-extrabold text-primary no-underline leading-tight">
                 ₹{orders?.reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString('en-IN') || '0'}
               </div>
             </div>
