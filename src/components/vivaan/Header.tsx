@@ -30,6 +30,7 @@ import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { LoginModal } from './LoginModal';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface HeaderProps {
   onOpenCart: () => void;
@@ -41,6 +42,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter, onSearch }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const isMobile = useIsMobile();
   const [searchValue, setSearchValue] = useState('');
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
@@ -58,6 +60,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
+  };
+
+  const handleCartClick = () => {
+    if (isMobile) {
+      onOpenCart();
+    } else {
+      router.push('/cart');
+    }
   };
 
   const categories = [
@@ -95,7 +105,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
         {/* Logo (Left) */}
         <div className={cn("flex items-center transition-opacity duration-300", isSearchOpen ? "md:opacity-100 opacity-0" : "opacity-100")}>
           <Link href="/" className="flex items-center shrink-0 group py-1">
-            <div className="hidden md:block w-28 h-7 relative transition-all duration-500 group-hover:scale-105">
+            <div className="hidden md:block w-24 h-6 relative transition-all duration-500 group-hover:scale-105">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -104,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
                 priority
               />
             </div>
-            <div className="md:hidden w-24 h-6 relative">
+            <div className="md:hidden w-20 h-5 relative">
               <Image 
                 src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png"
                 alt="Vivaan Farms"
@@ -181,7 +191,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <form onSubmit={handleSearch} className="w-full relative">
               <Input 
                 autoFocus
-                className="w-full h-9 rounded-full border-primary/20 pl-5 pr-10 text-sm bg-white shadow-lg focus-visible:ring-primary focus-visible:border-primary"
+                className="w-full h-8 rounded-full border-primary/20 pl-5 pr-10 text-sm bg-white shadow-lg focus-visible:ring-primary focus-visible:border-primary"
                 placeholder="Search products..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
@@ -205,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
               onClick={() => setSearchOpen(true)} 
               className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full transition-all"
             >
-              <Search className="w-4.5 h-4.5" />
+              <Search className="w-4 h-4" />
             </button>
           )}
 
@@ -214,7 +224,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full">
-                  <User className="w-4.5 h-4.5" />
+                  <User className="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="rounded-xl p-2 min-w-[200px] shadow-2xl border-[#F1EAD8]">
@@ -243,10 +253,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCart, cartCount, onFilter,
             </DropdownMenu>
 
             <button 
-              onClick={onOpenCart} 
+              onClick={handleCartClick} 
               className="p-2 text-primary/70 hover:text-primary hover:bg-primary/5 rounded-full relative"
             >
-              <ShoppingCart className="w-4.5 h-4.5" />
+              <ShoppingCart className="w-4 h-4" />
               {cartCount > 0 && (
                 <span className="absolute top-0.5 right-0.5 bg-primary text-white text-[7px] font-black rounded-full w-3.5 h-3.5 flex items-center justify-center border border-white">
                   {cartCount}
