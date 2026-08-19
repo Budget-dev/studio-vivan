@@ -213,17 +213,6 @@ export default function VivaanFarms() {
                       </div>
                     )}
                   </div>
-
-                  {filteredProducts.length > 0 && (
-                    <div className="mt-8 md:mt-16 flex justify-center">
-                      <button 
-                        onClick={() => handleCategoryFilter('all')}
-                        className="h-10 md:h-16 px-6 md:px-14 rounded-full border-2 border-primary text-primary font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl flex items-center gap-2 group active:scale-95 text-[9px] md:text-base"
-                      >
-                        Explore All Pure Products <Sparkles className="w-3.5 h-3.5 md:w-5 md:h-5 group-hover:rotate-12 transition-transform" />
-                      </button>
-                    </div>
-                  )}
                 </>
               )}
             </div>
