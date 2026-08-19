@@ -3,12 +3,11 @@
 import React, { useState, useEffect, Suspense, useId } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { Ticker } from '@/components/vivaan/Ticker';
 import { Header } from '@/components/vivaan/Header';
 import { Footer } from '@/components/vivaan/Footer';
-import { Ticker } from '@/components/vivaan/Ticker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useAuth, useUser, useFirestore } from '@/firebase';
 import { 
@@ -20,7 +19,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Mail, Lock, User as UserIcon, LogIn, Sparkles, Phone } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 function LoginContent() {
   const id = useId();
@@ -112,148 +111,156 @@ function LoginContent() {
   }
 
   return (
-    <div className="w-full max-w-[440px] bg-white rounded-[40px] shadow-2xl border border-[#F1EAD8]/40 overflow-hidden p-10 md:p-12">
-      <div className="flex flex-col items-center gap-8 mb-12">
-        {/* Logo */}
-        <div className="flex size-16 shrink-0 items-center justify-center rounded-full border border-border bg-white shadow-sm overflow-hidden p-3">
-          <div className="relative w-full h-full">
-            <Image 
-              src="https://i.ibb.co/FqCKvSVb/Group-66-1-removebg-preview.png" 
-              alt="Vivaan Farms" 
-              fill 
-              className="object-contain"
-            />
-          </div>
+    <div className="w-full max-w-[1000px] bg-white md:rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+      {/* Left Column: Image (Desktop Only) */}
+      <div className="hidden md:block w-1/2 relative bg-[#F9F6EF]">
+        <Image 
+          src="https://vivanfa.sirv.com/ChatGPT%20Image%20Aug%201%2C%202026%2C%2010_06_35%20AM.png"
+          alt="Vivaan Farms Purity"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Pagination Dots to match reference image */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className={cn("w-2 h-2 rounded-full", i === 0 ? "bg-white" : "bg-white/40")} />
+          ))}
         </div>
+      </div>
 
-        <div className="text-center space-y-2">
-          <h1 className="font-headline text-4xl font-extrabold text-primary tracking-tight">
-            {mode === 'login' ? 'Welcome back' : 'Join the Farm'}
+      {/* Right Column: Form */}
+      <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+        <div className="mb-10 text-center md:text-left">
+          <h1 className="text-3xl md:text-4xl font-black text-[#100C06] tracking-tight mb-2">
+            {mode === 'login' ? 'Welcome Back' : 'Join the Farm'}
           </h1>
-          <p className="text-[#7A6848] text-base font-medium px-4">
+          <p className="text-[#7A6848] text-sm font-medium">
             {mode === 'login' 
-              ? 'Enter your credentials to login to your account.' 
+              ? 'Enter your credentials to access your account.' 
               : 'Create your purity account to start earning rewards.'}
           </p>
         </div>
-      </div>
 
-      <form onSubmit={handleEmailAuth} className="space-y-6">
-        <div className="space-y-4">
-          {mode === 'register' && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor={`${id}-name`} className="text-[11px] font-black uppercase tracking-wider text-[#AFA18B]">Full Name</Label>
-                <Input 
-                  id={`${id}-name`} 
-                  placeholder="Farmer Name" 
-                  className="h-13 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary/20"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`${id}-phone`} className="text-[11px] font-black uppercase tracking-wider text-[#AFA18B]">Phone Number</Label>
-                <Input 
-                  id={`${id}-phone`} 
-                  type="tel"
-                  placeholder="+91 00000 00000" 
-                  className="h-13 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary/20"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required 
-                />
-              </div>
-            </>
-          )}
+        {/* Social Logins */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <Button 
+            variant="outline" 
+            onClick={handleGoogleAuth}
+            className="h-12 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-xs"
+          >
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-4 h-4" />
+            Google
+          </Button>
+          <Button 
+            variant="outline" 
+            className="h-12 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-xs"
+          >
+            <i className="fa-brands fa-apple text-base"></i>
+            Apple
+          </Button>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor={`${id}-email`} className="text-[11px] font-black uppercase tracking-wider text-[#AFA18B]">Email Address</Label>
-            <Input 
-              id={`${id}-email`} 
-              type="email"
-              placeholder="pure@farm.com" 
-              className="h-13 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary/20"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+        <div className="flex items-center gap-3 mb-8 before:h-px before:flex-1 before:bg-[#F3F4F6] after:h-px after:flex-1 after:bg-[#F3F4F6]">
+          <span className="text-[10px] font-black uppercase text-[#9CA3AF] tracking-widest">Or continue with</span>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor={`${id}-password`} className="text-[11px] font-black uppercase tracking-wider text-[#AFA18B]">Password</Label>
-            <Input 
-              id={`${id}-password`} 
-              type="password"
-              placeholder="••••••••" 
-              className="h-13 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary/20"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+        <form onSubmit={handleEmailAuth} className="space-y-6">
+          <div className="space-y-4">
+            {mode === 'register' && (
+              <>
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${id}-name`} className="text-xs font-bold text-[#100C06]">Full Name</Label>
+                  <Input 
+                    id={`${id}-name`} 
+                    placeholder="Enter your name" 
+                    className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required 
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor={`${id}-phone`} className="text-xs font-bold text-[#100C06]">Phone Number</Label>
+                  <Input 
+                    id={`${id}-phone`} 
+                    type="tel"
+                    placeholder="+91 00000 00000" 
+                    className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required 
+                  />
+                </div>
+              </>
+            )}
 
-          {mode === 'register' && (
-            <div className="space-y-2">
-              <Label htmlFor={`${id}-confirm`} className="text-[11px] font-black uppercase tracking-wider text-[#AFA18B]">Confirm Password</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor={`${id}-email`} className="text-xs font-bold text-[#100C06]">Email</Label>
               <Input 
-                id={`${id}-confirm`} 
-                type="password"
-                placeholder="••••••••" 
-                className="h-13 rounded-2xl bg-[#F9F6EF] border-transparent font-bold text-base focus-visible:ring-primary/20"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                id={`${id}-email`} 
+                type="email"
+                placeholder="m@example.com" 
+                className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-          )}
-        </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Checkbox id={`${id}-remember`} className="rounded-md border-[#DDD0B5] data-[state=checked]:bg-primary" />
-            <Label htmlFor={`${id}-remember`} className="text-xs font-bold text-[#7A6848] cursor-pointer">
-              Remember me
-            </Label>
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <Label htmlFor={`${id}-password`} className="text-xs font-bold text-[#100C06]">Password</Label>
+                <button type="button" className="text-xs font-bold text-[#100C06] hover:underline">Forgot password?</button>
+              </div>
+              <Input 
+                id={`${id}-password`} 
+                type="password"
+                placeholder="••••••••" 
+                className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            {mode === 'register' && (
+              <div className="space-y-1.5">
+                <Label htmlFor={`${id}-confirm`} className="text-xs font-bold text-[#100C06]">Confirm Password</Label>
+                <Input 
+                  id={`${id}-confirm`} 
+                  type="password"
+                  placeholder="••••••••" 
+                  className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+            )}
           </div>
-          <button type="button" className="text-xs font-black uppercase text-primary underline hover:no-underline tracking-widest">
-            Forgot password?
-          </button>
-        </div>
 
-        <Button disabled={loading} className="w-full h-16 bg-primary hover:bg-secondary text-white rounded-full font-black uppercase tracking-[2px] shadow-xl text-sm transition-all active:scale-[0.98]">
-          {loading ? 'Processing...' : (mode === 'login' ? 'Sign In →' : 'Create Account →')}
-        </Button>
+          <Button 
+            disabled={loading} 
+            className="w-full h-12 bg-[#100C06] hover:bg-[#1f1a0d] text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]"
+          >
+            {loading ? 'Processing...' : (mode === 'login' ? 'Log In' : 'Sign Up')}
+          </Button>
+        </form>
 
-        <div className="text-center pt-2">
+        <div className="mt-8 text-center">
           <button 
             type="button" 
             onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-            className="text-[11px] font-black uppercase tracking-[2px] text-[#AFA18B] hover:text-primary transition-colors"
+            className="text-xs font-medium text-[#7A6848]"
           >
-            {mode === 'login' ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+            {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
+            <span className="font-bold text-[#100C06] hover:underline">
+              {mode === 'login' ? 'Sign up' : 'Sign in'}
+            </span>
           </button>
         </div>
-      </form>
-
-      <div className="flex items-center gap-3 my-10 before:h-px before:flex-1 before:bg-[#F1EAD8] after:h-px after:flex-1 after:bg-[#F1EAD8]">
-        <span className="text-[10px] font-black uppercase text-[#AFA18B] tracking-widest">Or</span>
       </div>
-
-      <Button 
-        onClick={handleGoogleAuth} 
-        variant="outline" 
-        disabled={loading}
-        className="w-full h-16 rounded-full border-[#F1EAD8] hover:bg-primary/5 flex items-center justify-center gap-4 transition-all"
-      >
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
-        <span className="font-black uppercase tracking-widest text-xs">Continue with Google</span>
-      </Button>
-
-      <p className="text-[10px] text-center text-[#AFA18B] font-bold mt-12 uppercase tracking-widest leading-relaxed opacity-60">
-        By proceeding, you agree to our <br /><strong>Terms of Service</strong> & <strong>Privacy Policy</strong>
-      </p>
     </div>
   );
 }
@@ -264,8 +271,8 @@ export default function LoginPage() {
       <Ticker />
       <Header onOpenCart={() => {}} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
-      <main className="max-w-[1200px] mx-auto px-5 py-12 md:py-24 flex flex-col items-center justify-center">
-        <Suspense fallback={<div className="w-full max-w-[440px] h-[700px] bg-white rounded-[40px] animate-pulse" />}>
+      <main className="max-w-[1400px] mx-auto px-0 md:px-5 py-0 md:py-24 flex flex-col items-center justify-center min-h-[calc(100vh-124px)]">
+        <Suspense fallback={<div className="w-full max-w-[1000px] h-[600px] bg-white md:rounded-[40px] animate-pulse" />}>
           <LoginContent />
         </Suspense>
       </main>
