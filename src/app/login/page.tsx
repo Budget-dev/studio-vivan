@@ -111,7 +111,7 @@ function LoginContent() {
   }
 
   return (
-    <div className="w-full max-w-[1000px] bg-white md:rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+    <div className="w-full max-w-[900px] bg-white md:rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[500px]">
       {/* Left Column: Image (Desktop Only) */}
       <div className="hidden md:block w-1/2 relative bg-[#F9F6EF]">
         <Image 
@@ -122,20 +122,20 @@ function LoginContent() {
           priority
         />
         {/* Pagination Dots to match reference image */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className={cn("w-2 h-2 rounded-full", i === 0 ? "bg-white" : "bg-white/40")} />
+            <div key={i} className={cn("w-1.5 h-1.5 rounded-full", i === 0 ? "bg-white" : "bg-white/40")} />
           ))}
         </div>
       </div>
 
       {/* Right Column: Form */}
-      <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
-        <div className="mb-10 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-black text-[#100C06] tracking-tight mb-2">
+      <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+        <div className="mb-6 text-center md:text-left">
+          <h1 className="text-2xl md:text-3xl font-black text-[#100C06] tracking-tight mb-1">
             {mode === 'login' ? 'Welcome Back' : 'Join the Farm'}
           </h1>
-          <p className="text-[#7A6848] text-sm font-medium">
+          <p className="text-[#7A6848] text-xs font-medium">
             {mode === 'login' 
               ? 'Enter your credentials to access your account.' 
               : 'Create your purity account to start earning rewards.'}
@@ -143,50 +143,50 @@ function LoginContent() {
         </div>
 
         {/* Social Logins */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-6">
           <Button 
             variant="outline" 
             onClick={handleGoogleAuth}
-            className="h-12 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-xs"
+            className="h-11 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-[11px]"
           >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-4 h-4" />
             Google
           </Button>
           <Button 
             variant="outline" 
-            className="h-12 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-xs"
+            className="h-11 rounded-xl border-[#E5E7EB] hover:bg-gray-50 flex items-center justify-center gap-2 font-bold text-[11px]"
           >
-            <i className="fa-brands fa-apple text-base"></i>
+            <i className="fa-brands fa-apple text-sm"></i>
             Apple
           </Button>
         </div>
 
-        <div className="flex items-center gap-3 mb-8 before:h-px before:flex-1 before:bg-[#F3F4F6] after:h-px after:flex-1 after:bg-[#F3F4F6]">
-          <span className="text-[10px] font-black uppercase text-[#9CA3AF] tracking-widest">Or continue with</span>
+        <div className="flex items-center gap-3 mb-6 before:h-px before:flex-1 before:bg-[#F3F4F6] after:h-px after:flex-1 after:bg-[#F3F4F6]">
+          <span className="text-[9px] font-black uppercase text-[#9CA3AF] tracking-widest">Or continue with</span>
         </div>
 
-        <form onSubmit={handleEmailAuth} className="space-y-6">
-          <div className="space-y-4">
+        <form onSubmit={handleEmailAuth} className="space-y-4">
+          <div className="space-y-3">
             {mode === 'register' && (
               <>
-                <div className="space-y-1.5">
-                  <Label htmlFor={`${id}-name`} className="text-xs font-bold text-[#100C06]">Full Name</Label>
+                <div className="space-y-1">
+                  <Label htmlFor={`${id}-name`} className="text-[10px] font-bold text-[#100C06] uppercase tracking-wider">Full Name</Label>
                   <Input 
                     id={`${id}-name`} 
                     placeholder="Enter your name" 
-                    className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                    className="h-11 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required 
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor={`${id}-phone`} className="text-xs font-bold text-[#100C06]">Phone Number</Label>
+                <div className="space-y-1">
+                  <Label htmlFor={`${id}-phone`} className="text-[10px] font-bold text-[#100C06] uppercase tracking-wider">Phone Number</Label>
                   <Input 
                     id={`${id}-phone`} 
                     type="tel"
                     placeholder="+91 00000 00000" 
-                    className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                    className="h-11 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required 
@@ -195,29 +195,29 @@ function LoginContent() {
               </>
             )}
 
-            <div className="space-y-1.5">
-              <Label htmlFor={`${id}-email`} className="text-xs font-bold text-[#100C06]">Email</Label>
+            <div className="space-y-1">
+              <Label htmlFor={`${id}-email`} className="text-[10px] font-bold text-[#100C06] uppercase tracking-wider">Email</Label>
               <Input 
                 id={`${id}-email`} 
                 type="email"
                 placeholder="m@example.com" 
-                className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                className="h-11 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <Label htmlFor={`${id}-password`} className="text-xs font-bold text-[#100C06]">Password</Label>
-                <button type="button" className="text-xs font-bold text-[#100C06] hover:underline">Forgot password?</button>
+                <Label htmlFor={`${id}-password`} className="text-[10px] font-bold text-[#100C06] uppercase tracking-wider">Password</Label>
+                <button type="button" className="text-[10px] font-bold text-[#100C06] hover:underline">Forgot password?</button>
               </div>
               <Input 
                 id={`${id}-password`} 
                 type="password"
                 placeholder="••••••••" 
-                className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                className="h-11 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -225,13 +225,13 @@ function LoginContent() {
             </div>
 
             {mode === 'register' && (
-              <div className="space-y-1.5">
-                <Label htmlFor={`${id}-confirm`} className="text-xs font-bold text-[#100C06]">Confirm Password</Label>
+              <div className="space-y-1">
+                <Label htmlFor={`${id}-confirm`} className="text-[10px] font-bold text-[#100C06] uppercase tracking-wider">Confirm Password</Label>
                 <Input 
                   id={`${id}-confirm`} 
                   type="password"
                   placeholder="••••••••" 
-                  className="h-12 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
+                  className="h-11 rounded-xl border-[#E5E7EB] font-medium focus-visible:ring-primary/20"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -242,17 +242,17 @@ function LoginContent() {
 
           <Button 
             disabled={loading} 
-            className="w-full h-12 bg-[#100C06] hover:bg-[#1f1a0d] text-white rounded-xl font-bold text-sm transition-all active:scale-[0.98]"
+            className="w-full h-12 bg-[#100C06] hover:bg-[#1f1a0d] text-white rounded-xl font-black uppercase tracking-widest text-xs transition-all active:scale-[0.98] mt-2"
           >
             {loading ? 'Processing...' : (mode === 'login' ? 'Log In' : 'Sign Up')}
           </Button>
         </form>
 
-        <div className="mt-8 text-center">
+        <div className="mt-6 text-center">
           <button 
             type="button" 
             onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-            className="text-xs font-medium text-[#7A6848]"
+            className="text-[11px] font-medium text-[#7A6848]"
           >
             {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
             <span className="font-bold text-[#100C06] hover:underline">
@@ -271,8 +271,8 @@ export default function LoginPage() {
       <Ticker />
       <Header onOpenCart={() => {}} cartCount={0} onFilter={() => {}} onSearch={() => {}} />
 
-      <main className="max-w-[1400px] mx-auto px-0 md:px-5 py-0 md:py-24 flex flex-col items-center justify-center min-h-[calc(100vh-124px)]">
-        <Suspense fallback={<div className="w-full max-w-[1000px] h-[600px] bg-white md:rounded-[40px] animate-pulse" />}>
+      <main className="max-w-[1400px] mx-auto px-4 md:px-5 py-8 md:py-16 flex flex-col items-center justify-center min-h-[calc(100vh-108px)]">
+        <Suspense fallback={<div className="w-full max-w-[900px] h-[500px] bg-white md:rounded-[40px] animate-pulse" />}>
           <LoginContent />
         </Suspense>
       </main>
