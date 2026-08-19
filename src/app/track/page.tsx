@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -79,7 +78,7 @@ export default function TrackOrderPage() {
                     </div>
                     <div>
                       <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Order ID: #{order.id.substring(0, 8).toUpperCase()}</div>
-                      <div className="text-xl font-headline font-black text-primary">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
+                      <div className="text-xl font-black text-primary">₹{order.totalAmount?.toLocaleString('en-IN')}</div>
                       <div className="text-xs text-muted-foreground font-medium mt-1">Placed on {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'}</div>
                     </div>
                   </div>

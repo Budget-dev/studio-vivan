@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -239,7 +238,7 @@ export default function ProductDetailsPage() {
             </div>
 
             <div className="flex items-baseline gap-4 mb-8">
-              <span className="font-headline text-5xl md:text-7xl font-black text-primary flex items-baseline no-underline leading-tight">
+              <span className="text-5xl md:text-7xl font-black text-primary flex items-baseline no-underline leading-tight">
                 <span className="text-2xl md:text-3xl font-sans font-normal opacity-70 mr-1">₹</span>
                 {displayPrice.toLocaleString('en-IN')}
               </span>

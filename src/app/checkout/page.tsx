@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -255,7 +254,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="pt-4 border-t-2 border-[#F9F6EF] flex justify-between items-center">
                     <span className="text-lg font-black uppercase tracking-tight">Total</span>
-                    <span className="font-headline text-4xl font-extrabold text-primary no-underline leading-tight">₹{calculations.finalTotal.toLocaleString('en-IN')}</span>
+                    <span className="text-4xl font-black text-primary no-underline leading-tight">₹{calculations.finalTotal.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>

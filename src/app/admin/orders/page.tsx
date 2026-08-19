@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -175,7 +174,7 @@ export default function AdminOrdersPage() {
             </div>
             <div className="mt-10 p-6 bg-[#F9F6EF] rounded-3xl text-center">
               <div className="text-[10px] font-black text-[#7A6848] uppercase tracking-[3px] mb-2">Total Revenue</div>
-              <div className="font-headline text-3xl font-extrabold text-primary no-underline leading-tight">
+              <div className="text-3xl font-black text-primary no-underline leading-tight">
                 ₹{orders?.reduce((acc, o) => acc + (o.totalAmount || 0), 0).toLocaleString('en-IN') || '0'}
               </div>
             </div>

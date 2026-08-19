@@ -129,7 +129,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="text-[11px] font-black text-[#7A6848] uppercase tracking-widest mb-1">{stat.label}</div>
-              <div className="font-headline text-3xl font-extrabold">{stat.value}</div>
+              <div className="text-3xl font-black">{stat.value}</div>
             </CardContent>
           </Card>
         ))}

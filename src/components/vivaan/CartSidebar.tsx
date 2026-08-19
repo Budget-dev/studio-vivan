@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -122,7 +121,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
                     <h4 className="font-headline text-base md:text-lg font-bold text-foreground truncate">{item.name}</h4>
                     <p className="text-[10px] text-[#7A6848] font-bold uppercase tracking-wider mb-2">{item.vol}</p>
                     <div className="flex items-center justify-between">
-                      <div className="font-headline text-xl md:text-2xl font-black flex items-baseline no-underline leading-tight">
+                      <div className="text-xl md:text-2xl font-black flex items-baseline no-underline leading-tight">
                         <span className="text-sm font-sans font-normal opacity-60 mr-0.5">₹</span>
                         {(item.price * item.qty).toLocaleString('en-IN')}
                       </div>
@@ -146,7 +145,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
           <div className="space-y-2.5 mb-5">
             <div className="flex justify-between text-xs font-semibold text-[#7A6848]">
               <span>Subtotal</span>
-              <span className="text-foreground font-headline text-base flex items-baseline no-underline leading-tight">
+              <span className="text-foreground text-base font-bold flex items-baseline no-underline leading-tight">
                 <span className="text-[10px] font-sans mr-0.5 opacity-60">₹</span>
                 {subtotal.toLocaleString('en-IN')}
               </span>
@@ -154,7 +153,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
             {discount > 0 && (
               <div className="flex justify-between text-xs font-bold text-secondary">
                 <span>Discount ({appliedCoupon})</span>
-                <span className="font-headline text-base flex items-baseline no-underline leading-tight">
+                <span className="text-base font-bold flex items-baseline no-underline leading-tight">
                   <span className="text-[10px] font-sans mr-0.5">−₹</span>
                   {discount.toLocaleString('en-IN')}
                 </span>
@@ -162,7 +161,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
             )}
             <div className="flex justify-between text-xs font-bold text-[#7A6848]">
               <span>Purity Coins (−200 🪙)</span>
-              <span className="text-primary font-headline text-base flex items-baseline no-underline leading-tight">
+              <span className="text-primary text-base font-bold flex items-baseline no-underline leading-tight">
                 <span className="text-[10px] font-sans mr-0.5">−₹</span>
                 200
               </span>
@@ -171,7 +170,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cart,
 
           <div className="flex justify-between items-center pt-4 border-t-2 border-[#F9F6EF] mb-5">
             <span className="text-base font-black uppercase tracking-tight">Total</span>
-            <span className="font-headline text-3xl md:text-5xl font-extrabold text-foreground flex items-baseline no-underline leading-tight">
+            <span className="text-3xl md:text-5xl font-black text-foreground flex items-baseline no-underline leading-tight">
               <span className="text-lg font-sans font-normal opacity-60 mr-1">₹</span>
               {total.toLocaleString('en-IN')}
             </span>

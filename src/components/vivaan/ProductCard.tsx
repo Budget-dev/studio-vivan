@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -106,7 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, isInCart, onO
         </div>
 
         <div className="flex items-baseline gap-1.5">
-          <span className="font-headline text-lg md:text-xl font-extrabold text-[#163A24] no-underline leading-tight">
+          <span className="text-lg md:text-xl font-black text-[#163A24] no-underline leading-tight">
             ₹{price.toLocaleString('en-IN')}
           </span>
           {mrpPrice > price && (

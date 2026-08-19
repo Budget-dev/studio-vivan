@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -160,7 +159,7 @@ export default function PaymentPage() {
             <div className="bg-primary p-10 text-white text-center relative overflow-hidden">
               <div className="absolute top-[-40px] right-[-40px] w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
               <div className="text-[10px] font-black uppercase tracking-[4px] opacity-40 mb-4">Total Payable</div>
-              <div className="font-headline text-7xl font-extrabold leading-none no-underline leading-tight">₹{total.toLocaleString('en-IN')}</div>
+              <div className="text-7xl font-black leading-none no-underline leading-tight">₹{total.toLocaleString('en-IN')}</div>
             </div>
 
             <div className="p-10">
