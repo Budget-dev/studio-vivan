@@ -7,26 +7,18 @@ import Image from 'next/image';
 const NATIVE_CARDS = [
   {
     title: "Native Gujarat Geographies",
-    subtitle: "Ideal Sourcing Regions",
-    desc: "We map every ingredient to its native soil in Gujarat for maximum nutrient density.",
     image: "https://vivanfa.sirv.com/ChatGPT%20Image%20Aug%201%2C%202026%2C%2010_06_35%20AM.png"
   },
   {
     title: "Purity over Profits",
-    subtitle: "Nutrition-First Philosophy",
-    desc: "We don't focus on high-yield farming. We focus on soul-nourishing flavor and tradition.",
     image: "https://vivanfa.sirv.com/ChatGPT%20Image%20Aug%201%2C%202026%2C%2010_06_40%20AM.png"
   },
   {
     title: "Zero Middlemen Supply",
-    subtitle: "Goodness, Directly Delivered",
-    desc: "Only the purest Gir cow milk and hand-picked seeds make it from our farm to you.",
     image: "https://vivanfa.sirv.com/ChatGPT%20Image%20Aug%201%2C%202026%2C%2010_06_44%20AM.png"
   },
   {
     title: "Heritage A2 Breeding",
-    subtitle: "Ethical Gir Cow Sourcing",
-    desc: "Pure A2 Gir milk is the foundation of our Bilona ghee, sourced from freely grazing cows.",
     image: "https://vivanfa.sirv.com/ChatGPT%20Image%20Aug%201%2C%202026%2C%2010_06_49%20AM.png"
   }
 ];
@@ -55,18 +47,8 @@ export const NativeSection: React.FC = () => {
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
                 sizes="(max-width: 768px) 240px, 450px"
               />
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500"></div>
-              <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end md:justify-center text-center">
-                <div className="space-y-2 md:space-y-4">
-                  <div className="text-[10px] font-black uppercase tracking-[2px] text-white/90">{card.subtitle}</div>
-                  <h3 className="font-headline text-lg md:text-3xl font-bold text-white leading-tight">
-                    {card.title}
-                  </h3>
-                  <p className="hidden md:block text-white/80 text-sm leading-relaxed font-medium">
-                    {card.desc}
-                  </p>
-                </div>
-              </div>
+              {/* Subtle hover overlay for depth without obscuring image text */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500"></div>
             </div>
           ))}
         </div>
